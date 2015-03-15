@@ -1,0 +1,116 @@
+" -------------------------- Vimrc Slim ----------------------------
+"
+" Slimmed-dowm vim configuration file for use on production servers
+"
+" Installation:
+"   - Place this file at ~/.vimrc
+"
+" Plugins:
+"   This config file is built for the optional use of 4 plugins
+"
+"   - mkdir ~/.vim/bundle
+"   - cd ~/.vim/bundle
+"   - git clone https://github.com/kien/ctrlp.vim.git
+"   - git clone https://github.com/scrooloose/nerdtree.git
+"   - git clone https://github.com/scrooloose/syntastic.git
+"   - git clone https://github.com/Lokaltog/vim-easymotion.git
+"
+" ------------------------------------------------------------------
+
+
+" ----- General Config -----
+
+" Enable per-file indenting and highlighting
+set nocompatible
+filetype plugin indent on
+syntax on
+
+" Show line numbers
+set number
+
+" Linebreaking options
+set linebreak
+set showbreak=++
+set textwidth=100
+
+" Jump to matching bracket when closing
+set showmatch
+
+" Flash screen instead of audible error bell
+set visualbell
+
+" Options for searching in files
+set hlsearch
+set smartcase
+set ignorecase
+set incsearch
+set gdefault
+
+" Indenting options
+set autoindent
+set expandtab
+set shiftwidth=2
+set smartindent
+set smarttab
+set softtabstop=2
+set tabstop=2
+set shiftround
+
+" Automatically write and read
+set autowriteall
+set autoread
+
+" Show cursor position in statusbar
+set ruler
+
+" Undo and backspace
+set undolevels=1000
+set backspace=indent,eol,start
+
+" Show status bar at all times
+set laststatus=2
+
+
+" ----- Filetype-Specific Config -----
+
+" Make php use 4 spaces for tabs
+autocmd FileType php setlocal shiftwidth=4 tabstop=4
+
+" Custom handling of blade templates
+autocmd FileType blade setlocal ft=html syntax=blade shiftwidth=2 tabstop=2
+
+
+" ----- Custom Mappings -----
+
+" Make Y consistent with C and D
+nnoremap Y y$
+
+
+" ----- Custom Commands -----
+
+" Shortcut to save as sudo
+command Sudow w !sudo tee % >/dev/null
+
+
+" ----- Plugins -----
+
+" Initialize Pathogen for plugins
+execute pathogen#infect()
+call pathogen#helptags()
+
+" --- NERDTree ---
+let NERDTreeAutoDeleteBuffers = 1
+let NERDTreeQuitOnOpen = 1
+let NERDTreeShowHidden = 1
+
+" --- CtrlP ---
+let g:ctrlp_by_filename = 1
+
+" --- EasyMotion ---
+map <Space> <Plug>(easymotion-prefix)
+
+" --- Syntastic ---
+let g:syntastic_enable_signs = 1
+let g:syntastic_html_checkers = []
+let g:syntastic_php_checkers = ['php']
+
