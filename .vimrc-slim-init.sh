@@ -1,6 +1,6 @@
 git clone https://github.com/futurityverb/dotfiles.git ~/.futurityverb-dotfiles
-mkdir ~/.vim
-mkdir ~/.vim/bundle
+mkdir -p ~/.vim/autoload ~/.vim/bundle && \
+curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
 cp ~/.futurityverb-dotfiles/.vimrc-slim ~/.vimrc
 git clone https://github.com/kien/ctrlp.vim.git ~/.vim/bundle/ctrlp.vim
 git clone https://github.com/scrooloose/nerdtree.git ~/.vim/bundle/nerdtree
