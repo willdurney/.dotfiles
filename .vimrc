@@ -4,6 +4,7 @@
 set nocompatible
 filetype plugin indent on
 syntax on
+set background=dark
 
 " Show line numbers
 set number
@@ -78,6 +79,11 @@ nnoremap <Esc> :noh<CR><Esc>
 " Make Y consistent with C and D
 nnoremap Y y$
 
+" Range commands while searching
+cnoremap $t <CR>:t''<CR>
+cnoremap $m <CR>:m''<CR>
+cnoremap $d <CR>:d<CR>``
+
 
 " ----- Custom Commands -----
 
@@ -129,6 +135,9 @@ endfun
 execute pathogen#infect()
 call pathogen#helptags()
 
+" --- Solarized ---
+colorscheme solarized
+
 " --- Airline ---
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#buffer_nr_show = 1
@@ -150,6 +159,10 @@ nnoremap <Leader>b :CtrlPBuffer<CR>
 " --- EasyMotion ---
 map <Space> <Plug>(easymotion-prefix)
 
+" --- Sneak ---
+let g:sneak#s_next = 1
+let g:sneak#streak = 1
+
 " --- Syntastic ---
 let g:syntastic_enable_signs = 1
 let g:syntastic_scss_checkers = ['scss_lint']
@@ -159,9 +172,10 @@ let g:syntastic_php_phpcs_args = "--report=csv --standard=~/.elite50-phpcs-rules
 
 " --- Tags ---
 set tags=tags
-let g:easytags_dynamic_files=1
-let g:easytags_async=1
-let g:easytags_auto_highlight=0
+let g:easytags_dynamic_files = 1
+let g:easytags_async = 1
+let g:easytags_auto_highlight = 0
+let g:easytags_on_cursorhold = 0
 nmap <Leader>t :TagbarToggle<CR>
 
 " --- Snippets ---
@@ -218,4 +232,8 @@ let g:use_emmet_complete_tag = 1
 
 " --- Instant Markdown ---
 let g:instant_markdown_slow = 1
+
+" --- Hardtime ---
+let g:hardtime_default_on = 1
+let g:hardtime_ignore_buffer_patterns = [ "NERD.*", "Tagbar" ]
 
