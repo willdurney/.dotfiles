@@ -13,6 +13,7 @@ set number
 set linebreak
 set showbreak=++
 set textwidth=100
+set backspace=indent,eol,start
 
 " Jump to matching bracket when closing
 set showmatch
@@ -44,9 +45,13 @@ set autoread
 " Show cursor position in statusbar
 set ruler
 
-" Undo and backspace
-set undolevels=1000
-set backspace=indent,eol,start
+" Undo 
+if exists("&undodir")
+    set undofile          
+    let &undodir=&directory
+    set undolevels=500
+    set undoreload=500
+endif
 
 " Show status bar at all times
 set laststatus=2
@@ -60,14 +65,34 @@ autocmd FileType php setlocal shiftwidth=4 tabstop=4
 " Custom handling of blade templates
 autocmd FileType blade setlocal ft=html syntax=blade shiftwidth=2 tabstop=2
 
+" Make jison use 4 spaces for tabs
+autocmd FileType yacc setlocal shiftwidth=4 tabstop=4
+
 
 " ----- Custom Mappings -----
 
-" Set leader to comma
+" Make Y consistent with C and D
+nnoremap Y y$
+
+" Pinky savers
 let mapleader = ","
+noremap ; :
+noremap <C-;> ;
+
+" Window navigation
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
 
 " Save easily
 nnoremap <Leader>s :w<CR>
+
+" File navigation
+cnoremap %% <C-R>=expand('%:h').'/'<cr>
+nmap <leader>ew :e %%
+nmap <leader>es :sp %%
+nmap <leader>ev :vsp %%
 
 " Use jk to esc out of insert/command mode
 inoremap jk <Esc>
@@ -76,26 +101,30 @@ cmap jk <C-U><BS>
 " Shortcut to clear highlighting
 nnoremap <Esc> :noh<CR><Esc>
 
-" Make Y consistent with C and D
-nnoremap Y y$
-
 " Range commands while searching
-cnoremap $t <CR>:t''<CR>
-cnoremap $m <CR>:m''<CR>
-cnoremap $d <CR>:d<CR>``
+cnoremap $$t <CR>:t''<CR>
+cnoremap $$m <CR>:m''<CR>
+cnoremap $$d <CR>:d<CR>``
 
 
 " ----- Custom Commands -----
 
-" Shortcut to expand tabs from 2 to 4 spaces
-command Georgetabs %s/  /    /e | nohlsearch
-
 " Shortcut to save as sudo
 command Sudow w !sudo tee % >/dev/null
 
+" Shortcut to toggle commented php logs
+command UncommentLogs %s/\/\/\\L/\\L/ | noh
+command CommentLogs %s/\\L/\/\/\\L/ | noh
+
+" Shortcut to expand tabs from 2 to 4 spaces
+command Georgetabs %s/  /    /e | noh
+
 " Shortcut to remove trailing spaces
-command -bar TrailingSpaces %s/\s\+$//e | nohlsearch
+command -bar TrailingSpaces %s/\s\+$//e | noh
 command W TrailingSpaces | w | exe "normal ``"
+
+" Shortcut to fix php function brackets
+command -bar FunctionBrackets  %s/^\(\s*\)\(.*\%(function\|class\|interface\).*\) {$/\1\2\r\1{/ | noh
 
 " Shortcut to dump-autoload
 command DumpAutoload !composer -o dump-autoload; php artisan dump-autoload
@@ -170,6 +199,14 @@ let g:syntastic_html_checkers = []
 let g:syntastic_php_checkers = ['php', 'phpcs']
 let g:syntastic_php_phpcs_args = "--report=csv --standard=~/.elite50-phpcs-ruleset.xml"
 
+" --- YouCompleteMe ---
+autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
+autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+
+" --- PHPCompleteExtended ---
+"let g:phpcomplete_index_composer_command = 'composer'
+"autocmd FileType php setlocal omnifunc=phpcomplete_extended#CompletePHP
+
 " --- Tags ---
 set tags=tags
 let g:easytags_dynamic_files = 1
@@ -223,6 +260,11 @@ autocmd FileType javascript let b:surround_47 = "/* \r */"
 autocmd FileType scss let b:surround_47 = "/* \r */"
 autocmd FileType html let b:surround_47 = "<!-- \r -->"
 
+" --- DelimitMate ---
+let delimitMate_expand_cr = 1
+let delimitMate_expand_space = 1
+imap ,g <Plug>delimitMateJumpMany
+
 " --- Gundo ---
 nnoremap <Leader>u :GundoToggle<CR>
 let g:gundo_right = 1
@@ -235,5 +277,6 @@ let g:instant_markdown_slow = 1
 
 " --- Hardtime ---
 let g:hardtime_default_on = 1
-let g:hardtime_ignore_buffer_patterns = [ "NERD.*", "Tagbar" ]
-
+let g:hardtime_ignore_buffer_patterns = [ "NERD.*", "Tagbar", "QQ" ]
+let g:hardtime_allow_different_key = 1
+let g:hardtime_maxcount = 3

@@ -34,6 +34,7 @@ set number
 set linebreak
 set showbreak=++
 set textwidth=100
+set backspace=indent,eol,start
 
 " Jump to matching bracket when closing
 set showmatch
@@ -65,9 +66,13 @@ set autoread
 " Show cursor position in statusbar
 set ruler
 
-" Undo and backspace
-set undolevels=1000
-set backspace=indent,eol,start
+" Undo 
+if exists("&undodir")
+    set undofile          
+    let &undodir=&directory
+    set undolevels=500
+    set undoreload=500
+endif
 
 " Show status bar at all times
 set laststatus=2
@@ -81,6 +86,9 @@ autocmd FileType php setlocal shiftwidth=4 tabstop=4
 " Custom handling of blade templates
 autocmd FileType blade setlocal ft=html syntax=blade shiftwidth=2 tabstop=2
 
+" Make jison use 4 spaces for tabs
+autocmd FileType yacc setlocal shiftwidth=4 tabstop=4
+
 
 " ----- Custom Mappings -----
 
@@ -92,6 +100,10 @@ nnoremap Y y$
 
 " Shortcut to save as sudo
 command Sudow w !sudo tee % >/dev/null
+
+" Shortcut to toggle commented php logs
+command UncommentLogs %s/\/\/\\L/\\L/ | noh
+command CommentLogs %s/\\L/\/\/\\L/ | noh
 
 
 " ----- Plugins -----
