@@ -11,7 +11,6 @@ set number
 
 " Linebreaking options
 set linebreak
-set showbreak=++
 set textwidth=100
 set backspace=indent,eol,start
 
@@ -45,9 +44,9 @@ set autoread
 " Show cursor position in statusbar
 set ruler
 
-" Undo 
+" Undo
 if exists("&undodir")
-    set undofile          
+    set undofile
     let &undodir=&directory
     set undolevels=500
     set undoreload=500
@@ -55,6 +54,9 @@ endif
 
 " Show status bar at all times
 set laststatus=2
+
+" Use system clipboard by default
+set clipboard^=unnamed
 
 
 " ----- Filetype-Specific Config -----
@@ -252,6 +254,8 @@ nnoremap <Leader>gt :Git tag<Space>
 nnoremap <Leader>gpl :Gpull<CR>
 nnoremap <Leader>gps :Gpush<CR>
 nnoremap <Leader>gpt :Gpush --tags<CR>
+nnoremap <Leader>gpu :execute "Gpush -u origin" fugitive#head()<CR>
+nnoremap <Leader>gpo :Gpush origin<Space>
 nnoremap <Leader>p :Ggrep<Space>
 
 " --- Surround ---

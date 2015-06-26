@@ -32,7 +32,6 @@ set number
 
 " Linebreaking options
 set linebreak
-set showbreak=++
 set textwidth=100
 set backspace=indent,eol,start
 
@@ -66,9 +65,9 @@ set autoread
 " Show cursor position in statusbar
 set ruler
 
-" Undo 
+" Undo
 if exists("&undodir")
-    set undofile          
+    set undofile
     let &undodir=&directory
     set undolevels=500
     set undoreload=500
@@ -94,6 +93,15 @@ autocmd FileType yacc setlocal shiftwidth=4 tabstop=4
 
 " Make Y consistent with C and D
 nnoremap Y y$
+
+" Window navigation
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
+
+" File navigation
+cnoremap %% <C-R>=expand('%:h').'/'<cr>
 
 
 " ----- Custom Commands -----
