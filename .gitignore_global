@@ -3,3 +3,5 @@
 *.swp
 tags
 .tern-project
+.phpcomplete_extended
+.rest

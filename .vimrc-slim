@@ -80,13 +80,22 @@ set laststatus=2
 " ----- Filetype-Specific Config -----
 
 " Make php use 4 spaces for tabs
-autocmd FileType php setlocal shiftwidth=4 tabstop=4
+augroup filetype_php
+  autocmd!
+  autocmd FileType php setlocal shiftwidth=4 tabstop=4
+augroup END
 
 " Custom handling of blade templates
-autocmd FileType blade setlocal ft=html syntax=blade shiftwidth=2 tabstop=2
+augroup filetype_blade
+  autocmd!
+  autocmd FileType blade setlocal ft=html syntax=blade shiftwidth=2 tabstop=2
+augroup END
 
 " Make jison use 4 spaces for tabs
-autocmd FileType yacc setlocal shiftwidth=4 tabstop=4
+augroup filetype_jison
+  autocmd!
+  autocmd FileType yacc setlocal shiftwidth=4 tabstop=4
+augroup END
 
 
 " ----- Custom Mappings -----
@@ -126,7 +135,7 @@ let NERDTreeQuitOnOpen = 1
 let NERDTreeShowHidden = 1
 
 " --- CtrlP ---
-let g:ctrlp_by_filename = 1
+"let g:ctrlp_by_filename = 1
 
 " --- EasyMotion ---
 map <Space> <Plug>(easymotion-prefix)

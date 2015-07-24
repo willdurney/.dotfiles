@@ -21,7 +21,7 @@ set showmatch
 set visualbell
 
 " Options for searching in files
-set hlsearch
+set nohlsearch
 set smartcase
 set ignorecase
 set incsearch
@@ -46,10 +46,10 @@ set ruler
 
 " Undo
 if exists("&undodir")
-    set undofile
-    let &undodir=&directory
-    set undolevels=500
-    set undoreload=500
+  set undofile
+  let &undodir=&directory
+  set undolevels=500
+  set undoreload=500
 endif
 
 " Show status bar at all times
@@ -62,16 +62,25 @@ set clipboard^=unnamed
 " ----- Filetype-Specific Config -----
 
 " Make php use 4 spaces for tabs
-autocmd FileType php setlocal shiftwidth=4 tabstop=4
+augroup filetype_php
+  autocmd!
+  autocmd FileType php setlocal shiftwidth=4 tabstop=4
+augroup END
 
 " Custom handling of blade templates
-autocmd FileType blade setlocal ft=html syntax=blade shiftwidth=2 tabstop=2
+augroup filetype_blade
+  autocmd!
+  autocmd FileType blade setlocal ft=html syntax=blade shiftwidth=2 tabstop=2
+augroup END
 
 " Make jison use 4 spaces for tabs
-autocmd FileType yacc setlocal shiftwidth=4 tabstop=4
+augroup filetype_jison
+  autocmd!
+  autocmd FileType yacc setlocal shiftwidth=4 tabstop=4
+augroup END
 
 
-" ----- Custom Mappings -----
+" ----- Custom mappings -----
 
 " Make Y consistent with C and D
 nnoremap Y y$
@@ -79,7 +88,6 @@ nnoremap Y y$
 " Pinky savers
 let mapleader = ","
 noremap ; :
-noremap <C-;> ;
 
 " Window navigation
 nnoremap <C-h> <C-w>h
@@ -87,52 +95,57 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
+" Window resizing
+nnoremap <Leader>k <C-w>=
+nnoremap K <C-w>5>
+
 " Save easily
-nnoremap <Leader>s :w<CR>
+nnoremap <Leader>s :w<Cr>
+nnoremap <Leader>v :source $MYVIMRC<Cr>
 
 " File navigation
-cnoremap %% <C-R>=expand('%:h').'/'<cr>
-nmap <leader>ew :e %%
-nmap <leader>es :sp %%
-nmap <leader>ev :vsp %%
+cnoremap %% <C-R>=expand('%:h').'/'<Cr>
+nnoremap <Leader>ew :e %%
+nnoremap <Leader>es :sp %%
+nnoremap <Leader>ev :vsp %%
 
 " Use jk to esc out of insert/command mode
 inoremap jk <Esc>
-cmap jk <C-U><BS>
+cnoremap jk <C-U><BS>
 
 " Shortcut to clear highlighting
-nnoremap <Esc> :noh<CR><Esc>
+nnoremap <Esc> :noh<Cr><Esc>
 
 " Range commands while searching
-cnoremap $$t <CR>:t''<CR>
-cnoremap $$m <CR>:m''<CR>
-cnoremap $$d <CR>:d<CR>``
+cnoremap $t <Cr>:t''<Cr>
+cnoremap $m <Cr>:m''<Cr>
+cnoremap $d <Cr>:d<Cr>``
 
 
 " ----- Custom Commands -----
 
 " Shortcut to save as sudo
-command Sudow w !sudo tee % >/dev/null
+command! Sudow w !sudo tee % >/dev/null
 
 " Shortcut to toggle commented php logs
-command UncommentLogs %s/\/\/\\L/\\L/ | noh
-command CommentLogs %s/\\L/\/\/\\L/ | noh
+command! UncommentLogs %s/\/\/\\L/\\L/ | noh
+command! CommentLogs %s/\\L/\/\/\\L/ | noh
 
 " Shortcut to expand tabs from 2 to 4 spaces
-command Georgetabs %s/  /    /e | noh
+command! Georgetabs %s/  /    /e | noh
 
 " Shortcut to remove trailing spaces
-command -bar TrailingSpaces %s/\s\+$//e | noh
-command W TrailingSpaces | w | exe "normal ``"
+command! -bar TrailingSpaces %s/\s\+$//e | noh
+command! W TrailingSpaces | w | exe "normal ``"
 
 " Shortcut to fix php function brackets
-command -bar FunctionBrackets  %s/^\(\s*\)\(.*\%(function\|class\|interface\).*\) {$/\1\2\r\1{/ | noh
+command! -bar FunctionBrackets  %s/^\(\s*\)\(.*\%(function\|class\|interface\).*\) {$/\1\2\r\1{/ | noh
 
 " Shortcut to dump-autoload
-command DumpAutoload !composer -o dump-autoload; php artisan dump-autoload
+command! DumpAutoload !composer -o dump-autoload; php artisan dump-autoload
 
 " Command to re-run grunt dev:watch
-command Grunt !screen -S cs-front-grunt -p 0 -X stuff "grunt dev:watch$(printf \\r)"
+command! Grunt !screen -S cs-front-grunt -p 0 -X stuff "grunt dev:watch$(printf \\r)"
 
 " Destroy all hidden buffers
 command! -bang Wipeout :call Wipeout(<bang>0)
@@ -178,14 +191,14 @@ let g:airline_powerline_fonts = 1
 let NERDTreeAutoDeleteBuffers = 1
 let NERDTreeQuitOnOpen = 1
 let NERDTreeShowHidden = 1
-map <Leader>n :NERDTreeFind<CR>
+noremap <Leader>n :NERDTreeFind<Cr>
 
 " --- CtrlP ---
-let g:ctrlp_by_filename = 1
+"let g:ctrlp_by_filename = 1
 let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --hidden --ignore .git ' .
   \ '--ignore .svn --ignore .hg --ignore .DS_Store -g ""'
-nnoremap <Leader>f :CtrlP<CR>
-nnoremap <Leader>b :CtrlPBuffer<CR>
+nnoremap <Leader>f :CtrlP<Cr>
+nnoremap <Leader>b :CtrlPBuffer<Cr>
 
 " --- EasyMotion ---
 map <Space> <Plug>(easymotion-prefix)
@@ -193,6 +206,26 @@ map <Space> <Plug>(easymotion-prefix)
 " --- Sneak ---
 let g:sneak#s_next = 1
 let g:sneak#streak = 1
+" Make nN behave like ;, when sneaking
+function! SmartFEnable()
+  map n <Plug>SneakNext
+  map N <Plug>SneakPrevious
+endfun
+" Make nN behave normally
+function! SmartFDisable()
+  silent! unmap n
+  silent! unmap N
+endfun
+" Make sneaking enable smart nN
+nmap f :call SmartFEnable()<Cr><Plug>Sneak_f
+nmap F :call SmartFEnable()<Cr><Plug>Sneak_F
+nmap t :call SmartFEnable()<Cr><Plug>Sneak_t
+nmap T :call SmartFEnable()<Cr><Plug>Sneak_T
+nmap s :call SmartFEnable()<Cr><Plug>Sneak_s
+nmap S :call SmartFEnable()<Cr><Plug>Sneak_S
+" Make searching return nN to normal
+noremap / :call SmartFDisable()<Cr>/
+noremap ? :call SmartFDisable()<Cr>?
 
 " --- Syntastic ---
 let g:syntastic_enable_signs = 1
@@ -202,85 +235,141 @@ let g:syntastic_php_checkers = ['php', 'phpcs']
 let g:syntastic_php_phpcs_args = "--report=csv --standard=~/.elite50-phpcs-ruleset.xml"
 
 " --- YouCompleteMe ---
-autocmd CursorMovedI * if pumvisible() == 0|pclose|endif
-autocmd InsertLeave * if pumvisible() == 0|pclose|endif
+augroup you_complete_me
+  autocmd!
+  autocmd CursorMovedI * if pumvisible() == 0|silent! pclose|endif
+  autocmd InsertLeave * if pumvisible() == 0|silent! pclose|endif
+augroup END
 
 " --- PHPCompleteExtended ---
-"let g:phpcomplete_index_composer_command = 'composer'
-"autocmd FileType php setlocal omnifunc=phpcomplete_extended#CompletePHP
+let g:phpcomplete_index_composer_command = 'composer'
+augroup php_complete_extended
+  autocmd!
+  autocmd FileType php setlocal omnifunc=phpcomplete_extended#CompletePHP
+augroup END
 
 " --- Tags ---
 set tags=tags
 let g:easytags_dynamic_files = 1
 let g:easytags_async = 1
 let g:easytags_auto_highlight = 0
-let g:easytags_on_cursorhold = 0
-nmap <Leader>t :TagbarToggle<CR>
+"let g:easytags_on_cursorhold = 0
+let g:tagbar_autoclose = 1
+let g:tagbar_compact = 1
+nnoremap <Leader>t :TagbarToggle<Cr>
 
 " --- Snippets ---
 function! g:UltiSnips_Complete()
-    call UltiSnips#ExpandSnippet()
-    if g:ulti_expand_res == 0
-        if pumvisible()
-            return "\<C-n>"
-        else
-            call UltiSnips#JumpForwards()
-            if g:ulti_jump_forwards_res == 0
-               return "\<TAB>"
-            endif
-        endif
+  call UltiSnips#ExpandSnippet()
+  if g:ulti_expand_res == 0
+    if pumvisible()
+      return "\<C-n>"
+    else
+      call UltiSnips#JumpForwards()
+      if g:ulti_jump_forwards_res == 0
+        return "\<TAB>"
+      endif
     endif
-    return ""
+  endif
+  return ""
 endfunction
-au BufEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<cr>"
+augroup ultisnips
+  autocmd!
+  autocmd BufEnter * exec "inoremap <silent> " . g:UltiSnipsExpandTrigger . " <C-R>=g:UltiSnips_Complete()<Cr>"
+augroup END
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsListSnippets="<c-e>"
 
 " --- Fugitive ---
-nnoremap <Leader>ga :Git add %:p<CR><CR>
-nnoremap <Leader>gA :Git add -A<CR><CR>
-nnoremap <Leader>gs :Gstatus<CR>
-nnoremap <Leader>gc :Gcommit<CR>
-nnoremap <Leader>gC :Gcommit -a<CR>
-nnoremap <Leader>gd :Gdiff<CR>
-nnoremap <Leader>ge :Gedit<CR>
-nnoremap <Leader>gr :Gread<CR>
-nnoremap <Leader>gw :Gwrite<CR>
+nnoremap <Leader>ga :Git add %:p<Cr><Cr>
+nnoremap <Leader>gA :Git add -A<Cr><Cr>
+nnoremap <Leader>gs :Gstatus<Cr>
+nnoremap <Leader>gc :Gcommit<Cr>
+nnoremap <Leader>gC :Gcommit -a<Cr>
+nnoremap <Leader>gd :Gdiff<Cr>
+nnoremap <Leader>ge :Gedit<Cr>
+nnoremap <Leader>gr :Gread<Cr>
+nnoremap <Leader>gw :Gwrite<Cr>
 nnoremap <Leader>gb :Git branch<Space>
 nnoremap <Leader>go :Git checkout<Space>
 nnoremap <Leader>gm :Gmerge<Space>
-nnoremap <Leader>gf :Gfetch<CR>
+nnoremap <Leader>gf :Gfetch<Cr>
 nnoremap <Leader>gt :Git tag<Space>
-nnoremap <Leader>gpl :Gpull<CR>
-nnoremap <Leader>gps :Gpush<CR>
-nnoremap <Leader>gpt :Gpush --tags<CR>
-nnoremap <Leader>gpu :execute "Gpush -u origin" fugitive#head()<CR>
+nnoremap <Leader>gpl :Gpull<Cr>
+nnoremap <Leader>gps :Gpush<Cr>
+nnoremap <Leader>gpt :Gpush --tags<Cr>
+nnoremap <Leader>gpu :execute "Gpush -u origin" fugitive#head()<Cr>
 nnoremap <Leader>gpo :Gpush origin<Space>
 nnoremap <Leader>p :Ggrep<Space>
 
+" --- GitGutter ---
+let g:gitgutter_enabled = 0
+let g:gitgutter_highlight_lines = 1
+let g:gitgutter_map_keys = 0
+nnoremap <Leader>gg :GitGutterToggle<Cr>
+
+" --- Mirror ---
+nnoremap <Leader>mc :MirrorConfig<Cr>
+nnoremap <Leader>me :MirrorEdit staging
+nnoremap <Leader>mv :MirrorVEdit staging
+nnoremap <Leader>md :MirrorDiff staging
+nnoremap <Leader>ms :MirrorSSH staging
+
 " --- Surround ---
-autocmd FileType php let b:surround_47 = "/* \r */"
-autocmd FileType javascript let b:surround_47 = "/* \r */"
-autocmd FileType scss let b:surround_47 = "/* \r */"
-autocmd FileType html let b:surround_47 = "<!-- \r -->"
+augroup surround
+  autocmd!
+  autocmd FileType php let b:surround_47 = "/* \r */"
+  autocmd FileType javascript let b:surround_47 = "/* \r */"
+  autocmd FileType scss let b:surround_47 = "/* \r */"
+  autocmd FileType html let b:surround_47 = "<!-- \r -->"
+augroup END
 
 " --- DelimitMate ---
 let delimitMate_expand_cr = 1
 let delimitMate_expand_space = 1
-imap ,g <Plug>delimitMateJumpMany
+imap <Leader>g <Plug>delimitMateJumpMany
+
+" --- SkipIt ---
+imap <Leader>l <Plug>SkipIt
 
 " --- Gundo ---
-nnoremap <Leader>u :GundoToggle<CR>
+nnoremap <Leader>u :GundoToggle<Cr>
 let g:gundo_right = 1
 
 " --- Emmet ---
 let g:use_emmet_complete_tag = 1
+
+" --- ConqueTerm ---
+let g:ConqueTerm_CloseOnEnd = 1
+let g:ConqueTerm_StartMessages = 0
+let g:ConqueTerm_PromptRegex = '^bash\-3\.2\$'
+nnoremap <Leader>cc :ConqueTerm bash<Cr>
+nnoremap <Leader>cv :ConqueTermVSplit bash<Cr>
+nnoremap <Leader>cs :ConqueTermSplit bash<Cr>
+
+" --- Vim REST Console ---
+let g:vrc_set_default_mapping = 0
+function! CloseVRC()
+  normal j
+  q
+  wq
+endfun
+function! OpenVRC()
+  vsp .rest
+  below sp __REST_response__
+  set buftype=nofile
+  normal k
+  nnoremap <buffer> <Leader>h :call CloseVRC()<Cr>
+  nnoremap <buffer> <Cr> :call VrcQuery()<Cr>
+endfun
+nnoremap <Leader>h :call OpenVRC()<Cr>
 
 " --- Instant Markdown ---
 let g:instant_markdown_slow = 1
 
 " --- Hardtime ---
 let g:hardtime_default_on = 1
-let g:hardtime_ignore_buffer_patterns = [ "NERD.*", "Tagbar", "QQ" ]
+let g:hardtime_ignore_buffer_patterns = [ "NERD.*", "Tagbar", ".git", "rest" ]
 let g:hardtime_allow_different_key = 1
-let g:hardtime_maxcount = 3
+let g:hardtime_maxcount = 5
+
