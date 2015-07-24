@@ -121,6 +121,9 @@ cnoremap $t <Cr>:t''<Cr>
 cnoremap $m <Cr>:m''<Cr>
 cnoremap $d <Cr>:d<Cr>``
 
+" Run phpcbf
+nnoremap <Leader>pf :%! phpcbf --standard=~/.elite50-phpcs-ruleset.xml<Cr><Cr>:w<Cr>
+
 
 " ----- Custom Commands -----
 
@@ -300,7 +303,7 @@ nnoremap <Leader>gps :Gpush<Cr>
 nnoremap <Leader>gpt :Gpush --tags<Cr>
 nnoremap <Leader>gpu :execute "Gpush -u origin" fugitive#head()<Cr>
 nnoremap <Leader>gpo :Gpush origin<Space>
-nnoremap <Leader>p :Ggrep<Space>
+nnoremap <Leader>/ :Ggrep<Space>
 
 " --- GitGutter ---
 let g:gitgutter_enabled = 0
