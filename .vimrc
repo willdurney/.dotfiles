@@ -73,6 +73,12 @@ augroup filetype_blade
   autocmd FileType blade setlocal ft=html syntax=blade shiftwidth=2 tabstop=2
 augroup END
 
+" Custom handling of typescript
+augroup filetype_ts
+  autocmd!
+  autocmd FileType typescript setlocal shiftwidth=4 tabstop=4
+augroup END
+
 " Make jison use 4 spaces for tabs
 augroup filetype_jison
   autocmd!
@@ -123,6 +129,12 @@ cnoremap $d <Cr>:d<Cr>``
 
 " Run phpcbf
 nnoremap <Leader>pf :%! phpcbf --standard=~/.elite50-phpcs-ruleset.xml<Cr><Cr>:w<Cr>
+
+" Magic regex
+cnoremap s/ s/\V
+cnoremap g/ g/\V
+cnoremap sv/ s/\v
+cnoremap gv/ g/\v
 
 
 " ----- Custom Commands -----
@@ -227,8 +239,8 @@ nmap T :call SmartFEnable()<Cr><Plug>Sneak_T
 nmap s :call SmartFEnable()<Cr><Plug>Sneak_s
 nmap S :call SmartFEnable()<Cr><Plug>Sneak_S
 " Make searching return nN to normal
-noremap / :call SmartFDisable()<Cr>/
-noremap ? :call SmartFDisable()<Cr>?
+noremap / :call SmartFDisable()<Cr>/\V
+noremap ? :call SmartFDisable()<Cr>?\V
 
 " --- Syntastic ---
 let g:syntastic_enable_signs = 1
@@ -236,6 +248,9 @@ let g:syntastic_scss_checkers = ['scss_lint']
 let g:syntastic_html_checkers = []
 let g:syntastic_php_checkers = ['php', 'phpcs']
 let g:syntastic_php_phpcs_args = "--report=csv --standard=~/.elite50-phpcs-ruleset.xml"
+
+" --- PHP Indenting ---
+let g:PHP_vintage_case_default_indent = 1
 
 " --- YouCompleteMe ---
 augroup you_complete_me
@@ -305,6 +320,10 @@ nnoremap <Leader>gpu :execute "Gpush -u origin" fugitive#head()<Cr>
 nnoremap <Leader>gpo :Gpush origin<Space>
 nnoremap <Leader>/ :Ggrep<Space>
 
+" -- Promiscuous --
+nnoremap <Leader>gO :Promiscuous<Space>
+nnoremap <Leader>gB :Promiscuous -<Cr>
+
 " --- GitGutter ---
 let g:gitgutter_enabled = 0
 let g:gitgutter_highlight_lines = 1
@@ -331,9 +350,6 @@ augroup END
 let delimitMate_expand_cr = 1
 let delimitMate_expand_space = 1
 imap <Leader>g <Plug>delimitMateJumpMany
-
-" --- SkipIt ---
-imap <Leader>l <Plug>SkipIt
 
 " --- Gundo ---
 nnoremap <Leader>u :GundoToggle<Cr>

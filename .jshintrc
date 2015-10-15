@@ -76,7 +76,7 @@
     "jquery"        : false,    // jQuery
     "mocha"         : false,    // Mocha
     "mootools"      : false,    // MooTools
-    "node"          : false,    // Node.js
+    "node"          : true,    // Node.js
     "nonstandard"   : false,    // Widely adopted globals (escape, unescape, etc)
     "phantom"       : false,    // PhantomJS
     "prototypejs"   : false,    // Prototype and Scriptaculous
@@ -92,6 +92,8 @@
     "globals"       : {
       "angular" : true,
       "apiUrl" : true,
+      "staticUrl": true,
+      "analyticsUrl": true,
       "version" : true,
       "L" : true,
       "leafletPip" : true,

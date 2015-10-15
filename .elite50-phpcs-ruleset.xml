@@ -23,6 +23,6 @@
  <rule ref="Squiz.Classes.ValidClassName"/>
  <rule ref="Squiz.Commenting.FunctionCommentThrowTag"/>
  <rule ref="Squiz.Commenting.DocCommentAlignment"/>
- <rule ref="Squiz.NamingConventions.ValidFunctionName"/>
+ <!--rule ref="Squiz.NamingConventions.ValidFunctionName"/-->
  <!--rule ref="Squiz.NamingConventions.ValidVariableName"/-->
 </ruleset>
