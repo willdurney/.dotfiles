@@ -101,6 +101,8 @@
       "ss" : true,
       "$zopim" : true,
       "CQL" : true,
-      "expect" : true
+      "expect" : true,
+      "moment" : true,
+      "$" : true
     }
 }
