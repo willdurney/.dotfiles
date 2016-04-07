@@ -18,44 +18,38 @@ Plug 'jwalton512/vim-blade'
 Plug 'wizicer/vim-jison'
 
 " Actual Plugins
-Plug 'tpope/vim-endwise'
+" Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-surround'
 Plug 'SirVer/ultisnips'
-"Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-repeat'
-"Plug 'christoomey/vim-tmux-navigator'
-"Plug 'christoomey/vim-tmux-runner'
-"Plug 'rking/ag.vim'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'tpope/vim-unimpaired'
 Plug 'gorkunov/smartpairs.vim'
-"Plug 'thinca/vim-visualstar'
+Plug 'thinca/vim-visualstar'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-sleuth'
 Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
 Plug 'Raimondi/delimitMate'
 Plug 'mattn/emmet-vim'
-Plug 'sjl/gundo.vim'
-Plug 'scrooloose/nerdtree'
+Plug 'mbbill/undotree'
 Plug 'scrooloose/syntastic'
-Plug 'majutsushi/tagbar'
-Plug 'ternjs/tern_for_vim'
+Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
 Plug 'tpope/vim-abolish'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'xolox/vim-easytags'
 Plug 'airblade/vim-gitgutter'
-Plug 'takac/vim-hardtime'
 Plug 'xolox/vim-misc'
 Plug 'shuber/vim-promiscuous'
-Plug 'diepm/vim-rest-console'
 Plug 'justinmk/vim-sneak'
 Plug 'kurkale6ka/vim-pairs'
 Plug 'suan/vim-instant-markdown'
-Plug 'ervandew/supertab'
+Plug 'christoomey/vim-sort-motion'
+Plug 'shawncplus/phpcomplete.vim'
+Plug 'Olical/vim-enmasse'
 
 " Colors
 Plug 'altercation/vim-colors-solarized'
@@ -70,7 +64,6 @@ autocmd!
 filetype off
 
 " Enable per-file indenting and highlighting
-set nocompatible
 filetype plugin indent on
 syntax on
 set background=dark
@@ -87,7 +80,7 @@ set linebreak
 set textwidth=100
 set backspace=indent,eol,start
 
-" Jump to matching bracket when closing
+" Highlight matching bracket when closing
 set showmatch
 
 " Flash screen instead of audible error bell
@@ -117,10 +110,16 @@ set autoread
 " Show cursor position in statusbar
 set ruler
 
+" Highlight current line
+set cursorline
+
+" Don't redraw in the middle of macros
+set lazyredraw
+
 " Undo
-if exists("&undodir")
+if has('persistent_undo')
   set undofile
-  let &undodir=&directory
+  set undodir=~/.vim/undodir/
   set undolevels=500
   set undoreload=500
 endif
@@ -143,23 +142,11 @@ set nobackup
 set nowritebackup
 set noswapfile
 
-" Disable comment prefix after newline
-" autocmd FileType * setlocal formatoptions-=r formatoptions-=o
+" Reset cursor position on files if it's remembered
+autocmd BufReadPost * if &filetype != "gitcommit" && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
 
 " ----- Filetype-Specific Config -----
-
-" Make php use 4 spaces for tabs
-"autocmd FileType php setlocal shiftwidth=4 tabstop=4
-
-" Custom handling of blade templates
-"autocmd FileType blade setlocal ft=html syntax=blade shiftwidth=2 tabstop=2
-
-" Custom handling of typescript
-"autocmd FileType typescript setlocal shiftwidth=4 tabstop=4
-
-" Make jison use 4 spaces for tabs
-"autocmd FileType yacc setlocal shiftwidth=4 tabstop=4
 
 " Automatically set marks for certain files and filetypes
 autocmd BufLeave *.scss normal! mS
@@ -167,7 +154,11 @@ autocmd BufLeave *.html normal! mH
 autocmd BufLeave *.js normal! mJ
 autocmd BufLeave *Controller.php normal! mC
 autocmd BufLeave *Repo*.php normal! mR
+autocmd BufLeave *Transform.php normal! mT
 autocmd BufLeave routes.php normal! mE
+
+" Remove trailing spaces automatically on save
+autocmd BufWritePre *.js,*.php,*.html,*.css,*.scss :%s/\s\+$//e
 
 
 " ----- Custom mappings -----
@@ -181,35 +172,35 @@ nnoremap Y y$
 " Pinky savers
 let mapleader = ","
 noremap ; :
+noremap ' `
 
 " Window navigation
 nnoremap <C-h> <C-w>h
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
-nnoremap H ^
-nnoremap L $
 
 " Window resizing
 nnoremap <Leader>k <C-w>=
-nnoremap K <C-w>5>
+nnoremap K <C-w>5><C-w>5+
+
+" Line nagivation
+nnoremap H ^
+nnoremap L $
 
 " Save easily
 nnoremap <Leader>s :w<Cr>
-nnoremap <Leader>v :source $MYVIMRC<Cr>
+nnoremap <Leader>S :windo w<Cr>
+
+" Save with sudo
+cnoremap w!! w !sudo tee % > /dev/null
 
 " File navigation
 cnoremap %% <C-R>=expand('%:h').'/'<Cr>
-nnoremap <Leader>ew :e %%
-nnoremap <Leader>es :sp %%
-nnoremap <Leader>ev :vsp %%
 
 " Use jk to esc out of insert/command mode
 inoremap jk <Esc>
 cnoremap jk <C-U><BS>
-
-" Shortcut to clear highlighting
-nnoremap <Esc> :noh<Cr><Esc>
 
 " Range commands while searching
 cnoremap $t <Cr>:t''<Cr>
@@ -217,7 +208,7 @@ cnoremap $m <Cr>:m''<Cr>
 cnoremap $d <Cr>:d<Cr>``
 
 " Run phpcbf
-nnoremap <Leader>pf :%! phpcbf --standard=~/.elite50-phpcs-ruleset.xml<Cr><Cr>:w<Cr>
+nnoremap <Leader>cp :%! phpcbf --standard=~/.elite50-phpcs-ruleset.xml<Cr><Cr>:w<Cr>
 
 " Magic regex
 noremap :s/ :s/\V
@@ -230,21 +221,13 @@ noremap :%sv/ :%s/\v
 noremap :%gv/ :%g/\v
 
 " Toggle spellcheck
-nnoremap <Leader>c :setlocal spell!<Cr>
+nnoremap <Leader>cs :setlocal spell!<Cr>
 
 
 " ----- Custom Commands -----
 
-" Shortcut to toggle commented php logs
-command! UncommentLogs %s/\/\/\\L/\\L/ | noh
-command! CommentLogs %s/\\L/\/\/\\L/ | noh
-
-" Shortcut to expand tabs from 2 to 4 spaces
-command! Georgetabs %s/  /    /e | noh
-
-" Shortcut to remove trailing spaces
-command! -bar TrailingSpaces %s/\s\+$//e | noh
-command! W TrailingSpaces | w | exe "normal ``"
+" Quickly source vimrc
+command! SourceVimrc source $MYVIMRC
 
 " Shortcut to build/migrate projects
 command! Build !./build.sh
@@ -253,30 +236,12 @@ command! Migrate !./migrate.sh
 " Command to re-run grunt dev:watch
 command! Grunt !screen -S cs-front-grunt -p 0 -X stuff "grunt dev:watch$(printf \\r)"
 
-" Destroy all hidden buffers
-command! -bang Wipeout :call Wipeout(<bang>0)
-function! Wipeout(bang)
-  " figure out which buffers are visible in any tab
-  let visible = {}
-  for t in range(1, tabpagenr('$'))
-    for b in tabpagebuflist(t)
-      let visible[b] = 1
-    endfor
-  endfor
-  " close any buffer that are loaded and not visible
-  let l:tally = 0
-  let l:cmd = 'bw'
-  if a:bang
-    let l:cmd .= '!'
-  endif
-  for b in range(1, bufnr('$'))
-    if buflisted(b) && !has_key(visible, b)
-      let l:tally += 1
-      exe l:cmd . ' ' . b
-    endif
-  endfor
-  echon "Deleted " . l:tally . " buffers"
-endfun
+" Run macro on all lines of visual selection
+xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
+function! ExecuteMacroOverVisualRange()
+  echo "@".getcmdline()
+  execute ":'<,'>normal @".nr2char(getchar())
+endfunction
 
 
 " ----- Plugins -----
@@ -285,43 +250,36 @@ endfun
 colorscheme solarized
 
 " --- Airline ---
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#buffer_nr_show = 1
 let g:airline_powerline_fonts = 1
 
-" --- NERDTree ---
-let NERDTreeAutoDeleteBuffers = 1
-let NERDTreeQuitOnOpen = 1
-let NERDTreeShowHidden = 1
-noremap <Leader>n :NERDTreeFind<Cr>
+" -- Netrw ---
+let g:netrw_liststyle = 3
+let g:netrw_bufsettings = 'noma nomod nu nobl nowrap ro'
+noremap <Leader>fnn :Explore<Cr>
+noremap <Leader>fns :Sexplore<Cr>
+noremap <Leader>fnv :Vexplore<Cr>
 
 " --- FZF ---
-nnoremap <Leader>f :Files<Cr>
-nnoremap <Leader>b :Buffers<Cr>
-" nmap <Leader><Tab> <Plug>(fzf-maps-n)
-" xmap <Leader><Tab> <Plug>(fzf-maps-x)
-" omap <Leader><Tab> <Plug>(fzf-maps-o)
-" imap <c-x><c-k> <plug>(fzf-complete-word)
-" imap <c-x><c-f> <plug>(fzf-complete-path)
-" imap <c-x><c-j> <plug>(fzf-complete-file-ag)
-" imap <c-x><c-l> <plug>(fzf-complete-line)
+nnoremap <Leader>ff :Files<Cr>
+nnoremap <Leader>fb :Buffers<Cr>
+nnoremap <Leader>f/ :Ag<Space>
+nnoremap <Leader>fl :Lines<Cr>
+nnoremap <Leader>fs :Snippets<Cr>
+nnoremap <Leader>fc :Commits<Cr>
+nmap <Leader><Tab> <Plug>(fzf-maps-n)
+xmap <Leader><Tab> <Plug>(fzf-maps-x)
+omap <Leader><Tab> <Plug>(fzf-maps-o)
 
 " --- Sneak ---
-let g:sneak#s_next = 1
-let g:sneak#streak = 1
 " Make nN behave like ;, when sneaking
 function! SmartFEnable()
-  "map n <Plug>SneakNext
-  "map N <Plug>SneakPrevious
-  map n <Plug>SneakNext zzzv
-  map N <Plug>SneakPrevious zzzv
+  map n <Plug>SneakNext
+  map N <Plug>SneakPrevious
 endfun
 " Make nN behave normally
 function! SmartFDisable()
-  "silent! unmap n
-  "silent! unmap N
-  noremap n nzzzv
-  noremap N Nzzzv
+  silent! unmap n
+  silent! unmap N
 endfun
 " Make sneaking enable smart nN
 nmap f :call SmartFEnable()<Cr><Plug>Sneak_f
@@ -344,37 +302,17 @@ let g:syntastic_php_phpcs_args = "--report=csv --standard=~/.elite50-phpcs-rules
 " --- Javascript Libraries Syntax ---
 let g:used_javascript_libs = 'jquery,angularjs,angularui,angularuirouter,requirejs'
 
-" --- PHP Indenting ---
-let g:PHP_vintage_case_default_indent = 1
-
 " --- YouCompleteMe ---
 autocmd CursorMovedI * if pumvisible() == 0|silent! pclose|endif
 autocmd InsertLeave * if pumvisible() == 0|silent! pclose|endif
 let g:ycm_register_as_syntastic_checker = 0
-let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
-let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
-let g:SuperTabDefaultCompletionType = '<C-n>'
-
-" --- PHPCompleteExtended ---
-"let g:phpcomplete_index_composer_command = 'composer'
-"autocmd FileType php setlocal omnifunc=phpcomplete_extended#CompletePHP
-
-" --- Tags ---
-set tags=tags
-let g:easytags_dynamic_files = 1
-let g:easytags_async = 1
-let g:easytags_auto_highlight = 0
-"let g:easytags_on_cursorhold = 0
-let g:tagbar_autoclose = 1
-let g:tagbar_compact = 1
-nnoremap <Leader>t :TagbarToggle<Cr>
 
 " --- Snippets ---
 let g:UltiSnipsEditSplit = 'vertical'
 let g:UltiSnipsSnippetsDir = '~/.vim/UltiSnips'
-let g:UltiSnipsExpandTrigger = "<Tab>"
-let g:UltiSnipsJumpForwardTrigger = "<Tab>"
-let g:UltiSnipsJumpBackwardTrigger = "<S-Tab>"
+let g:UltiSnipsExpandTrigger = "<Leader><Tab>"
+let g:UltiSnipsJumpForwardTrigger = "<Leader><Tab>"
+let g:UltiSnipsJumpBackwardTrigger = "<Leader><S-Tab>"
 
 " --- Fugitive ---
 nnoremap <Leader>ga :Git add %:p<Cr><Cr>
@@ -391,13 +329,22 @@ nnoremap <Leader>go :Git checkout<Space>
 nnoremap <Leader>gm :Gmerge<Space>
 nnoremap <Leader>gf :Gfetch --prune --tags<Cr>
 nnoremap <Leader>gt :Git tag<Space>
-nnoremap <Leader>gpl :Gpull<Cr>
-nnoremap <Leader>gps :Gpush<Cr>
+nnoremap <Leader>gpl :Gfetch --prune --tags<Cr>:Gpull<Cr>
+nnoremap <Leader>gpb :Gfetch --prune --tags<Cr>:Gpull<Cr>:Build<Cr>:Migrate<Cr><Cr>
+nnoremap <Leader>gps :Gpush --follow-tags<Cr>
 nnoremap <Leader>gpt :Gpush --tags<Cr>
 nnoremap <Leader>gpu :execute "Gpush -u origin" fugitive#head()<Cr>
 nnoremap <Leader>gpo :Gpush origin<Space>
-nnoremap <Leader>gpn :execute "!git branch --merged \| tr -d '*' \| grep -v 'feature/components' \| grep -v 'master' \| xargs -n1 git branch -d"<Cr><Cr>
-nnoremap <Leader>/ :Ggrep<Space>
+nnoremap <Leader>gnl :execute "!git branch --merged \| tr -d '*' \| grep -v 'feature/components\\\|master' \| xargs -n1 git branch -d"<Cr><Cr>
+nnoremap <Leader>gnr :execute "!git branch -r --merged \| sed -e 's/origin\\///' \| grep -v 'feature/components\\\|master' \| xargs -n1 git push origin --delete"<Cr><Cr>
+nnoremap <Leader>gnn :call GitFreshenRepo()<Cr>
+nnoremap <Leader>g/ :Ggrep<Space>
+function! GitFreshenRepo()
+  normal :Git checkout master<Cr><Cr>
+  normal ,gpl
+  normal ,gnl
+  normal ,gnr
+endfun
 
 " -- Promiscuous --
 nnoremap <Leader>gO :Promiscuous<Space>
@@ -412,40 +359,19 @@ nnoremap <Leader>gg :GitGutterToggle<Cr>
 " --- DelimitMate ---
 let delimitMate_expand_cr = 1
 let delimitMate_expand_space = 1
-imap <Leader>g <Plug>delimitMateJumpMany
+imap <Leader>, <Plug>delimitMateJumpMany
 
-" --- Gundo ---
-nnoremap <Leader>u :GundoToggle<Cr>
-let g:gundo_right = 1
+" --- Undotree ---
+nnoremap <Leader>u :UndotreeToggle<Cr>
+let g:undotree_SetFocusWhenToggle = 1
+let g:undotree_WindowLayout = 3
+let g:undotree_SplitWidth = 50
 
 " --- Emmet ---
 let g:use_emmet_complete_tag = 1
 
-" --- Vim REST Console ---
-let g:vrc_set_default_mapping = 0
-function! CloseVRC()
-  normal j
-  q
-  wq
-endfun
-function! OpenVRC()
-  vsp .rest
-  below sp __REST_response__
-  set buftype=nofile
-  normal k
-  nnoremap <buffer> <Leader>h :call CloseVRC()<Cr>
-  nnoremap <buffer> <Cr> :call VrcQuery()<Cr>
-endfun
-nnoremap <Leader>h :call OpenVRC()<Cr>
-
 " --- Instant Markdown ---
 let g:instant_markdown_slow = 1
-
-" --- Hardtime ---
-let g:hardtime_default_on = 1
-let g:hardtime_ignore_buffer_patterns = [ "NERD.*", "Tagbar", ".git", "rest" ]
-let g:hardtime_allow_different_key = 1
-"let g:hardtime_maxcount = 5
 
 " -- PHP Syntax ---
 function! PhpSyntaxOverride()
@@ -453,3 +379,6 @@ function! PhpSyntaxOverride()
   hi! def link phpDocParam phpType
 endfunction
 autocmd FileType php call PhpSyntaxOverride()
+
+" -- PHPComplete --
+let g:phpcomplete_parse_docblock_comments = 1
