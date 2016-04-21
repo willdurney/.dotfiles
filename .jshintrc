@@ -104,6 +104,7 @@
       "expect" : true,
       "moment" : true,
       "$" : true,
-      "bowser" : true
+      "bowser" : true,
+      "FS" : true
     }
 }

@@ -4,7 +4,7 @@ call plug#begin('~/.vim/plugged')
 
 " Syntax
 Plug 'tpope/vim-git'
-Plug 'othree/yajs.vim'
+Plug 'jelera/vim-javascript-syntax'
 Plug 'othree/html5.vim'
 Plug 'leshill/vim-json'
 Plug 'tpope/vim-markdown'
@@ -32,7 +32,7 @@ Plug 'thinca/vim-visualstar'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-sleuth'
-Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
+" Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
 Plug 'Raimondi/delimitMate'
 Plug 'mattn/emmet-vim'
 Plug 'mbbill/undotree'
@@ -188,6 +188,10 @@ nnoremap K <C-w>5><C-w>5+
 nnoremap H ^
 nnoremap L $
 
+" Store relative line number jumps in the jumplist
+nnoremap <expr> k (v:count > 1 ? "m'" . v:count : '') . 'k'
+nnoremap <expr> j (v:count > 1 ? "m'" . v:count : '') . 'j'
+
 " Save easily
 nnoremap <Leader>s :w<Cr>
 nnoremap <Leader>S :windo w<Cr>
@@ -218,7 +222,11 @@ noremap :%g/ :%g/\V
 noremap :sv/ :s/\v
 noremap :gv/ :g/\v
 noremap :%sv/ :%s/\v
-noremap :%gv/ :%g/\v
+noremap :%gv/ :%g//
+noremap :s// :s//
+noremap :g// :g//
+noremap :%s// :%s//
+noremap :%g// :%g//
 
 " Toggle spellcheck
 nnoremap <Leader>cs :setlocal spell!<Cr>
@@ -226,15 +234,22 @@ nnoremap <Leader>cs :setlocal spell!<Cr>
 
 " ----- Custom Commands -----
 
+" Run commands silently with screen redraw
+command! -nargs=1 Silent
+\ | execute ':silent '.<q-args>
+\ | execute ':redraw!'
+
 " Quickly source vimrc
 command! SourceVimrc source $MYVIMRC
 
-" Shortcut to build/migrate projects
-command! Build !./build.sh
-command! Migrate !./migrate.sh
+" Project shortcuts
+command! Build Silent !./build.sh
+command! Migrate Silent !./migrate.sh
+command! Release Silent !./release.sh
 
-" Command to re-run grunt dev:watch
-command! Grunt !screen -S cs-front-grunt -p 0 -X stuff "grunt dev:watch$(printf \\r)"
+" Command to re-run grunt commands
+command! Grunt Silent !screen -S cs-front-grunt -p 0 -X stuff "grunt dev:watch$(printf \\r)"
+command! GruntBuild Silent !screen -S cs-front-grunt -p 0 -X stuff "grunt dev$(printf \\r)"
 
 " Run macro on all lines of visual selection
 xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
@@ -251,6 +266,7 @@ colorscheme solarized
 
 " --- Airline ---
 let g:airline_powerline_fonts = 1
+let g:airline_section_b = '%{fugitive#head()}'
 
 " -- Netrw ---
 let g:netrw_liststyle = 3
@@ -269,6 +285,10 @@ nnoremap <Leader>fc :Commits<Cr>
 nmap <Leader><Tab> <Plug>(fzf-maps-n)
 xmap <Leader><Tab> <Plug>(fzf-maps-x)
 omap <Leader><Tab> <Plug>(fzf-maps-o)
+imap <C-x><C-k> <Plug>(fzf-complete-word)
+imap <C-x><C-f> <Plug>(fzf-complete-path)
+imap <C-x><C-j> <Plug>(fzf-complete-file-ag)
+imap <C-x><C-l> <Plug>(fzf-complete-line)
 
 " --- Sneak ---
 " Make nN behave like ;, when sneaking
@@ -303,9 +323,9 @@ let g:syntastic_php_phpcs_args = "--report=csv --standard=~/.elite50-phpcs-rules
 let g:used_javascript_libs = 'jquery,angularjs,angularui,angularuirouter,requirejs'
 
 " --- YouCompleteMe ---
-autocmd CursorMovedI * if pumvisible() == 0|silent! pclose|endif
-autocmd InsertLeave * if pumvisible() == 0|silent! pclose|endif
-let g:ycm_register_as_syntastic_checker = 0
+" autocmd CursorMovedI * if pumvisible() == 0|silent! pclose|endif
+" autocmd InsertLeave * if pumvisible() == 0|silent! pclose|endif
+" let g:ycm_register_as_syntastic_checker = 0
 
 " --- Snippets ---
 let g:UltiSnipsEditSplit = 'vertical'
@@ -315,8 +335,8 @@ let g:UltiSnipsJumpForwardTrigger = "<Leader><Tab>"
 let g:UltiSnipsJumpBackwardTrigger = "<Leader><S-Tab>"
 
 " --- Fugitive ---
-nnoremap <Leader>ga :Git add %:p<Cr><Cr>
-nnoremap <Leader>gA :Git add -A<Cr><Cr>
+nnoremap <Leader>ga :Silent Git add %:p<Cr>
+nnoremap <Leader>gA :Silent Git add -A<Cr>
 nnoremap <Leader>gs :Gstatus<Cr>
 nnoremap <Leader>gc :Gcommit<Cr>
 nnoremap <Leader>gC :Gcommit -a<Cr>
@@ -324,23 +344,22 @@ nnoremap <Leader>gd :Gdiff<Cr>
 nnoremap <Leader>ge :Gedit<Cr>
 nnoremap <Leader>gr :Gread<Cr>
 nnoremap <Leader>gw :Gwrite<Cr>
-nnoremap <Leader>gb :Git branch<Space>
+nnoremap <Leader>gb :Silent Git branch<Space>
 nnoremap <Leader>go :Git checkout<Space>
 nnoremap <Leader>gm :Gmerge<Space>
 nnoremap <Leader>gf :Gfetch --prune --tags<Cr>
 nnoremap <Leader>gt :Git tag<Space>
 nnoremap <Leader>gpl :Gfetch --prune --tags<Cr>:Gpull<Cr>
-nnoremap <Leader>gpb :Gfetch --prune --tags<Cr>:Gpull<Cr>:Build<Cr>:Migrate<Cr><Cr>
+nnoremap <Leader>gpb :Gfetch --prune --tags<Cr>:Gpull<Cr>:Build<Cr>:Migrate<Cr>
 nnoremap <Leader>gps :Gpush --follow-tags<Cr>
 nnoremap <Leader>gpt :Gpush --tags<Cr>
-nnoremap <Leader>gpu :execute "Gpush -u origin" fugitive#head()<Cr>
+nnoremap <Leader>gpu :execute "Silent Gpush -u origin" fugitive#head()<Cr>
 nnoremap <Leader>gpo :Gpush origin<Space>
-nnoremap <Leader>gnl :execute "!git branch --merged \| tr -d '*' \| grep -v 'feature/components\\\|master' \| xargs -n1 git branch -d"<Cr><Cr>
-nnoremap <Leader>gnr :execute "!git branch -r --merged \| sed -e 's/origin\\///' \| grep -v 'feature/components\\\|master' \| xargs -n1 git push origin --delete"<Cr><Cr>
+nnoremap <Leader>gnl :execute "Silent !git branch --merged \| tr -d '*' \| grep -v 'feature/components\\\|master' \| xargs -n1 git branch -d"<Cr>
+nnoremap <Leader>gnr :execute "Silent !git branch -r --merged \| sed -e 's/origin\\///' \| grep -v 'feature/components\\\|master' \| xargs -n1 git push origin --delete"<Cr>
 nnoremap <Leader>gnn :call GitFreshenRepo()<Cr>
-nnoremap <Leader>g/ :Ggrep<Space>
 function! GitFreshenRepo()
-  normal :Git checkout master<Cr><Cr>
+  Silent Git checkout master
   normal ,gpl
   normal ,gnl
   normal ,gnr
