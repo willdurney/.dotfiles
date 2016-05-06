@@ -91,10 +91,6 @@
     // Custom Globals
     "globals"       : {
       "angular" : true,
-      "apiUrl" : true,
-      "staticUrl": true,
-      "analyticsUrl": true,
-      "version" : true,
       "L" : true,
       "leafletPip" : true,
       "module" : true,

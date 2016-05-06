@@ -32,7 +32,6 @@ Plug 'thinca/vim-visualstar'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-sleuth'
-" Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
 Plug 'Raimondi/delimitMate'
 Plug 'mattn/emmet-vim'
 Plug 'mbbill/undotree'
@@ -50,6 +49,7 @@ Plug 'suan/vim-instant-markdown'
 Plug 'christoomey/vim-sort-motion'
 Plug 'shawncplus/phpcomplete.vim'
 Plug 'Olical/vim-enmasse'
+Plug 'ervandew/supertab'
 
 " Colors
 Plug 'altercation/vim-colors-solarized'
@@ -322,17 +322,12 @@ let g:syntastic_php_phpcs_args = "--report=csv --standard=~/.elite50-phpcs-rules
 " --- Javascript Libraries Syntax ---
 let g:used_javascript_libs = 'jquery,angularjs,angularui,angularuirouter,requirejs'
 
-" --- YouCompleteMe ---
-" autocmd CursorMovedI * if pumvisible() == 0|silent! pclose|endif
-" autocmd InsertLeave * if pumvisible() == 0|silent! pclose|endif
-" let g:ycm_register_as_syntastic_checker = 0
-
 " --- Snippets ---
 let g:UltiSnipsEditSplit = 'vertical'
 let g:UltiSnipsSnippetsDir = '~/.vim/UltiSnips'
-let g:UltiSnipsExpandTrigger = "<Leader><Tab>"
-let g:UltiSnipsJumpForwardTrigger = "<Leader><Tab>"
-let g:UltiSnipsJumpBackwardTrigger = "<Leader><S-Tab>"
+let g:UltiSnipsExpandTrigger = "<Tab>"
+let g:UltiSnipsJumpForwardTrigger = "<Tab>"
+let g:UltiSnipsJumpBackwardTrigger = "<S-Tab>"
 
 " --- Fugitive ---
 nnoremap <Leader>ga :Silent Git add %:p<Cr>
@@ -344,7 +339,7 @@ nnoremap <Leader>gd :Gdiff<Cr>
 nnoremap <Leader>ge :Gedit<Cr>
 nnoremap <Leader>gr :Gread<Cr>
 nnoremap <Leader>gw :Gwrite<Cr>
-nnoremap <Leader>gb :Silent Git branch<Space>
+nnoremap <Leader>gb :Git branch<Space>
 nnoremap <Leader>go :Git checkout<Space>
 nnoremap <Leader>gm :Gmerge<Space>
 nnoremap <Leader>gf :Gfetch --prune --tags<Cr>
@@ -355,8 +350,8 @@ nnoremap <Leader>gps :Gpush --follow-tags<Cr>
 nnoremap <Leader>gpt :Gpush --tags<Cr>
 nnoremap <Leader>gpu :execute "Silent Gpush -u origin" fugitive#head()<Cr>
 nnoremap <Leader>gpo :Gpush origin<Space>
-nnoremap <Leader>gnl :execute "Silent !git branch --merged \| tr -d '*' \| grep -v 'feature/components\\\|master' \| xargs -n1 git branch -d"<Cr>
-nnoremap <Leader>gnr :execute "Silent !git branch -r --merged \| sed -e 's/origin\\///' \| grep -v 'feature/components\\\|master' \| xargs -n1 git push origin --delete"<Cr>
+nnoremap <Leader>gnl :execute "Silent !git branch --merged \| tr -d '*' \| grep -v 'feature/components\\\|master\\\|review/' \| xargs -n1 git branch -d"<Cr>
+nnoremap <Leader>gnr :execute "Silent !git branch -r --merged \| sed -e 's/origin\\///' \| grep -v 'feature/components\\\|master\\\|review' \| xargs -n1 git push origin --delete"<Cr>
 nnoremap <Leader>gnn :call GitFreshenRepo()<Cr>
 function! GitFreshenRepo()
   Silent Git checkout master
