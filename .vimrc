@@ -41,7 +41,6 @@ Plug 'tpope/vim-abolish'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'airblade/vim-gitgutter'
-Plug 'xolox/vim-misc'
 Plug 'shuber/vim-promiscuous'
 Plug 'justinmk/vim-sneak'
 Plug 'kurkale6ka/vim-pairs'
@@ -50,6 +49,7 @@ Plug 'christoomey/vim-sort-motion'
 Plug 'shawncplus/phpcomplete.vim'
 Plug 'Olical/vim-enmasse'
 Plug 'ervandew/supertab'
+Plug 'justinmk/vim-dirvish'
 
 " Colors
 Plug 'altercation/vim-colors-solarized'
@@ -158,7 +158,7 @@ autocmd BufLeave *Transform.php normal! mT
 autocmd BufLeave routes.php normal! mE
 
 " Remove trailing spaces automatically on save
-autocmd BufWritePre *.js,*.php,*.html,*.css,*.scss :%s/\s\+$//e
+autocmd BufWritePre *.js,*.php,*.html,*.css,*.scss,*.jison :%s/\s\+$//e
 
 
 " ----- Custom mappings -----
@@ -171,8 +171,8 @@ nnoremap Y y$
 
 " Pinky savers
 let mapleader = ","
-noremap ; :
-noremap ' `
+map ; :
+map ' `
 
 " Window navigation
 nnoremap <C-h> <C-w>h
@@ -222,11 +222,15 @@ noremap :%g/ :%g/\V
 noremap :sv/ :s/\v
 noremap :gv/ :g/\v
 noremap :%sv/ :%s/\v
-noremap :%gv/ :%g//
+noremap :%gv/ :%g/\v
 noremap :s// :s//
 noremap :g// :g//
 noremap :%s// :%s//
 noremap :%g// :%g//
+map ::s :%s
+map ::g :%g
+map :;s :%s
+map :;g :%g
 
 " Toggle spellcheck
 nnoremap <Leader>cs :setlocal spell!<Cr>
@@ -268,12 +272,24 @@ colorscheme solarized
 let g:airline_powerline_fonts = 1
 let g:airline_section_b = '%{fugitive#head()}'
 
-" -- Netrw ---
-let g:netrw_liststyle = 3
-let g:netrw_bufsettings = 'noma nomod nu nobl nowrap ro'
-noremap <Leader>fnn :Explore<Cr>
-noremap <Leader>fns :Sexplore<Cr>
-noremap <Leader>fnv :Vexplore<Cr>
+" -- Dirvish ---
+augroup my_dirvish_events
+  autocmd!
+  " Enable :Gstatus and friends.
+  autocmd FileType dirvish call fugitive#detect(@%)
+  " Mapping to hide dot-prefixed files.
+  autocmd FileType dirvish nnoremap <buffer>
+    \ gh :keeppatterns g@\v/\.[^\/]+/?$@d<cr>
+  " Sort folders at the top
+  autocmd FileType dirvish
+    \ sort r /[^\/]*$/
+  " Mapping to copy selected file
+  autocmd FileType dirvish nnoremap <buffer>
+    \ gh :keeppatterns g@\v/\.[^\/]+/?$@d<cr>
+augroup END
+nmap <Leader>fnn -
+nmap <Leader>fns :sp<Cr>-
+nmap <Leader>fnv :vsp<Cr>-
 
 " --- FZF ---
 nnoremap <Leader>ff :Files<Cr>
@@ -292,25 +308,27 @@ imap <C-x><C-l> <Plug>(fzf-complete-line)
 
 " --- Sneak ---
 " Make nN behave like ;, when sneaking
-function! SmartFEnable()
+function! SmartNEnable()
   map n <Plug>SneakNext
   map N <Plug>SneakPrevious
 endfun
 " Make nN behave normally
-function! SmartFDisable()
+function! SmartNDisable()
   silent! unmap n
   silent! unmap N
 endfun
 " Make sneaking enable smart nN
-nmap f :call SmartFEnable()<Cr><Plug>Sneak_f
-nmap F :call SmartFEnable()<Cr><Plug>Sneak_F
-nmap t :call SmartFEnable()<Cr><Plug>Sneak_t
-nmap T :call SmartFEnable()<Cr><Plug>Sneak_T
-nmap s :call SmartFEnable()<Cr><Plug>Sneak_s
-nmap S :call SmartFEnable()<Cr><Plug>Sneak_S
+nmap f :call SmartNEnable()<Cr><Plug>Sneak_f
+nmap F :call SmartNEnable()<Cr><Plug>Sneak_F
+nmap t :call SmartNEnable()<Cr><Plug>Sneak_t
+nmap T :call SmartNEnable()<Cr><Plug>Sneak_T
+nmap s :call SmartNEnable()<Cr><Plug>Sneak_s
+nmap S :call SmartNEnable()<Cr><Plug>Sneak_S
 " Make searching return nN to normal
-noremap / :call SmartFDisable()<Cr>/\V
-noremap ? :call SmartFDisable()<Cr>?\V
+noremap / :call SmartNDisable()<Cr>/\V
+noremap ? :call SmartNDisable()<Cr>?\V
+noremap * :call SmartNDisable()<Cr>*``
+
 
 " --- Syntastic ---
 let g:syntastic_enable_signs = 1
@@ -350,8 +368,8 @@ nnoremap <Leader>gps :Gpush --follow-tags<Cr>
 nnoremap <Leader>gpt :Gpush --tags<Cr>
 nnoremap <Leader>gpu :execute "Silent Gpush -u origin" fugitive#head()<Cr>
 nnoremap <Leader>gpo :Gpush origin<Space>
-nnoremap <Leader>gnl :execute "Silent !git branch --merged \| tr -d '*' \| grep -v 'feature/components\\\|master\\\|review/' \| xargs -n1 git branch -d"<Cr>
-nnoremap <Leader>gnr :execute "Silent !git branch -r --merged \| sed -e 's/origin\\///' \| grep -v 'feature/components\\\|master\\\|review' \| xargs -n1 git push origin --delete"<Cr>
+nnoremap <Leader>gnl :execute "Silent !git branch --merged \| tr -d '*' \| grep -v '^\\s*\\(components\\\|master\\\|review/\\)' \| xargs -n1 git branch -d"<Cr>
+nnoremap <Leader>gnr :execute "Silent !git branch -r --merged \| sed -e 's/origin\\///' \| grep -v '^\\s*\\(components\\\|master\\\|HEAD\\\|review/\\)' \| xargs -n1 git push origin --delete"<Cr>
 nnoremap <Leader>gnn :call GitFreshenRepo()<Cr>
 function! GitFreshenRepo()
   Silent Git checkout master

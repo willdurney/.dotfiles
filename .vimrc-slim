@@ -1,31 +1,71 @@
-" -------------------------- Vimrc Slim ----------------------------
+" ----------------------------- Vimrc Slim --------------------------------
 "
 " Slimmed-dowm vim configuration file for use on production servers
 "
 " Installation:
-"   - Place this file at ~/.vimrc
+"   Place this file at ~/.vimrc
 "
 " Plugins:
-"   This config file is built for the optional use of 4 plugins
+"   This config file uses vim-plug to install plugins
 "
-"   - mkdir -p ~/.vim/autoload ~/.vim/bundle && \
-"   - curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+"   curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+"     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 "
-"   - cd ~/.vim/bundle
-"   - git clone https://github.com/kien/ctrlp.vim.git
-"   - git clone https://github.com/scrooloose/nerdtree.git
-"   - git clone https://github.com/scrooloose/syntastic.git
-"   - git clone https://github.com/Lokaltog/vim-easymotion.git
-"
-" ------------------------------------------------------------------
+" -------------------------------------------------------------------------
+
+
+" ----- Initialize Plugins -----
+
+call plug#begin('~/.vim/plugged')
+
+" Syntax
+Plug 'tpope/vim-git'
+Plug 'jelera/vim-javascript-syntax'
+Plug 'othree/html5.vim'
+Plug 'leshill/vim-json'
+Plug 'tpope/vim-markdown'
+Plug 'leafgarland/typescript-vim'
+Plug 'gavocanov/vim-js-indent'
+Plug '2072/PHP-Indenting-for-VIm'
+Plug 'StanAngeloff/php.vim'
+Plug 'pearofducks/ansible-vim'
+Plug 'othree/javascript-libraries-syntax.vim'
+Plug 'jwalton512/vim-blade'
+Plug 'wizicer/vim-jison'
+
+" Actual Plugins
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-commentary'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'tpope/vim-sleuth'
+Plug 'Raimondi/delimitMate'
+Plug 'scrooloose/syntastic'
+Plug 'tpope/vim-abolish'
+Plug 'justinmk/vim-sneak'
+Plug 'Olical/vim-enmasse'
+Plug 'ervandew/supertab'
+
+" Colors
+Plug 'altercation/vim-colors-solarized'
+
+call plug#end()
 
 
 " ----- General Config -----
 
+autocmd!
+filetype off
+
 " Enable per-file indenting and highlighting
-set nocompatible
 filetype plugin indent on
 syntax on
+set background=dark
+
+" Stop vim dying with long lines
+set synmaxcol=250
 
 " Show line numbers
 set number
@@ -35,14 +75,14 @@ set linebreak
 set textwidth=100
 set backspace=indent,eol,start
 
-" Jump to matching bracket when closing
+" Highlight matching bracket when closing
 set showmatch
 
 " Flash screen instead of audible error bell
 set visualbell
 
 " Options for searching in files
-set hlsearch
+set nohlsearch
 set smartcase
 set ignorecase
 set incsearch
@@ -65,43 +105,33 @@ set autoread
 " Show cursor position in statusbar
 set ruler
 
-" Undo
-if exists("&undodir")
-    set undofile
-    let &undodir=&directory
-    set undolevels=500
-    set undoreload=500
-endif
+" Highlight current line
+set cursorline
 
-" Show status bar at all times
-set laststatus=2
+" Don't redraw in the middle of macros
+set lazyredraw
 
+" Rebalance windows on vim resize
+autocmd VimResized * :wincmd =
 
-" ----- Filetype-Specific Config -----
-
-" Make php use 4 spaces for tabs
-augroup filetype_php
-  autocmd!
-  autocmd FileType php setlocal shiftwidth=4 tabstop=4
-augroup END
-
-" Custom handling of blade templates
-augroup filetype_blade
-  autocmd!
-  autocmd FileType blade setlocal ft=html syntax=blade shiftwidth=2 tabstop=2
-augroup END
-
-" Make jison use 4 spaces for tabs
-augroup filetype_jison
-  autocmd!
-  autocmd FileType yacc setlocal shiftwidth=4 tabstop=4
-augroup END
+" Disable backups and swap
+set nobackup
+set nowritebackup
+set noswapfile
 
 
-" ----- Custom Mappings -----
+" ----- Custom mappings -----
+
+" Disable ex mode
+nnoremap Q <Nop>
 
 " Make Y consistent with C and D
 nnoremap Y y$
+
+" Pinky savers
+let mapleader = ","
+map ; :
+map ' `
 
 " Window navigation
 nnoremap <C-h> <C-w>h
@@ -109,39 +139,66 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
+" Window resizing
+nnoremap <Leader>k <C-w>=
+nnoremap K <C-w>5><C-w>5+
+
+" Line nagivation
+nnoremap H ^
+nnoremap L $
+
+" Save easily
+nnoremap <Leader>s :w<Cr>
+nnoremap <Leader>S :windo w<Cr>
+
+" Save with sudo
+cnoremap w!! w !sudo tee % > /dev/null
+
 " File navigation
-cnoremap %% <C-R>=expand('%:h').'/'<cr>
+cnoremap %% <C-R>=expand('%:h').'/'<Cr>
 
-
-" ----- Custom Commands -----
-
-" Shortcut to save as sudo
-command Sudow w !sudo tee % >/dev/null
-
-" Shortcut to toggle commented php logs
-command UncommentLogs %s/\/\/\\L/\\L/ | noh
-command CommentLogs %s/\\L/\/\/\\L/ | noh
+" Use jk to esc out of insert/command mode
+inoremap jk <Esc>
+cnoremap jk <C-U><BS>
 
 
 " ----- Plugins -----
 
-" Initialize Pathogen for plugins
-execute pathogen#infect()
-call pathogen#helptags()
+" --- Solarized ---
+colorscheme solarized
 
-" --- NERDTree ---
-let NERDTreeAutoDeleteBuffers = 1
-let NERDTreeQuitOnOpen = 1
-let NERDTreeShowHidden = 1
-
-" --- CtrlP ---
-"let g:ctrlp_by_filename = 1
-
-" --- EasyMotion ---
-map <Space> <Plug>(easymotion-prefix)
+" --- FZF ---
+nnoremap <Leader>ff :Files<Cr>
+nnoremap <Leader>fb :Buffers<Cr>
+nnoremap <Leader>f/ :Ag<Space>
+nnoremap <Leader>fl :Lines<Cr>
+nnoremap <Leader>fs :Snippets<Cr>
+nnoremap <Leader>fc :Commits<Cr>
+nmap <Leader><Tab> <Plug>(fzf-maps-n)
+xmap <Leader><Tab> <Plug>(fzf-maps-x)
+omap <Leader><Tab> <Plug>(fzf-maps-o)
+imap <C-x><C-k> <Plug>(fzf-complete-word)
+imap <C-x><C-f> <Plug>(fzf-complete-path)
+imap <C-x><C-j> <Plug>(fzf-complete-file-ag)
+imap <C-x><C-l> <Plug>(fzf-complete-line)
 
 " --- Syntastic ---
 let g:syntastic_enable_signs = 1
+let g:syntastic_scss_checkers = ['scss_lint']
 let g:syntastic_html_checkers = []
 let g:syntastic_php_checkers = ['php']
 
+" --- Javascript Libraries Syntax ---
+let g:used_javascript_libs = 'jquery,angularjs,angularui,angularuirouter,requirejs'
+
+" --- DelimitMate ---
+let delimitMate_expand_cr = 1
+let delimitMate_expand_space = 1
+imap <Leader>, <Plug>delimitMateJumpMany
+
+" -- PHP Syntax ---
+function! PhpSyntaxOverride()
+  hi! def link phpDocTags  phpDefine
+  hi! def link phpDocParam phpType
+endfunction
+autocmd FileType php call PhpSyntaxOverride()
