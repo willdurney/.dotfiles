@@ -162,7 +162,7 @@ cnoremap jk <C-U><BS>
 " ----- Plugins -----
 
 " --- Solarized ---
-colorscheme solarized
+" colorscheme solarized
 
 " --- FZF ---
 nnoremap <Leader>ff :Files<Cr>
