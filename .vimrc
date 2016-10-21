@@ -27,8 +27,7 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-fugitive'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'tpope/vim-unimpaired'
-Plug 'gorkunov/smartpairs.vim'
-Plug 'thinca/vim-visualstar'
+Plug 'wellle/targets.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-sleuth'
@@ -43,7 +42,6 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'airblade/vim-gitgutter'
 Plug 'shuber/vim-promiscuous'
 Plug 'justinmk/vim-sneak'
-Plug 'kurkale6ka/vim-pairs'
 Plug 'suan/vim-instant-markdown'
 Plug 'christoomey/vim-sort-motion'
 Plug 'shawncplus/phpcomplete.vim'
@@ -53,7 +51,7 @@ Plug 'justinmk/vim-dirvish'
 
 " Colors
 Plug 'altercation/vim-colors-solarized'
-Plug 'chrisbra/Colorizer'
+" Plug 'lilydjwg/colorizer'
 
 call plug#end()
 
@@ -116,7 +114,7 @@ set cursorline
 " Don't redraw in the middle of macros
 set lazyredraw
 
-" Undo
+" Persistent undo
 if has('persistent_undo')
   set undofile
   set undodir=~/.vim/undodir/
@@ -194,10 +192,7 @@ nnoremap <expr> j (v:count > 1 ? "m'" . v:count : '') . 'j'
 
 " Save easily
 nnoremap <Leader>s :w<Cr>
-nnoremap <Leader>S :windo w<Cr>
-
-" Save with sudo
-cnoremap w!! w !sudo tee % > /dev/null
+nnoremap <Leader>S :Wall<Cr>
 
 " File navigation
 cnoremap %% <C-R>=expand('%:h').'/'<Cr>
@@ -206,34 +201,34 @@ cnoremap %% <C-R>=expand('%:h').'/'<Cr>
 inoremap jk <Esc>
 cnoremap jk <C-U><BS>
 
-" Range commands while searching
-cnoremap $t <Cr>:t''<Cr>
-cnoremap $m <Cr>:m''<Cr>
-cnoremap $d <Cr>:d<Cr>``
-
 " Run phpcbf
 nnoremap <Leader>cp :%! phpcbf --standard=~/.elite50-phpcs-ruleset.xml<Cr><Cr>:w<Cr>
 
 " Magic regex
 noremap :s/ :s/\V
 noremap :g/ :g/\V
+noremap :G/ :g!/\V
 noremap :%s/ :%s/\V
 noremap :%g/ :%g/\V
+noremap :%G/ :%g!/\V
 noremap :sv/ :s/\v
 noremap :gv/ :g/\v
+noremap :Gv/ :g!/\v
 noremap :%sv/ :%s/\v
 noremap :%gv/ :%g/\v
+noremap :%Gv/ :%g!/\v
 noremap :s// :s//
 noremap :g// :g//
+noremap :G// :g!//
 noremap :%s// :%s//
 noremap :%g// :%g//
+noremap :%G// :%g!//
 map ::s :%s
 map ::g :%g
+map ::G :%G
 map :;s :%s
 map :;g :%g
-
-" Toggle spellcheck
-nnoremap <Leader>cs :setlocal spell!<Cr>
+map :;G :%G
 
 
 " ----- Custom Commands -----
@@ -254,13 +249,6 @@ command! Release Silent !./release.sh
 " Command to re-run grunt commands
 command! Grunt Silent !screen -S cs-front-grunt -p 0 -X stuff "grunt dev:watch$(printf \\r)"
 command! GruntBuild Silent !screen -S cs-front-grunt -p 0 -X stuff "grunt dev$(printf \\r)"
-
-" Run macro on all lines of visual selection
-xnoremap @ :<C-u>call ExecuteMacroOverVisualRange()<CR>
-function! ExecuteMacroOverVisualRange()
-  echo "@".getcmdline()
-  execute ":'<,'>normal @".nr2char(getchar())
-endfunction
 
 
 " ----- Plugins -----
@@ -368,6 +356,7 @@ nnoremap <Leader>gps :Gpush --follow-tags<Cr>
 nnoremap <Leader>gpt :Gpush --tags<Cr>
 nnoremap <Leader>gpu :execute "Silent Gpush -u origin" fugitive#head()<Cr>
 nnoremap <Leader>gpo :Gpush origin<Space>
+"git branch --merged | tr -d '*' | grep -v '^\s*\(components\|master\|review/\)' | xargs -n1 git branch -d
 nnoremap <Leader>gnl :execute "Silent !git branch --merged \| tr -d '*' \| grep -v '^\\s*\\(components\\\|master\\\|review/\\)' \| xargs -n1 git branch -d"<Cr>
 nnoremap <Leader>gnr :execute "Silent !git branch -r --merged \| sed -e 's/origin\\///' \| grep -v '^\\s*\\(components\\\|master\\\|HEAD\\\|review/\\)' \| xargs -n1 git push origin --delete"<Cr>
 nnoremap <Leader>gnn :call GitFreshenRepo()<Cr>

@@ -101,6 +101,9 @@
       "moment" : true,
       "$" : true,
       "bowser" : true,
-      "FS" : true
+      "FS" : true,
+      "define" : true,
+      "require" : true,
+      "_": true
     }
 }
