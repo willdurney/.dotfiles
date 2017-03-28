@@ -48,10 +48,12 @@ Plug 'shawncplus/phpcomplete.vim'
 Plug 'Olical/vim-enmasse'
 Plug 'ervandew/supertab'
 Plug 'justinmk/vim-dirvish'
+Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+Plug 'Quramy/tsuquyomi'
+Plug 'rizzatti/dash.vim'
 
 " Colors
 Plug 'altercation/vim-colors-solarized'
-" Plug 'lilydjwg/colorizer'
 
 call plug#end()
 
@@ -143,6 +145,10 @@ set noswapfile
 " Reset cursor position on files if it's remembered
 autocmd BufReadPost * if &filetype != "gitcommit" && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
+" Allow filename completion to be relative to current file
+autocmd InsertEnter * let save_cwd = getcwd() | set autochdir
+autocmd InsertLeave * set noautochdir | execute 'cd' fnameescape(save_cwd)
+
 
 " ----- Filetype-Specific Config -----
 
@@ -156,7 +162,7 @@ autocmd BufLeave *Transform.php normal! mT
 autocmd BufLeave routes.php normal! mE
 
 " Remove trailing spaces automatically on save
-autocmd BufWritePre *.js,*.php,*.html,*.css,*.scss,*.jison :%s/\s\+$//e
+autocmd BufWritePre *.js,*.ts,*.php,*.html,*.css,*.scss,*.jison,*.yml,*.sh :%s/\s\+$//e
 
 
 " ----- Custom mappings -----
@@ -191,7 +197,7 @@ nnoremap <expr> k (v:count > 1 ? "m'" . v:count : '') . 'k'
 nnoremap <expr> j (v:count > 1 ? "m'" . v:count : '') . 'j'
 
 " Save easily
-nnoremap <Leader>s :w<Cr>
+nnoremap <Leader>s :up<Cr>
 nnoremap <Leader>S :Wall<Cr>
 
 " File navigation
@@ -200,9 +206,6 @@ cnoremap %% <C-R>=expand('%:h').'/'<Cr>
 " Use jk to esc out of insert/command mode
 inoremap jk <Esc>
 cnoremap jk <C-U><BS>
-
-" Run phpcbf
-nnoremap <Leader>cp :%! phpcbf --standard=~/.elite50-phpcs-ruleset.xml<Cr><Cr>:w<Cr>
 
 " Magic regex
 noremap :s/ :s/\V
@@ -229,6 +232,8 @@ map ::G :%G
 map :;s :%s
 map :;g :%g
 map :;G :%G
+map ::S :%S
+map :;S :%S
 
 
 " ----- Custom Commands -----
@@ -247,8 +252,22 @@ command! Migrate Silent !./migrate.sh
 command! Release Silent !./release.sh
 
 " Command to re-run grunt commands
-command! Grunt Silent !screen -S cs-front-grunt -p 0 -X stuff "grunt dev:watch$(printf \\r)"
-command! GruntBuild Silent !screen -S cs-front-grunt -p 0 -X stuff "grunt dev$(printf \\r)"
+command! Grunt Silent !screen -S cs-front-grunt -p 0 -X stuff "grunt fastdev:watch$(printf \\r)"
+command! GruntBuild Silent !screen -S cs-front-grunt -p 0 -X stuff "grunt dev$(printf \\r)"
+command! GruntFast Silent !screen -S cs-front-grunt -p 0 -X stuff "grunt fastdev$(printf \\r)"
+command! GruntStop Silent !screen -S cs-front-grunt -p 0 -X stuff ""
+
+" Code style fixers
+function! CodeFixer()
+  if (&ft=='php')
+    Silent %!phpcbf --standard=~/.elite50-phpcs-ruleset.xml
+  elseif (&ft=='javascript')
+    Silent !eslint --fix %:p
+    e
+  endif
+  w
+endfun
+nnoremap <Leader>cc :call CodeFixer()<Cr>
 
 
 " ----- Plugins -----
@@ -313,6 +332,7 @@ nmap T :call SmartNEnable()<Cr><Plug>Sneak_T
 nmap s :call SmartNEnable()<Cr><Plug>Sneak_s
 nmap S :call SmartNEnable()<Cr><Plug>Sneak_S
 " Make searching return nN to normal
+noremap v/ :call SmartNDisable()<Cr>/\v
 noremap / :call SmartNDisable()<Cr>/\V
 noremap ? :call SmartNDisable()<Cr>?\V
 noremap * :call SmartNDisable()<Cr>*``
@@ -324,6 +344,9 @@ let g:syntastic_scss_checkers = ['scss_lint']
 let g:syntastic_html_checkers = []
 let g:syntastic_php_checkers = ['php', 'phpcs']
 let g:syntastic_php_phpcs_args = "--report=csv --standard=~/.elite50-phpcs-ruleset.xml"
+let g:tsuquyomi_disable_quickfix = 1
+let g:syntastic_typescript_checkers = ['tsuquyomi']
+let g:syntastic_javascript_checkers = ['eslint']
 
 " --- Javascript Libraries Syntax ---
 let g:used_javascript_libs = 'jquery,angularjs,angularui,angularuirouter,requirejs'
@@ -339,6 +362,7 @@ let g:UltiSnipsJumpBackwardTrigger = "<S-Tab>"
 nnoremap <Leader>ga :Silent Git add %:p<Cr>
 nnoremap <Leader>gA :Silent Git add -A<Cr>
 nnoremap <Leader>gs :Gstatus<Cr>
+nnoremap <Leader>gS :Silent !stree<Cr>
 nnoremap <Leader>gc :Gcommit<Cr>
 nnoremap <Leader>gC :Gcommit -a<Cr>
 nnoremap <Leader>gd :Gdiff<Cr>
@@ -368,7 +392,7 @@ function! GitFreshenRepo()
 endfun
 
 " -- Promiscuous --
-nnoremap <Leader>gO :Promiscuous<Space>
+nnoremap <Leader>gO :Promiscuous<Cr>
 nnoremap <Leader>gB :Promiscuous -<Cr>
 
 " --- GitGutter ---
@@ -403,3 +427,7 @@ autocmd FileType php call PhpSyntaxOverride()
 
 " -- PHPComplete --
 let g:phpcomplete_parse_docblock_comments = 1
+
+" -- Dash --
+nmap <Leader>d <Plug>DashSearch
+nnoremap <Leader>D :Dash<Space>
