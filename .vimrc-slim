@@ -21,35 +21,38 @@
 call plug#begin('~/.vim/plugged')
 
 " Syntax
-Plug 'tpope/vim-git'
-Plug 'jelera/vim-javascript-syntax'
-Plug 'othree/html5.vim'
-Plug 'leshill/vim-json'
-Plug 'tpope/vim-markdown'
-Plug 'leafgarland/typescript-vim'
-Plug 'gavocanov/vim-js-indent'
 Plug '2072/PHP-Indenting-for-VIm'
 Plug 'StanAngeloff/php.vim'
-Plug 'pearofducks/ansible-vim'
-Plug 'othree/javascript-libraries-syntax.vim'
+Plug 'gavocanov/vim-js-indent'
+Plug 'jelera/vim-javascript-syntax'
 Plug 'jwalton512/vim-blade'
+Plug 'kylef/apiblueprint.vim'
+Plug 'leafgarland/typescript-vim'
+Plug 'leshill/vim-json'
+Plug 'othree/html5.vim'
+Plug 'othree/javascript-libraries-syntax.vim'
+Plug 'pearofducks/ansible-vim'
+Plug 'tpope/vim-git'
+Plug 'tpope/vim-markdown'
 Plug 'wizicer/vim-jison'
 
 " Actual Plugins
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-eunuch'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-unimpaired'
-Plug 'wellle/targets.vim'
+Plug 'AndrewRadev/splitjoin.vim'
+Plug 'Raimondi/delimitMate'
+Plug 'ervandew/supertab'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'tpope/vim-sleuth'
-Plug 'Raimondi/delimitMate'
-Plug 'scrooloose/syntastic'
-Plug 'tpope/vim-abolish'
+Plug 'justinmk/vim-dirvish'
 Plug 'justinmk/vim-sneak'
-Plug 'ervandew/supertab'
+Plug 'tpope/vim-abolish'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-sleuth'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-unimpaired'
+Plug 'w0rp/ale'
+Plug 'wellle/targets.vim'
 
 " Colors
 Plug 'altercation/vim-colors-solarized'
@@ -114,6 +117,10 @@ set lazyredraw
 " Rebalance windows on vim resize
 autocmd VimResized * :wincmd =
 
+" Enable spellcheck
+set spelllang=en_us
+syntax spell toplevel
+
 " Disable backups and swap
 set nobackup
 set nowritebackup
@@ -148,7 +155,7 @@ nnoremap H ^
 nnoremap L $
 
 " Save easily
-nnoremap <Leader>s :w<Cr>
+nnoremap <Leader>s :up<Cr>
 nnoremap <Leader>S :Wall<Cr>
 
 " File navigation
@@ -163,6 +170,23 @@ cnoremap jk <C-U><BS>
 
 " --- Solarized ---
 " colorscheme solarized
+
+" -- Dirvish ---
+augroup my_dirvish_events
+  autocmd!
+  " Mapping to hide dot-prefixed files.
+  autocmd FileType dirvish nnoremap <buffer>
+    \ gh :keeppatterns g@\v/\.[^\/]+/?$@d<cr>
+  " Sort folders at the top
+  autocmd FileType dirvish
+    \ sort r /[^\/]*$/
+  " Mapping to copy selected file
+  autocmd FileType dirvish nnoremap <buffer>
+    \ gh :keeppatterns g@\v/\.[^\/]+/?$@d<cr>
+augroup END
+nmap <Leader>fnn -
+nmap <Leader>fns :sp<Cr>-
+nmap <Leader>fnv :vsp<Cr>-
 
 " --- FZF ---
 nnoremap <Leader>ff :Files<Cr>
@@ -179,11 +203,10 @@ imap <C-x><C-f> <Plug>(fzf-complete-path)
 imap <C-x><C-j> <Plug>(fzf-complete-file-ag)
 imap <C-x><C-l> <Plug>(fzf-complete-line)
 
-" --- Syntastic ---
-let g:syntastic_enable_signs = 1
-let g:syntastic_scss_checkers = ['scss_lint']
-let g:syntastic_html_checkers = []
-let g:syntastic_php_checkers = ['php']
+" --- ALE ---
+let g:ale_linters = {
+\   'php': ['php -l'],
+\}
 
 " --- Javascript Libraries Syntax ---
 let g:used_javascript_libs = 'jquery,angularjs,angularui,angularuirouter,requirejs'

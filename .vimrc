@@ -3,58 +3,57 @@
 call plug#begin('~/.vim/plugged')
 
 " Syntax
-Plug 'tpope/vim-git'
-Plug 'jelera/vim-javascript-syntax'
-Plug 'othree/html5.vim'
-Plug 'leshill/vim-json'
-Plug 'tpope/vim-markdown'
-Plug 'leafgarland/typescript-vim'
-Plug 'gavocanov/vim-js-indent'
 Plug '2072/PHP-Indenting-for-VIm'
 Plug 'StanAngeloff/php.vim'
-Plug 'pearofducks/ansible-vim'
-Plug 'othree/javascript-libraries-syntax.vim'
-Plug 'jwalton512/vim-blade'
-Plug 'wizicer/vim-jison'
 Plug 'derekelkins/agda-vim'
+Plug 'gavocanov/vim-js-indent'
+Plug 'jelera/vim-javascript-syntax'
+Plug 'jwalton512/vim-blade'
 Plug 'kylef/apiblueprint.vim'
+Plug 'leafgarland/typescript-vim'
+Plug 'leshill/vim-json'
+Plug 'othree/html5.vim'
+Plug 'othree/javascript-libraries-syntax.vim'
+Plug 'pearofducks/ansible-vim'
+Plug 'tpope/vim-git'
+Plug 'tpope/vim-markdown'
+Plug 'wizicer/vim-jison'
 
 " Actual Plugins
-" Plug 'tpope/vim-endwise'
-Plug 'tpope/vim-surround'
-Plug 'SirVer/ultisnips'
-Plug 'tpope/vim-eunuch'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-endwise'
 Plug 'AndrewRadev/splitjoin.vim'
-Plug 'tpope/vim-unimpaired'
-Plug 'wellle/targets.vim'
+Plug 'Olical/vim-enmasse'
+Plug 'Quramy/tsuquyomi'
+Plug 'Raimondi/delimitMate'
+Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+Plug 'SirVer/ultisnips'
+Plug 'airblade/vim-gitgutter'
+Plug 'christoomey/vim-sort-motion'
+Plug 'ervandew/supertab'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'tpope/vim-sleuth'
-Plug 'Raimondi/delimitMate'
+Plug 'justinmk/vim-dirvish'
+Plug 'justinmk/vim-sneak'
 Plug 'mattn/emmet-vim'
 Plug 'mbbill/undotree'
+Plug 'rizzatti/dash.vim'
+Plug 'shawncplus/phpcomplete.vim'
+Plug 'shuber/vim-promiscuous'
+Plug 'suan/vim-instant-markdown'
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
 Plug 'tpope/vim-abolish'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-sleuth'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-unimpaired'
+Plug 'tyru/current-func-info.vim'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'airblade/vim-gitgutter'
-Plug 'shuber/vim-promiscuous'
-Plug 'justinmk/vim-sneak'
-Plug 'suan/vim-instant-markdown'
-Plug 'christoomey/vim-sort-motion'
-Plug 'shawncplus/phpcomplete.vim'
-Plug 'Olical/vim-enmasse'
-Plug 'ervandew/supertab'
-Plug 'justinmk/vim-dirvish'
-Plug 'Shougo/vimproc.vim', { 'do': 'make' }
-Plug 'Quramy/tsuquyomi'
-Plug 'rizzatti/dash.vim'
-Plug 'tyru/current-func-info.vim'
 Plug 'w0rp/ale'
-Plug 'chrisbra/vim-autoread'
+Plug 'wellle/targets.vim'
 
 " Colors
 Plug 'altercation/vim-colors-solarized'
@@ -156,19 +155,10 @@ autocmd InsertLeave * set noautochdir | execute 'cd' fnameescape(save_cwd)
 
 " ----- Filetype-Specific Config -----
 
-" Automatically set marks for certain files and filetypes
-autocmd BufLeave *.scss normal! mS
-autocmd BufLeave *.html normal! mH
-autocmd BufLeave *.js normal! mJ
-autocmd BufLeave *Controller.php normal! mC
-autocmd BufLeave *Repo*.php normal! mR
-autocmd BufLeave *Transform.php normal! mT
-autocmd BufLeave routes.php normal! mE
-
 " Remove trailing spaces automatically on save
 autocmd BufWritePre *.js,*.ts,*.php,*.html,*.css,*.scss,*.jison,*.yml,*.sh :%s/\s\+$//e
 
-" Agda
+" Agda comments
 autocmd FileType agda set commentstring={-%s-}
 
 
@@ -256,11 +246,6 @@ command! -nargs=1 Silent
 
 " Quickly source vimrc
 command! SourceVimrc source $MYVIMRC
-
-" Project shortcuts
-command! Build Silent !./build.sh
-command! Migrate Silent !./migrate.sh
-command! Release Silent !./release.sh
 
 " Command to re-run grunt commands
 function! GruntStop()
