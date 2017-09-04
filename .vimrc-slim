@@ -205,7 +205,7 @@ imap <C-x><C-l> <Plug>(fzf-complete-line)
 
 " --- ALE ---
 let g:ale_linters = {
-\   'php': ['php -l'],
+\   'php': ['php'],
 \}
 
 " --- Javascript Libraries Syntax ---

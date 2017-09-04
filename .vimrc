@@ -341,7 +341,7 @@ noremap * :call SmartNDisable()<Cr>*``
 " --- ALE ---
 let g:ale_linters = {
 \   'javascript': ['eslint'],
-\   'php': ['php -l', 'phpcs'],
+\   'php': ['php', 'phpcs'],
 \   'scss': ['scsslint'],
 \}
 let g:ale_php_phpcs_standard = '~/.elite50-phpcs-ruleset.xml'
