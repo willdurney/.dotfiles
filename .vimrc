@@ -16,6 +16,8 @@ Plug 'pearofducks/ansible-vim'
 Plug 'othree/javascript-libraries-syntax.vim'
 Plug 'jwalton512/vim-blade'
 Plug 'wizicer/vim-jison'
+Plug 'derekelkins/agda-vim'
+Plug 'kylef/apiblueprint.vim'
 
 " Actual Plugins
 " Plug 'tpope/vim-endwise'
@@ -34,7 +36,6 @@ Plug 'tpope/vim-sleuth'
 Plug 'Raimondi/delimitMate'
 Plug 'mattn/emmet-vim'
 Plug 'mbbill/undotree'
-Plug 'scrooloose/syntastic'
 Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
 Plug 'tpope/vim-abolish'
 Plug 'vim-airline/vim-airline'
@@ -51,6 +52,9 @@ Plug 'justinmk/vim-dirvish'
 Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 Plug 'Quramy/tsuquyomi'
 Plug 'rizzatti/dash.vim'
+Plug 'tyru/current-func-info.vim'
+Plug 'w0rp/ale'
+Plug 'chrisbra/vim-autoread'
 
 " Colors
 Plug 'altercation/vim-colors-solarized'
@@ -164,6 +168,9 @@ autocmd BufLeave routes.php normal! mE
 " Remove trailing spaces automatically on save
 autocmd BufWritePre *.js,*.ts,*.php,*.html,*.css,*.scss,*.jison,*.yml,*.sh :%s/\s\+$//e
 
+" Agda
+autocmd FileType agda set commentstring={-%s-}
+
 
 " ----- Custom mappings -----
 
@@ -235,6 +242,10 @@ map :;G :%G
 map ::S :%S
 map :;S :%S
 
+" Run command mappings
+noremap <Leader>rt :execute "!phpunit --filter" cfi#get_func_name() "%"<Cr>
+noremap <Leader>rT :!phpunit %<Cr>
+
 
 " ----- Custom Commands -----
 
@@ -252,10 +263,15 @@ command! Migrate Silent !./migrate.sh
 command! Release Silent !./release.sh
 
 " Command to re-run grunt commands
-command! Grunt Silent !screen -S cs-front-grunt -p 0 -X stuff "grunt fastdev:watch$(printf \\r)"
-command! GruntBuild Silent !screen -S cs-front-grunt -p 0 -X stuff "grunt dev$(printf \\r)"
-command! GruntFast Silent !screen -S cs-front-grunt -p 0 -X stuff "grunt fastdev$(printf \\r)"
-command! GruntStop Silent !screen -S cs-front-grunt -p 0 -X stuff ""
+function! GruntStop()
+  Silent !screen -S cs-front-grunt -p 0 -X stuff ""
+endfun
+function! Grunt()
+  call GruntStop()
+  Silent !screen -S cs-front-grunt -p 0 -X stuff "grunt fastdev:watch$(printf \\r)"
+endfun
+command! Grunt call Grunt()
+command! GruntStop call GruntStop()
 
 " Code style fixers
 function! CodeFixer()
@@ -337,16 +353,13 @@ noremap / :call SmartNDisable()<Cr>/\V
 noremap ? :call SmartNDisable()<Cr>?\V
 noremap * :call SmartNDisable()<Cr>*``
 
-
-" --- Syntastic ---
-let g:syntastic_enable_signs = 1
-let g:syntastic_scss_checkers = ['scss_lint']
-let g:syntastic_html_checkers = []
-let g:syntastic_php_checkers = ['php', 'phpcs']
-let g:syntastic_php_phpcs_args = "--report=csv --standard=~/.elite50-phpcs-ruleset.xml"
-let g:tsuquyomi_disable_quickfix = 1
-let g:syntastic_typescript_checkers = ['tsuquyomi']
-let g:syntastic_javascript_checkers = ['eslint']
+" --- ALE ---
+let g:ale_linters = {
+\   'javascript': ['eslint'],
+\   'php': ['php -l', 'phpcs'],
+\   'scss': ['scsslint'],
+\}
+let g:ale_php_phpcs_standard = '~/.elite50-phpcs-ruleset.xml'
 
 " --- Javascript Libraries Syntax ---
 let g:used_javascript_libs = 'jquery,angularjs,angularui,angularuirouter,requirejs'
