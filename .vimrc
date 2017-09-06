@@ -20,7 +20,7 @@ Plug 'tpope/vim-markdown'
 Plug 'wizicer/vim-jison'
 
 " Actual Plugins
-Plug 'tpope/vim-endwise'
+" Plug 'tpope/vim-endwise'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'Olical/vim-enmasse'
 Plug 'Quramy/tsuquyomi'
@@ -345,6 +345,11 @@ let g:ale_linters = {
 \   'scss': ['scsslint'],
 \}
 let g:ale_php_phpcs_standard = '~/.elite50-phpcs-ruleset.xml'
+let g:ale_php_phpcs_executable = 'phpcs -s'
+nnoremap <Leader>al :ALELint<Cr>
+nnoremap <Leader>ai :ALEInfo<Cr>
+nnoremap <Leader>an :ALENext<Cr>
+nnoremap <Leader>ap :ALEPrevious<Cr>
 
 " --- Javascript Libraries Syntax ---
 let g:used_javascript_libs = 'jquery,angularjs,angularui,angularuirouter,requirejs'
