@@ -1,4 +1,13 @@
 <?xml version="1.0"?>
+
+<!-- 
+  composer global require squizlabs/php_codesniffer
+  composer global require escapestudios/symfony2-coding-standard:3.x-dev
+  phpcs -\-config-set installed_paths ~/.composer/vendor/escapestudios/symfony2-coding-standard
+
+  phpcs -\-standard=/path/to/.phpcs.xml /path/to/file.php
+-->
+
 <ruleset name="Crowdskout">
   <description>Crowdskout coding standard.</description>
 

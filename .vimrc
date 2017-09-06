@@ -261,7 +261,7 @@ command! GruntStop call GruntStop()
 " Code style fixers
 function! CodeFixer()
   if (&ft=='php')
-    Silent %!phpcbf --standard=~/.elite50-phpcs-ruleset.xml
+    Silent %!phpcbf --standard=~/.phpcs.xml
   elseif (&ft=='javascript')
     Silent !eslint --fix %:p
     e
@@ -344,7 +344,7 @@ let g:ale_linters = {
 \   'php': ['php', 'phpcs'],
 \   'scss': ['scsslint'],
 \}
-let g:ale_php_phpcs_standard = '~/.elite50-phpcs-ruleset.xml'
+let g:ale_php_phpcs_standard = '~/.phpcs.xml'
 let g:ale_php_phpcs_executable = 'phpcs -s'
 nnoremap <Leader>al :ALELint<Cr>
 nnoremap <Leader>ai :ALEInfo<Cr>
