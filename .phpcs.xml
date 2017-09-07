@@ -24,6 +24,7 @@
  
   <rule ref="Squiz">
    <exclude name="Generic.Commenting.DocComment.MissingShort"/>
+   <exclude name="Generic.Files.LineLength.TooLong"/>
    <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSame"/>
    <exclude name="Squiz.Arrays.ArrayDeclaration.CloseBraceNotAligned"/>
    <exclude name="Squiz.Arrays.ArrayDeclaration.KeyNotAligned"/>
