@@ -59,6 +59,7 @@
    <exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpaceBeforeEquals"/>
    <exclude name="Squiz.NamingConventions.ValidFunctionName.PrivateNoUnderscore"/>
    <exclude name="Squiz.NamingConventions.ValidVariableName.NotCamelCaps"/>
+   <exclude name="Squiz.NamingConventions.ValidVariableName.PrivateNoUnderscore"/>
    <exclude name="Squiz.Objects.ObjectInstantiation.NotAssigned"/>
    <exclude name="Squiz.Operators.ComparisonOperatorUsage.ImplicitTrue"/>
    <exclude name="Squiz.Operators.ComparisonOperatorUsage.NotAllowed"/>
