@@ -24,6 +24,7 @@
  
   <rule ref="Squiz">
    <exclude name="Generic.Commenting.DocComment.MissingShort"/>
+   <exclude name="Generic.Commenting.Todo.TaskFound"/>
    <exclude name="Generic.Files.LineLength.TooLong"/>
    <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSame"/>
    <exclude name="Squiz.Arrays.ArrayDeclaration.CloseBraceNotAligned"/>
@@ -31,6 +32,8 @@
    <exclude name="Squiz.Arrays.ArrayDeclaration.MultiLineNotAllowed"/>
    <exclude name="Squiz.Arrays.ArrayDeclaration.SingleLineNotAllowed"/>
    <exclude name="Squiz.Arrays.ArrayDeclaration.ValueNotAligned"/>
+   <exclude name="Squiz.Commenting.BlockComment.NoNewLine"/>
+   <exclude name="Squiz.Commenting.BlockComment.SingleLine"/>
    <exclude name="Squiz.Commenting.ClassComment.Missing"/>
    <exclude name="Squiz.Commenting.ClosingDeclarationComment.Missing"/>
    <exclude name="Squiz.Commenting.FileComment.Missing"/>
@@ -59,6 +62,7 @@
    <exclude name="Squiz.Objects.ObjectInstantiation.NotAssigned"/>
    <exclude name="Squiz.Operators.ComparisonOperatorUsage.ImplicitTrue"/>
    <exclude name="Squiz.Operators.ComparisonOperatorUsage.NotAllowed"/>
+   <exclude name="Squiz.PHP.CommentedOutCode.Found"/>
    <exclude name="Squiz.PHP.DisallowBooleanStatement.Found"/>
    <exclude name="Squiz.PHP.DisallowComparisonAssignment.AssignedBool"/>
    <exclude name="Squiz.PHP.DisallowComparisonAssignment.AssignedComparison"/>
