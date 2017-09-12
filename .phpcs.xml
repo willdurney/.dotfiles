@@ -24,6 +24,8 @@
   </rule>
  
   <rule ref="Squiz">
+    <exclude name="Generic.Commenting.DocComment.ContentAfterOpen"/>
+    <exclude name="Generic.Commenting.DocComment.ContentBeforeClose"/>
     <exclude name="Generic.Commenting.DocComment.MissingShort"/>
     <exclude name="Generic.Commenting.Todo.TaskFound"/>
     <exclude name="Generic.Files.LineLength.TooLong"/>
@@ -35,6 +37,7 @@
     <exclude name="Squiz.Arrays.ArrayDeclaration.ValueNotAligned"/>
     <exclude name="Squiz.Commenting.BlockComment.NoNewLine"/>
     <exclude name="Squiz.Commenting.BlockComment.SingleLine"/>
+    <exclude name="Squiz.Commenting.BlockComment.WrongStart"/>
     <exclude name="Squiz.Commenting.ClassComment.Missing"/>
     <exclude name="Squiz.Commenting.ClosingDeclarationComment.Missing"/>
     <exclude name="Squiz.Commenting.FileComment.Missing"/>
@@ -47,6 +50,7 @@
     <exclude name="Squiz.Commenting.FunctionComment.ScalarTypeHintMissing"/>
     <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType"/>
     <exclude name="Squiz.Commenting.FunctionComment.TypeHintMissing"/>
+    <exclude name="Squiz.Commenting.InlineComment.DocBlock"/>
     <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
     <exclude name="Squiz.Commenting.LongConditionClosingComment.Missing"/>
     <exclude name="Squiz.Commenting.VariableComment.IncorrectVarType"/>
