@@ -30,6 +30,7 @@
     <exclude name="Generic.Commenting.Todo.TaskFound"/>
     <exclude name="Generic.Files.LineLength.TooLong"/>
     <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSame"/>
+    <exclude name="Generic.Strings.UnnecessaryStringConcat.Found"/>
     <exclude name="Squiz.Arrays.ArrayDeclaration.CloseBraceNotAligned"/>
     <exclude name="Squiz.Arrays.ArrayDeclaration.KeyNotAligned"/>
     <exclude name="Squiz.Arrays.ArrayDeclaration.MultiLineNotAllowed"/>
@@ -41,6 +42,7 @@
     <exclude name="Squiz.Commenting.ClassComment.Missing"/>
     <exclude name="Squiz.Commenting.ClosingDeclarationComment.Missing"/>
     <exclude name="Squiz.Commenting.FileComment.Missing"/>
+    <exclude name="Squiz.Commenting.FileComment.WrongStyle"/>
     <exclude name="Squiz.Commenting.FunctionComment.EmptyThrows"/>
     <exclude name="Squiz.Commenting.FunctionComment.IncorrectParamVarName"/>
     <exclude name="Squiz.Commenting.FunctionComment.InvalidReturn"/>
