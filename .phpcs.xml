@@ -77,6 +77,7 @@
     <exclude name="Squiz.PHP.DisallowComparisonAssignment.AssignedComparison"/>
     <exclude name="Squiz.PHP.DisallowInlineIf.Found"/>
     <exclude name="Squiz.PHP.DisallowMultipleAssignments.Found"/>
+    <exclude name="Squiz.PHP.DisallowSizeFunctionsInLoops.Found"/>
     <exclude name="Squiz.Strings.ConcatenationSpacing.PaddingFound"/>
     <exclude name="Squiz.Strings.DoubleQuoteUsage.ContainsVar"/>
     <exclude name="Squiz.WhiteSpace.FunctionClosingBraceSpace.SpacingBeforeClose"/>
