@@ -20,7 +20,7 @@
     <exclude name="Symfony.Functions.Arguments.Invalid"/>
     <exclude name="Symfony.Functions.ScopeOrder.Invalid"/>
     <exclude name="Symfony.NamingConventions.ValidClassName.InvalidInterfaceName"/>
-    <exclude name="Zend.NamingConventions.ValidVariableName.NotCamelCaps"/>
+    <!-- <exclude name="Zend.NamingConventions.ValidVariableName.NotCamelCaps"/> -->
   </rule>
  
   <rule ref="Squiz">
@@ -61,6 +61,7 @@
     <exclude name="Squiz.ControlStructures.InlineIfDeclaration.NotSingleLine"/>
     <exclude name="Squiz.ControlStructures.SwitchDeclaration.BreakIndent"/>
     <exclude name="Squiz.ControlStructures.SwitchDeclaration.MissingDefault"/>
+    <exclude name="Squiz.ControlStructures.SwitchDeclaration.SpacingBeforeBreak"/>
     <exclude name="Squiz.Files.FileExtension.ClassFound"/>
     <exclude name="Squiz.Formatting.OperatorBracket.MissingBrackets"/>
     <exclude name="Squiz.Functions.FunctionDeclarationArgumentSpacing.SpaceAfterDefault"/>
