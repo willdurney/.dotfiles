@@ -361,7 +361,7 @@ let g:undotree_SetFocusWhenToggle = 1
 let g:undotree_WindowLayout = 3
 let g:undotree_SplitWidth = 50
 
-" --- Completion & Analysis
+" --- Completion & Analysis ---
 
 " -- UltiSnips --
 let g:UltiSnipsEditSplit = 'vertical'

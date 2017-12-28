@@ -36,25 +36,28 @@ Plug 'tpope/vim-git'
 Plug 'tpope/vim-markdown'
 Plug 'wizicer/vim-jison'
 
-" Actual Plugins
+" Editing
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'Raimondi/delimitMate'
-Plug 'ervandew/supertab'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-Plug 'justinmk/vim-dirvish'
 Plug 'justinmk/vim-sneak'
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
-Plug 'w0rp/ale'
 Plug 'wellle/targets.vim'
 
-" Colors
+" Completion & analysis
+Plug 'w0rp/ale'
+
+" Project navigation
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'justinmk/vim-dirvish'
+Plug 'tpope/vim-eunuch'
+
+" UI
 Plug 'altercation/vim-colors-solarized'
 
 call plug#end()
@@ -129,8 +132,8 @@ set noswapfile
 
 " ----- Custom mappings -----
 
-" Disable ex mode
-nnoremap Q <Nop>
+" Repeat last macro
+nnoremap Q @@
 
 " Make Y consistent with C and D
 nnoremap Y y$
@@ -168,57 +171,52 @@ cnoremap jk <C-U><BS>
 
 " ----- Plugins -----
 
-" --- Solarized ---
-" colorscheme solarized
+" --- Syntax ---
 
-" -- Dirvish ---
-augroup my_dirvish_events
-  autocmd!
-  " Mapping to hide dot-prefixed files.
-  autocmd FileType dirvish nnoremap <buffer>
-    \ gh :keeppatterns g@\v/\.[^\/]+/?$@d<cr>
-  " Sort folders at the top
-  autocmd FileType dirvish
-    \ sort r /[^\/]*$/
-  " Mapping to copy selected file
-  autocmd FileType dirvish nnoremap <buffer>
-    \ gh :keeppatterns g@\v/\.[^\/]+/?$@d<cr>
-augroup END
-nmap <Leader>fnn -
-nmap <Leader>fns :sp<Cr>-
-nmap <Leader>fnv :vsp<Cr>-
+" -- PHP Syntax --
+function! PhpSyntaxOverride()
+  hi! def link phpDocTags  phpDefine
+  hi! def link phpDocParam phpType
+endfunction
+autocmd FileType php call PhpSyntaxOverride()
 
-" --- FZF ---
-nnoremap <Leader>ff :Files<Cr>
-nnoremap <Leader>fb :Buffers<Cr>
-nnoremap <Leader>f/ :Ag<Space>
-nnoremap <Leader>fl :Lines<Cr>
-nnoremap <Leader>fs :Snippets<Cr>
-nnoremap <Leader>fc :Commits<Cr>
-nmap <Leader><Tab> <Plug>(fzf-maps-n)
-xmap <Leader><Tab> <Plug>(fzf-maps-x)
-omap <Leader><Tab> <Plug>(fzf-maps-o)
-imap <C-x><C-k> <Plug>(fzf-complete-word)
-imap <C-x><C-f> <Plug>(fzf-complete-path)
-imap <C-x><C-j> <Plug>(fzf-complete-file-ag)
-imap <C-x><C-l> <Plug>(fzf-complete-line)
+" -- Javascript Libraries Syntax --
+let g:used_javascript_libs = 'jquery,angularjs,angularui,angularuirouter,requirejs,underscore'
 
-" --- ALE ---
-let g:ale_linters = {
-\   'php': ['php'],
-\}
-
-" --- Javascript Libraries Syntax ---
-let g:used_javascript_libs = 'jquery,angularjs,angularui,angularuirouter,requirejs'
+" --- Editing ---
 
 " --- DelimitMate ---
 let delimitMate_expand_cr = 1
 let delimitMate_expand_space = 1
 imap <Leader>, <Plug>delimitMateJumpMany
 
-" -- PHP Syntax ---
-function! PhpSyntaxOverride()
-  hi! def link phpDocTags  phpDefine
-  hi! def link phpDocParam phpType
-endfunction
-autocmd FileType php call PhpSyntaxOverride()
+" --- Completion & analysis ---
+
+" -- ALE --
+let g:ale_linters = {
+\   'php': ['php'],
+\}
+
+" --- Project navigation ---
+
+" -- FZF --
+nnoremap <Leader>ff :Files<Cr>
+nnoremap <Leader>fb :Buffers<Cr>
+nnoremap <Leader>f/ :Ag<Space>
+nnoremap <Leader>fl :Lines<Cr>
+
+" -- Dirvish --
+augroup my_dirvish_events
+  autocmd!
+  " Sort folders at the top
+  autocmd FileType dirvish
+    \ sort r /[^\/]*$/
+augroup END
+nmap <Leader>fnn -
+nmap <Leader>fns :sp<Cr>-
+nmap <Leader>fnv :vsp<Cr>-
+
+" --- UI ---
+
+" -- Solarized --
+" colorscheme solarized
