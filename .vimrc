@@ -19,44 +19,68 @@ Plug 'tpope/vim-git'
 Plug 'tpope/vim-markdown'
 Plug 'wizicer/vim-jison'
 
-" Actual Plugins
-" Plug 'tpope/vim-endwise'
+" Editing
 Plug 'AndrewRadev/splitjoin.vim'
-Plug 'Olical/vim-enmasse'
-Plug 'Quramy/tsuquyomi'
 Plug 'Raimondi/delimitMate'
-Plug 'Shougo/vimproc.vim', { 'do': 'make' }
-Plug 'SirVer/ultisnips'
-Plug 'airblade/vim-gitgutter'
 Plug 'christoomey/vim-sort-motion'
-Plug 'ervandew/supertab'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
-Plug 'justinmk/vim-dirvish'
+Plug 'joereynolds/place.vim'
 Plug 'justinmk/vim-sneak'
-Plug 'mattn/emmet-vim'
 Plug 'mbbill/undotree'
-Plug 'rizzatti/dash.vim'
-Plug 'shawncplus/phpcomplete.vim'
-Plug 'shuber/vim-promiscuous'
-Plug 'suan/vim-instant-markdown'
-Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-eunuch'
-Plug 'tpope/vim-fugitive'
+" Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
-Plug 'tyru/current-func-info.vim'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'w0rp/ale'
 Plug 'wellle/targets.vim'
 
-" Colors
+" Completion & analysis
+Plug 'SirVer/ultisnips'
+Plug 'ajh17/VimCompletesMe'
+Plug 'ludovicchabant/vim-gutentags'
+Plug 'w0rp/ale'
+
+" Project navigation
+Plug 'Olical/vim-enmasse'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'justinmk/vim-dirvish'
+Plug 'majutsushi/tagbar'
+Plug 'tpope/vim-eunuch'
+
+" Git
+Plug 'airblade/vim-gitgutter'
+Plug 'shuber/vim-promiscuous'
+Plug 'tpope/vim-fugitive'
+
+" PHP
+Plug 'adoy/vim-php-refactoring-toolbox'
+Plug 'joonty/vdebug'
+Plug 'phpactor/phpactor'
+Plug 'tobyS/pdv'
+Plug 'tobyS/vmustache'
+Plug 'tyru/current-func-info.vim'
+
+" JavaScript
+Plug 'Quramy/tsuquyomi'
+" Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
+
+" HTML
+Plug 'mattn/emmet-vim'
+
+" Markdown
+Plug 'suan/vim-instant-markdown', { 'do': 'npm -g install instant-markdown-d' }
+
+" UI
 Plug 'altercation/vim-colors-solarized'
+Plug 'thiagoalessio/rainbow_levels.vim'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
+" Miscellaneous
+Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+Plug 'rizzatti/dash.vim'
 
 call plug#end()
 
@@ -145,6 +169,12 @@ set nobackup
 set nowritebackup
 set noswapfile
 
+" Don't show mode
+set noshowmode
+
+" Don't prefill selection when using completion
+set completeopt=longest,menuone
+
 " Reset cursor position on files if it's remembered
 autocmd BufReadPost * if &filetype != "gitcommit" && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 
@@ -159,13 +189,17 @@ autocmd InsertLeave * set noautochdir | execute 'cd' fnameescape(save_cwd)
 autocmd BufWritePre *.js,*.ts,*.php,*.html,*.css,*.scss,*.jison,*.yml,*.sh :%s/\s\+$//e
 
 " Agda comments
-autocmd FileType agda set commentstring={-%s-}
+autocmd FileType agda setlocal commentstring={-%s-}
+autocmd FileType agda setlocal foldtext=v:folddashes
+
+" Better matching tag nagivation
+runtime macros/matchit.vim
 
 
 " ----- Custom mappings -----
 
-" Disable ex mode
-nnoremap Q <Nop>
+" Repeat last macro
+nnoremap Q @@
 
 " Make Y consistent with C and D
 nnoremap Y y$
@@ -273,48 +307,31 @@ nnoremap <Leader>cc :call CodeFixer()<Cr>
 
 " ----- Plugins -----
 
-" --- Solarized ---
-colorscheme solarized
+" --- Syntax ---
 
-" --- Airline ---
-let g:airline_powerline_fonts = 1
-let g:airline_section_b = '%{fugitive#head()}'
+" -- PHP Syntax --
+function! PhpSyntaxOverride()
+  hi! def link phpDocTags  phpDefine
+  hi! def link phpDocParam phpType
+endfunction
+autocmd FileType php call PhpSyntaxOverride()
 
-" -- Dirvish ---
-augroup my_dirvish_events
-  autocmd!
-  " Enable :Gstatus and friends.
-  autocmd FileType dirvish call fugitive#detect(@%)
-  " Mapping to hide dot-prefixed files.
-  autocmd FileType dirvish nnoremap <buffer>
-    \ gh :keeppatterns g@\v/\.[^\/]+/?$@d<cr>
-  " Sort folders at the top
-  autocmd FileType dirvish
-    \ sort r /[^\/]*$/
-  " Mapping to copy selected file
-  autocmd FileType dirvish nnoremap <buffer>
-    \ gh :keeppatterns g@\v/\.[^\/]+/?$@d<cr>
-augroup END
-nmap <Leader>fnn -
-nmap <Leader>fns :sp<Cr>-
-nmap <Leader>fnv :vsp<Cr>-
+" -- Javascript Libraries Syntax --
+let g:used_javascript_libs = 'jquery,angularjs,angularui,angularuirouter,requirejs,underscore'
 
-" --- FZF ---
-nnoremap <Leader>ff :Files<Cr>
-nnoremap <Leader>fb :Buffers<Cr>
-nnoremap <Leader>f/ :Ag<Space>
-nnoremap <Leader>fl :Lines<Cr>
-nnoremap <Leader>fs :Snippets<Cr>
-nnoremap <Leader>fc :Commits<Cr>
-nmap <Leader><Tab> <Plug>(fzf-maps-n)
-xmap <Leader><Tab> <Plug>(fzf-maps-x)
-omap <Leader><Tab> <Plug>(fzf-maps-o)
-imap <C-x><C-k> <Plug>(fzf-complete-word)
-imap <C-x><C-f> <Plug>(fzf-complete-path)
-imap <C-x><C-j> <Plug>(fzf-complete-file-ag)
-imap <C-x><C-l> <Plug>(fzf-complete-line)
+" --- Editing ---
 
-" --- Sneak ---
+" -- DelimitMate --
+let delimitMate_expand_cr = 1
+let delimitMate_expand_space = 1
+imap <Leader>, <Plug>delimitMateJumpMany
+
+" -- Place --
+let g:place_blink = 0
+nmap <Leader>i <Plug>(place-insert)
+nmap <Leader>I <Plug>(place-insert-multiple)
+
+" -- Sneak --
 " Make nN behave like ;, when sneaking
 function! SmartNEnable()
   map n <Plug>SneakNext
@@ -338,30 +355,82 @@ noremap / :call SmartNDisable()<Cr>/\V
 noremap ? :call SmartNDisable()<Cr>?\V
 noremap * :call SmartNDisable()<Cr>*``
 
-" --- ALE ---
+" -- Undotree --
+nnoremap <Leader>u :UndotreeToggle<Cr>
+let g:undotree_SetFocusWhenToggle = 1
+let g:undotree_WindowLayout = 3
+let g:undotree_SplitWidth = 50
+
+" --- Completion & Analysis
+
+" -- UltiSnips --
+let g:UltiSnipsEditSplit = 'vertical'
+let g:UltiSnipsSnippetsDir = '~/.vim/UltiSnips'
+let g:UltiSnipsExpandTrigger = '`'
+let g:UltiSnipsJumpForwardTrigger = '`'
+let g:UltiSnipsJumpBackwardTrigger = '~'
+
+" -- Gutentags --
+let g:gutentags_ctags_exclude = ['*.min.js', '*.min.css', 'build', 'vendor', '.git', 'node_modules']
+
+" -- ALE --
 let g:ale_linters = {
 \   'javascript': ['eslint'],
-\   'php': ['php', 'phpcs'],
+\   'php': ['php', 'phpcs', 'phpstan'],
 \   'scss': ['scsslint'],
+\   'html': ['alex', 'htmlhint', 'proselint', 'write-good'],
 \}
 let g:ale_php_phpcs_standard = '~/.phpcs.xml'
 let g:ale_php_phpcs_executable = 'phpcs -s'
+let g:ale_php_phpstan_configuration = 'phpstan.neon'
+let g:ale_php_phpstan_level = 7
 nnoremap <Leader>al :ALELint<Cr>
 nnoremap <Leader>ai :ALEInfo<Cr>
 nnoremap <Leader>an :ALENext<Cr>
 nnoremap <Leader>ap :ALEPrevious<Cr>
 
-" --- Javascript Libraries Syntax ---
-let g:used_javascript_libs = 'jquery,angularjs,angularui,angularuirouter,requirejs'
+" --- Project navigation ---
 
-" --- Snippets ---
-let g:UltiSnipsEditSplit = 'vertical'
-let g:UltiSnipsSnippetsDir = '~/.vim/UltiSnips'
-let g:UltiSnipsExpandTrigger = "<Tab>"
-let g:UltiSnipsJumpForwardTrigger = "<Tab>"
-let g:UltiSnipsJumpBackwardTrigger = "<S-Tab>"
+" -- FZF --
+nnoremap <Leader>ff :Files<Cr>
+nnoremap <Leader>fb :Buffers<Cr>
+nnoremap <Leader>ft :Tags<Cr>
+nnoremap <Leader>f/ :Ag<Space>
+nnoremap <Leader>fl :Lines<Cr>
+nnoremap <Leader>fs :Snippets<Cr>
+nnoremap <Leader>fc :Commits<Cr>
 
-" --- Fugitive ---
+" -- Dirvish --
+augroup my_dirvish_events
+  autocmd!
+  " Enable :Gstatus and friends.
+  autocmd FileType dirvish call fugitive#detect(@%)
+  " Sort folders at the top
+  autocmd FileType dirvish
+    \ sort r /[^\/]*$/
+augroup END
+nmap <Leader>fnn -
+nmap <Leader>fns :sp<Cr>-
+nmap <Leader>fnv :vsp<Cr>-
+
+" -- Tagbar --
+let g:tagbar_sort = 0
+let g:tagbar_compact = 1
+noremap <Leader>t :TagbarOpenAutoClose<Cr>
+
+" --- Git ---
+
+" -- GitGutter --
+let g:gitgutter_enabled = 0
+let g:gitgutter_highlight_lines = 1
+let g:gitgutter_map_keys = 0
+nnoremap <Leader>gg :GitGutterToggle<Cr>
+
+" -- Promiscuous --
+nnoremap <Leader>gO :Promiscuous<Cr>
+nnoremap <Leader>gB :Promiscuous -<Cr>
+
+" -- Fugitive --
 nnoremap <Leader>ga :Silent Git add %:p<Cr>
 nnoremap <Leader>gA :Silent Git add -A<Cr>
 nnoremap <Leader>gs :Gstatus<Cr>
@@ -383,9 +452,8 @@ nnoremap <Leader>gps :Gpush --follow-tags<Cr>
 nnoremap <Leader>gpt :Gpush --tags<Cr>
 nnoremap <Leader>gpu :execute "Silent Gpush -u origin" fugitive#head()<Cr>
 nnoremap <Leader>gpo :Gpush origin<Space>
-"git branch --merged | tr -d '*' | grep -v '^\s*\(components\|master\|review/\)' | xargs -n1 git branch -d
-nnoremap <Leader>gnl :execute "Silent !git branch --merged \| tr -d '*' \| grep -v '^\\s*\\(components\\\|master\\\|review/\\)' \| xargs -n1 git branch -d"<Cr>
-nnoremap <Leader>gnr :execute "Silent !git branch -r --merged \| sed -e 's/origin\\///' \| grep -v '^\\s*\\(components\\\|master\\\|HEAD\\\|review/\\)' \| xargs -n1 git push origin --delete"<Cr>
+nnoremap <Leader>gnl :execute "Silent !git branch --merged \| tr -d '*' \| grep -v '^\\s*master' \| xargs -n1 git branch -d"<Cr>
+nnoremap <Leader>gnr :execute "Silent !git branch -r --merged \| sed -e 's/origin\\///' \| grep -v '^\\s*\\(master\\\|HEAD)' \| xargs -n1 git push origin --delete"<Cr>
 nnoremap <Leader>gnn :call GitFreshenRepo()<Cr>
 function! GitFreshenRepo()
   Silent Git checkout master
@@ -394,42 +462,87 @@ function! GitFreshenRepo()
   normal ,gnr
 endfun
 
-" -- Promiscuous --
-nnoremap <Leader>gO :Promiscuous<Cr>
-nnoremap <Leader>gB :Promiscuous -<Cr>
+" --- PHP ---
 
-" --- GitGutter ---
-let g:gitgutter_enabled = 0
-let g:gitgutter_highlight_lines = 1
-let g:gitgutter_map_keys = 0
-nnoremap <Leader>gg :GitGutterToggle<Cr>
+" -- VIM Php Refactoring Toolbox --
+let g:vim_php_refactoring_use_default_mapping = 0
+nnoremap <Leader>prv :call PhpRenameLocalVariable()<Cr>
+nnoremap <Leader>prp :call PhpRenameClassVariable()<Cr>
+nnoremap <Leader>prm :call PhpRenameMethod()<Cr>
+nnoremap <Leader>peu :call PhpExtractUse()<Cr>
+vnoremap <Leader>pec :call PhpExtractConst()<Cr>
+nnoremap <Leader>pep :call PhpExtractClassProperty()<Cr>
+vnoremap <Leader>pem :call PhpExtractMethod()<Cr>
+nnoremap <Leader>pnp :call PhpCreateProperty()<Cr>
+nnoremap <Leader>pdu :call PhpDetectUnusedUseStatements()<Cr>
 
-" --- DelimitMate ---
-let delimitMate_expand_cr = 1
-let delimitMate_expand_space = 1
-imap <Leader>, <Plug>delimitMateJumpMany
+" -- Vdebug --
+if !exists('g:vdebug_options')
+    let g:vdebug_options = {}
+endif
+let g:vdebug_options['ide_key'] = 'xdebug'
+let g:vdebug_options['path_maps'] = {
+  \'/var/www/local-api.cskout.com/': '/Users/willdurney/Web/Crowdskout/crowdskout-back/',
+  \'/var/www/local-cerebro.cskout.com/': '/Users/willdurney/Web/Crowdskout/cerebro-api/',
+  \'/var/www/local-a.cskout.com/': '/Users/willdurney/Web/Crowdskout/crowdskout-analytics/',
+  \'/var/workers-local/': '/Users/willdurney/Web/Crowdskout/crowdskout-workers/'
+  \}
 
-" --- Undotree ---
-nnoremap <Leader>u :UndotreeToggle<Cr>
-let g:undotree_SetFocusWhenToggle = 1
-let g:undotree_WindowLayout = 3
-let g:undotree_SplitWidth = 50
+" -- Phpactor
+autocmd FileType php setlocal omnifunc=phpactor#Complete
+map <Leader>pcc :call phpactor#ClassExpand()<Cr>
+map <Leader>pp :call phpactor#ContextMenu()<Cr>
+map <Leader>pg] :call phpactor#GotoDefinition()<Cr>
+map <Leader>pmf :call phpactor#MoveFile()<Cr>
+map <Leader>pcf :call phpactor#CopyFile()<Cr>
+map <Leader>pnc :call phpactor#ClassNew()<Cr>
+map <Leader>pfr :call phpactor#FindReferences()<Cr>
 
-" --- Emmet ---
+" -- PDV --
+let g:pdv_template_dir = $HOME . '/.vim/plugged/pdv/templates_snip/'
+noremap <Leader>pd :call pdv#DocumentWithSnip()<Cr>
+
+" --- HTML ---
+
+" -- Emmet --
 let g:use_emmet_complete_tag = 1
 
-" --- Instant Markdown ---
+" --- Markdown ---
+
+" -- Instant Markdown --
 let g:instant_markdown_slow = 1
 
-" -- PHP Syntax ---
-function! PhpSyntaxOverride()
-  hi! def link phpDocTags  phpDefine
-  hi! def link phpDocParam phpType
-endfunction
-autocmd FileType php call PhpSyntaxOverride()
+" --- UI ---
 
-" -- PHPComplete --
-let g:phpcomplete_parse_docblock_comments = 1
+" -- Solarized --
+colorscheme solarized
+
+" -- Rainbow Levels --
+let g:rainbow_levels = [
+  \{'ctermfg': 2, 'guifg': '#859900'},
+  \{'ctermfg': 6, 'guifg': '#2aa198'},
+  \{'ctermfg': 4, 'guifg': '#268bd2'},
+  \{'ctermfg': 5, 'guifg': '#6c71c4'},
+  \{'ctermfg': 1, 'guifg': '#dc322f'},
+  \{'ctermfg': 3, 'guifg': '#b58900'},
+  \{'ctermfg': 8, 'guifg': '#839496'},
+  \{'ctermfg': 2, 'guifg': '#859900'},
+  \{'ctermfg': 6, 'guifg': '#2aa198'},
+  \{'ctermfg': 4, 'guifg': '#268bd2'},
+  \{'ctermfg': 5, 'guifg': '#6c71c4'},
+  \{'ctermfg': 1, 'guifg': '#dc322f'},
+  \{'ctermfg': 3, 'guifg': '#b58900'},
+  \{'ctermfg': 8, 'guifg': '#839496'}]
+noremap cot :RainbowLevelsToggle<cr>
+
+" -- Airline --
+let g:airline_powerline_fonts = 1
+let g:airline_skip_empty_sections = 1
+let g:airline_exclude_filetypes = ['tagbar']
+let g:airline_section_b = '%{fugitive#head()}'
+let g:airline_section_y = "%{gutentags#statusline('Indexing...')}"
+
+" --- Miscellaneous ---
 
 " -- Dash --
 nmap <Leader>d <Plug>DashSearch
