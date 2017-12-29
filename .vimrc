@@ -69,9 +69,6 @@ Plug 'Quramy/tsuquyomi'
 " HTML
 Plug 'mattn/emmet-vim'
 
-" Markdown
-Plug 'suan/vim-instant-markdown', { 'do': 'npm -g install instant-markdown-d' }
-
 " UI
 Plug 'altercation/vim-colors-solarized'
 Plug 'thiagoalessio/rainbow_levels.vim'
@@ -269,6 +266,7 @@ map :;S :%S
 " Run command mappings
 noremap <Leader>rt :execute "!phpunit --filter" cfi#get_func_name() "%"<Cr>
 noremap <Leader>rT :!phpunit %<Cr>
+noremap <Leader>rc :Silent !open -a "Google Chrome" "file://%:p"<Cr>
 
 
 " ----- Custom Commands -----
@@ -506,11 +504,6 @@ noremap <Leader>pd :call pdv#DocumentWithSnip()<Cr>
 
 " -- Emmet --
 let g:use_emmet_complete_tag = 1
-
-" --- Markdown ---
-
-" -- Instant Markdown --
-let g:instant_markdown_slow = 1
 
 " --- UI ---
 
