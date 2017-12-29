@@ -65,14 +65,6 @@ call plug#end()
 
 " ----- General Config -----
 
-autocmd!
-filetype off
-
-" Enable per-file indenting and highlighting
-filetype plugin indent on
-syntax on
-set background=dark
-
 " Stop vim dying with long lines
 set synmaxcol=250
 
@@ -97,11 +89,7 @@ set gdefault
 " Indenting options
 set autoindent
 set expandtab
-set shiftwidth=2
-set smartindent
 set smarttab
-set softtabstop=2
-set tabstop=2
 set shiftround
 
 " Automatically write and read
@@ -111,21 +99,20 @@ set autoread
 " Show cursor position in statusbar
 set ruler
 
-" Highlight current line
-set cursorline
-
 " Don't redraw in the middle of macros
 set lazyredraw
 
 " Rebalance windows on vim resize
-autocmd VimResized * :wincmd =
+augroup AutoResize
+  autocmd!
+  autocmd VimResized * :wincmd =
+augroup END
 
 " Enable spellcheck
 set spelllang=en_us
 syntax spell toplevel
 
 " Disable backups and swap
-set nobackup
 set nowritebackup
 set noswapfile
 
@@ -141,7 +128,6 @@ nnoremap Y y$
 " Pinky savers
 let mapleader = ","
 map ; :
-map ' `
 
 " Window navigation
 nnoremap <C-h> <C-w>h
@@ -174,18 +160,21 @@ cnoremap jk <C-U><BS>
 " --- Syntax ---
 
 " -- PHP Syntax --
-function! PhpSyntaxOverride()
+function! PhpSyntaxOverride() abort
   hi! def link phpDocTags  phpDefine
   hi! def link phpDocParam phpType
 endfunction
-autocmd FileType php call PhpSyntaxOverride()
+augroup PhpSyntax
+  autocmd!
+  autocmd FileType php call PhpSyntaxOverride()
+augroup END
 
 " -- Javascript Libraries Syntax --
 let g:used_javascript_libs = 'jquery,angularjs,angularui,angularuirouter,requirejs,underscore'
 
 " --- Editing ---
 
-" --- DelimitMate ---
+" -- DelimitMate --
 let delimitMate_expand_cr = 1
 let delimitMate_expand_space = 1
 imap <Leader>, <Plug>delimitMateJumpMany
@@ -206,7 +195,7 @@ nnoremap <Leader>f/ :Ag<Space>
 nnoremap <Leader>fl :Lines<Cr>
 
 " -- Dirvish --
-augroup my_dirvish_events
+augroup DirvishEvents
   autocmd!
   " Sort folders at the top
   autocmd FileType dirvish

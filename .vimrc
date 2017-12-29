@@ -84,14 +84,6 @@ call plug#end()
 
 " ----- General Config -----
 
-autocmd!
-filetype off
-
-" Enable per-file indenting and highlighting
-filetype plugin indent on
-syntax on
-set background=dark
-
 " Stop vim dying with long lines
 set synmaxcol=250
 
@@ -120,11 +112,7 @@ set gdefault
 " Indenting options
 set autoindent
 set expandtab
-set shiftwidth=2
-set smartindent
 set smarttab
-set softtabstop=2
-set tabstop=2
 set shiftround
 
 " Automatically write and read
@@ -133,9 +121,6 @@ set autoread
 
 " Show cursor position in statusbar
 set ruler
-
-" Highlight current line
-set cursorline
 
 " Don't redraw in the middle of macros
 set lazyredraw
@@ -155,14 +140,16 @@ set laststatus=2
 set clipboard^=unnamed
 
 " Rebalance windows on vim resize
-autocmd VimResized * :wincmd =
+augroup AutoResize
+  autocmd!
+  autocmd VimResized * :wincmd =
+augroup END
 
 " Enable spellcheck
 set spelllang=en_us
 syntax spell toplevel
 
 " Disable backups and swap
-set nobackup
 set nowritebackup
 set noswapfile
 
@@ -173,21 +160,33 @@ set noshowmode
 set completeopt=longest,menuone
 
 " Reset cursor position on files if it's remembered
-autocmd BufReadPost * if &filetype != "gitcommit" && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+augroup ResetCursor
+  autocmd!
+  autocmd BufReadPost * if &filetype != "gitcommit" && line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+augroup END
 
 " Allow filename completion to be relative to current file
-autocmd InsertEnter * let save_cwd = getcwd() | set autochdir
-autocmd InsertLeave * set noautochdir | execute 'cd' fnameescape(save_cwd)
+augroup RelativeFilenames
+  autocmd!
+  autocmd InsertEnter * let save_cwd = getcwd() | set autochdir
+  autocmd InsertLeave * set noautochdir | execute 'cd' fnameescape(save_cwd)
+augroup END
 
 
 " ----- Filetype-Specific Config -----
 
 " Remove trailing spaces automatically on save
-autocmd BufWritePre *.js,*.ts,*.php,*.html,*.css,*.scss,*.jison,*.yml,*.sh :%s/\s\+$//e
+augroup TrailingSpaces
+  autocmd!
+  autocmd BufWritePre *.js,*.ts,*.php,*.html,*.css,*.scss,*.jison,*.yml,*.sh :%s/\s\+$//e
+augroup END
 
-" Agda comments
-autocmd FileType agda setlocal commentstring={-%s-}
-autocmd FileType agda setlocal foldtext=v:folddashes
+" Agda folds
+augroup AgdaFolds
+  autocmd!
+  autocmd FileType agda setlocal commentstring={-%s-}
+  autocmd FileType agda setlocal foldtext=v:folddashes
+augroup END
 
 " Better matching tag nagivation
 runtime macros/matchit.vim
@@ -204,7 +203,6 @@ nnoremap Y y$
 " Pinky savers
 let mapleader = ","
 map ; :
-map ' `
 
 " Window navigation
 nnoremap <C-h> <C-w>h
@@ -239,34 +237,35 @@ cnoremap jk <C-U><BS>
 noremap :s/ :s/\V
 noremap :g/ :g/\V
 noremap :G/ :g!/\V
-noremap :%s/ :%s/\V
-noremap :%g/ :%g/\V
-noremap :%G/ :%g!/\V
+nnoremap :%s/ :%s/\V
+nnoremap :%g/ :%g/\V
+nnoremap :%G/ :%g!/\V
 noremap :sv/ :s/\v
 noremap :gv/ :g/\v
 noremap :Gv/ :g!/\v
-noremap :%sv/ :%s/\v
-noremap :%gv/ :%g/\v
-noremap :%Gv/ :%g!/\v
+nnoremap :%sv/ :%s/\v
+nnoremap :%gv/ :%g/\v
+nnoremap :%Gv/ :%g!/\v
 noremap :s// :s//
 noremap :g// :g//
 noremap :G// :g!//
-noremap :%s// :%s//
-noremap :%g// :%g//
-noremap :%G// :%g!//
-map ::s :%s
-map ::g :%g
-map ::G :%G
-map :;s :%s
-map :;g :%g
-map :;G :%G
-map ::S :%S
-map :;S :%S
+nnoremap :%s// :%s//
+nnoremap :%g// :%g//
+nnoremap :%G// :%g!//
+nmap ::s :%s
+nmap ::g :%g
+nmap ::G :%G
+nmap :;s :%s
+nmap :;g :%g
+nmap :;G :%G
+nmap ::S :%S
+nmap :;S :%S
 
 " Run command mappings
-noremap <Leader>rt :execute "!phpunit --filter" cfi#get_func_name() "%"<Cr>
-noremap <Leader>rT :!phpunit %<Cr>
-noremap <Leader>rc :Silent !open -a "Google Chrome" "file://%:p"<Cr>
+nnoremap <Leader>rt :execute "!phpunit --filter" cfi#get_func_name() "%"<Cr>
+nnoremap <Leader>rT :!phpunit %<Cr>
+nnoremap <Leader>rc :Silent !open -a "Google Chrome" "file://%:p"<Cr>
+nnoremap <Leader>rf :call CodeFixer()<Cr>
 
 
 " ----- Custom Commands -----
@@ -280,10 +279,10 @@ command! -nargs=1 Silent
 command! SourceVimrc source $MYVIMRC
 
 " Command to re-run grunt commands
-function! GruntStop()
+function! GruntStop() abort
   Silent !screen -S cs-front-grunt -p 0 -X stuff ""
 endfun
-function! Grunt()
+function! Grunt() abort
   call GruntStop()
   Silent !screen -S cs-front-grunt -p 0 -X stuff "grunt fastdev:watch$(printf \\r)"
 endfun
@@ -291,16 +290,15 @@ command! Grunt call Grunt()
 command! GruntStop call GruntStop()
 
 " Code style fixers
-function! CodeFixer()
+function! CodeFixer() abort
   if (&ft=='php')
     Silent %!phpcbf --standard=~/.phpcs.xml
   elseif (&ft=='javascript')
     Silent !eslint --fix %:p
-    e
+    edit
   endif
-  w
+  update
 endfun
-nnoremap <Leader>cc :call CodeFixer()<Cr>
 
 
 " ----- Plugins -----
@@ -308,11 +306,14 @@ nnoremap <Leader>cc :call CodeFixer()<Cr>
 " --- Syntax ---
 
 " -- PHP Syntax --
-function! PhpSyntaxOverride()
+function! PhpSyntaxOverride() abort
   hi! def link phpDocTags  phpDefine
   hi! def link phpDocParam phpType
 endfunction
-autocmd FileType php call PhpSyntaxOverride()
+augroup PhpSyntax
+  autocmd!
+  autocmd FileType php call PhpSyntaxOverride()
+augroup END
 
 " -- Javascript Libraries Syntax --
 let g:used_javascript_libs = 'jquery,angularjs,angularui,angularuirouter,requirejs,underscore'
@@ -331,12 +332,12 @@ nmap <Leader>I <Plug>(place-insert-multiple)
 
 " -- Sneak --
 " Make nN behave like ;, when sneaking
-function! SmartNEnable()
+function! SmartNEnable() abort
   map n <Plug>SneakNext
   map N <Plug>SneakPrevious
 endfun
 " Make nN behave normally
-function! SmartNDisable()
+function! SmartNDisable() abort
   silent! unmap n
   silent! unmap N
 endfun
@@ -399,7 +400,7 @@ nnoremap <Leader>fs :Snippets<Cr>
 nnoremap <Leader>fc :Commits<Cr>
 
 " -- Dirvish --
-augroup my_dirvish_events
+augroup DirvishEvents
   autocmd!
   " Enable :Gstatus and friends.
   autocmd FileType dirvish call fugitive#detect(@%)
@@ -414,7 +415,7 @@ nmap <Leader>fnv :vsp<Cr>-
 " -- Tagbar --
 let g:tagbar_sort = 0
 let g:tagbar_compact = 1
-noremap <Leader>t :TagbarOpenAutoClose<Cr>
+nnoremap <Leader>t :TagbarOpenAutoClose<Cr>
 
 " --- Git ---
 
@@ -429,31 +430,27 @@ nnoremap <Leader>gO :Promiscuous<Cr>
 nnoremap <Leader>gB :Promiscuous -<Cr>
 
 " -- Fugitive --
-nnoremap <Leader>ga :Silent Git add %:p<Cr>
 nnoremap <Leader>gA :Silent Git add -A<Cr>
 nnoremap <Leader>gs :Gstatus<Cr>
 nnoremap <Leader>gS :Silent !stree<Cr>
 nnoremap <Leader>gc :Gcommit<Cr>
 nnoremap <Leader>gC :Gcommit -a<Cr>
 nnoremap <Leader>gd :Gdiff<Cr>
-nnoremap <Leader>ge :Gedit<Cr>
 nnoremap <Leader>gr :Gread<Cr>
-nnoremap <Leader>gw :Gwrite<Cr>
 nnoremap <Leader>gb :Git branch<Space>
 nnoremap <Leader>go :Git checkout<Space>
 nnoremap <Leader>gm :Gmerge<Space>
-nnoremap <Leader>gf :Gfetch --prune --tags<Cr>
+nnoremap <Leader>gf :Gfetch<Cr>
 nnoremap <Leader>gt :Git tag<Space>
-nnoremap <Leader>gpl :Gfetch --prune --tags<Cr>:Gpull<Cr>
-nnoremap <Leader>gpb :Gfetch --prune --tags<Cr>:Gpull<Cr>:Build<Cr>:Migrate<Cr>
-nnoremap <Leader>gps :Gpush --follow-tags<Cr>
-nnoremap <Leader>gpt :Gpush --tags<Cr>
+nnoremap <Leader>gpl :Gpull<Cr>
+nnoremap <Leader>gps :Gpush<Cr>
 nnoremap <Leader>gpu :execute "Silent Gpush -u origin" fugitive#head()<Cr>
-nnoremap <Leader>gpo :Gpush origin<Space>
+" Delete local fully-merged branches
 nnoremap <Leader>gnl :execute "Silent !git branch --merged \| tr -d '*' \| grep -v '^\\s*master' \| xargs -n1 git branch -d"<Cr>
+" Delete remote fully-merged branches
 nnoremap <Leader>gnr :execute "Silent !git branch -r --merged \| sed -e 's/origin\\///' \| grep -v '^\\s*\\(master\\\|HEAD)' \| xargs -n1 git push origin --delete"<Cr>
 nnoremap <Leader>gnn :call GitFreshenRepo()<Cr>
-function! GitFreshenRepo()
+function! GitFreshenRepo() abort
   Silent Git checkout master
   normal ,gpl
   normal ,gnl
@@ -468,9 +465,9 @@ nnoremap <Leader>prv :call PhpRenameLocalVariable()<Cr>
 nnoremap <Leader>prp :call PhpRenameClassVariable()<Cr>
 nnoremap <Leader>prm :call PhpRenameMethod()<Cr>
 nnoremap <Leader>peu :call PhpExtractUse()<Cr>
-vnoremap <Leader>pec :call PhpExtractConst()<Cr>
+xnoremap <Leader>pec :call PhpExtractConst()<Cr>
 nnoremap <Leader>pep :call PhpExtractClassProperty()<Cr>
-vnoremap <Leader>pem :call PhpExtractMethod()<Cr>
+xnoremap <Leader>pem :call PhpExtractMethod()<Cr>
 nnoremap <Leader>pnp :call PhpCreateProperty()<Cr>
 nnoremap <Leader>pdu :call PhpDetectUnusedUseStatements()<Cr>
 
@@ -487,18 +484,21 @@ let g:vdebug_options['path_maps'] = {
   \}
 
 " -- Phpactor
-autocmd FileType php setlocal omnifunc=phpactor#Complete
-map <Leader>pcc :call phpactor#ClassExpand()<Cr>
-map <Leader>pp :call phpactor#ContextMenu()<Cr>
-map <Leader>pg] :call phpactor#GotoDefinition()<Cr>
-map <Leader>pmf :call phpactor#MoveFile()<Cr>
-map <Leader>pcf :call phpactor#CopyFile()<Cr>
-map <Leader>pnc :call phpactor#ClassNew()<Cr>
-map <Leader>pfr :call phpactor#FindReferences()<Cr>
+augroup PhpactorComplete
+  autocmd!
+  autocmd FileType php setlocal omnifunc=phpactor#Complete
+augroup END
+nmap <Leader>pcc :call phpactor#ClassExpand()<Cr>
+nmap <Leader>pp :call phpactor#ContextMenu()<Cr>
+nmap <Leader>pg] :call phpactor#GotoDefinition()<Cr>
+nmap <Leader>pmf :call phpactor#MoveFile()<Cr>
+nmap <Leader>pcf :call phpactor#CopyFile()<Cr>
+nmap <Leader>pnc :call phpactor#ClassNew()<Cr>
+nmap <Leader>pfr :call phpactor#FindReferences()<Cr>
 
 " -- PDV --
 let g:pdv_template_dir = $HOME . '/.vim/plugged/pdv/templates_snip/'
-noremap <Leader>pd :call pdv#DocumentWithSnip()<Cr>
+nnoremap <Leader>pd :call pdv#DocumentWithSnip()<Cr>
 
 " --- HTML ---
 
@@ -526,12 +526,11 @@ let g:rainbow_levels = [
   \{'ctermfg': 1, 'guifg': '#dc322f'},
   \{'ctermfg': 3, 'guifg': '#b58900'},
   \{'ctermfg': 8, 'guifg': '#839496'}]
-noremap cot :RainbowLevelsToggle<cr>
+nnoremap cot :RainbowLevelsToggle<cr>
 
 " -- Airline --
 let g:airline_powerline_fonts = 1
 let g:airline_skip_empty_sections = 1
-let g:airline_exclude_filetypes = ['tagbar']
 let g:airline_section_b = '%{fugitive#head()}'
 let g:airline_section_y = "%{gutentags#statusline('Indexing...')}"
 
