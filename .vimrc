@@ -237,15 +237,17 @@ cnoremap jk <C-U><BS>
 
 " Magic regex
 function MagicRegex(prefix, char) abort
-  let v:char = a:char ==# 'G' ? 'g!' : a:char
-  return a:prefix . v:char . ('sg!' =~# v:char ? '-MR-' : '')
+  return a:prefix . a:char . ('sgG' =~# a:char ? '-MR-' : '')
 endfun
 cnoremap -MR-/ /\V
 cnoremap -MR-v/ /\v
 cnoremap -MR-// //
 cnoremap -MR- <Nop>
-nmap <expr> : MagicRegex(':', nr2char(getchar()))
+map <expr> : MagicRegex(':', nr2char(getchar()))
 nmap <expr> :% MagicRegex(':%', nr2char(getchar()))
+cmap G-MR-/ g!-MR-/
+cmap G-MR-v/ g!-MR-v/
+cmap G-MR-// g!-MR-//
 
 " Run command mappings
 nnoremap <Leader>rt :execute "!phpunit --filter" cfi#get_func_name() "%"<Cr>
