@@ -203,6 +203,8 @@ nnoremap Y y$
 " Pinky savers
 let mapleader = ","
 map ; :
+nmap :: :%
+nmap :; :%
 
 " Window navigation
 nnoremap <C-h> <C-w>h
@@ -234,32 +236,16 @@ inoremap jk <Esc>
 cnoremap jk <C-U><BS>
 
 " Magic regex
-noremap :s/ :s/\V
-noremap :g/ :g/\V
-noremap :G/ :g!/\V
-nnoremap :%s/ :%s/\V
-nnoremap :%g/ :%g/\V
-nnoremap :%G/ :%g!/\V
-noremap :sv/ :s/\v
-noremap :gv/ :g/\v
-noremap :Gv/ :g!/\v
-nnoremap :%sv/ :%s/\v
-nnoremap :%gv/ :%g/\v
-nnoremap :%Gv/ :%g!/\v
-noremap :s// :s//
-noremap :g// :g//
-noremap :G// :g!//
-nnoremap :%s// :%s//
-nnoremap :%g// :%g//
-nnoremap :%G// :%g!//
-nmap ::s :%s
-nmap ::g :%g
-nmap ::G :%G
-nmap :;s :%s
-nmap :;g :%g
-nmap :;G :%G
-nmap ::S :%S
-nmap :;S :%S
+function MagicRegex(prefix, char) abort
+  let v:char = a:char ==# 'G' ? 'g!' : a:char
+  return a:prefix . v:char . ('sg!' =~# v:char ? '-MR-' : '')
+endfun
+cnoremap -MR-/ /\V
+cnoremap -MR-v/ /\v
+cnoremap -MR-// //
+cnoremap -MR- <Nop>
+nmap <expr> : MagicRegex(':', nr2char(getchar()))
+nmap <expr> :% MagicRegex(':%', nr2char(getchar()))
 
 " Run command mappings
 nnoremap <Leader>rt :execute "!phpunit --filter" cfi#get_func_name() "%"<Cr>
