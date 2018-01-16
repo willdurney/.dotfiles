@@ -34,6 +34,7 @@ Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'wellle/targets.vim'
+Plug 'xtal8/traces.vim'
 
 " Completion & analysis
 Plug 'SirVer/ultisnips'
@@ -57,7 +58,7 @@ Plug 'tpope/vim-fugitive'
 " PHP
 Plug 'adoy/vim-php-refactoring-toolbox'
 Plug 'joonty/vdebug'
-Plug 'phpactor/phpactor'
+Plug 'phpactor/phpactor', { 'do': 'composer install' }
 Plug 'tobyS/pdv'
 Plug 'tobyS/vmustache'
 Plug 'tyru/current-func-info.vim'
@@ -156,9 +157,6 @@ set noswapfile
 " Don't show mode
 set noshowmode
 
-" Don't prefill selection when using completion
-set completeopt=longest,menuone
-
 " Reset cursor position on files if it's remembered
 augroup ResetCursor
   autocmd!
@@ -236,7 +234,7 @@ inoremap jk <Esc>
 cnoremap jk <C-U><BS>
 
 " Magic regex
-function MagicRegex(prefix, char) abort
+function! MagicRegex(prefix, char) abort
   return a:prefix . a:char . ('sgG' =~# a:char ? '-MR-' : '')
 endfun
 cnoremap -MR-/ /\V
@@ -254,6 +252,9 @@ nnoremap <Leader>rt :execute "!phpunit --filter" cfi#get_func_name() "%"<Cr>
 nnoremap <Leader>rT :!phpunit %<Cr>
 nnoremap <Leader>rc :Silent !open -a "Google Chrome" "file://%:p"<Cr>
 nnoremap <Leader>rf :call CodeFixer()<Cr>
+
+" Quickly format json
+nnoremap <Leader>== V:!jq '.'<Cr>
 
 
 " ----- Custom Commands -----
@@ -436,7 +437,7 @@ nnoremap <Leader>gpu :execute "Silent Gpush -u origin" fugitive#head()<Cr>
 " Delete local fully-merged branches
 nnoremap <Leader>gnl :execute "Silent !git branch --merged \| tr -d '*' \| grep -v '^\\s*master' \| xargs -n1 git branch -d"<Cr>
 " Delete remote fully-merged branches
-nnoremap <Leader>gnr :execute "Silent !git branch -r --merged \| sed -e 's/origin\\///' \| grep -v '^\\s*\\(master\\\|HEAD)' \| xargs -n1 git push origin --delete"<Cr>
+nnoremap <Leader>gnr :execute "Silent !git branch -r --merged \| sed -e 's/origin\\///' \| grep -v '^\\s*\\(master\\\|HEAD\\)' \| xargs -n1 git push origin --delete"<Cr>
 nnoremap <Leader>gnn :call GitFreshenRepo()<Cr>
 function! GitFreshenRepo() abort
   Silent Git checkout master
