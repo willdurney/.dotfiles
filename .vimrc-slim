@@ -73,9 +73,6 @@ set linebreak
 set textwidth=100
 set backspace=indent,eol,start
 
-" Highlight matching bracket when closing
-set showmatch
-
 " Flash screen instead of audible error bell
 set visualbell
 
