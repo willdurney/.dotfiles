@@ -52,7 +52,9 @@ Plug 'tpope/vim-eunuch'
 
 " Git
 Plug 'airblade/vim-gitgutter'
+Plug 'junegunn/gv.vim'
 Plug 'shuber/vim-promiscuous'
+Plug 'tommcdo/vim-fubitive'
 Plug 'tpope/vim-fugitive'
 
 " PHP
@@ -72,12 +74,13 @@ Plug 'mattn/emmet-vim'
 
 " UI
 Plug 'altercation/vim-colors-solarized'
-Plug 'thiagoalessio/rainbow_levels.vim'
+Plug 'nathanaelkane/vim-indent-guides'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
 " Miscellaneous
 Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+Plug 'metakirby5/codi.vim'
 Plug 'rizzatti/dash.vim'
 
 call plug#end()
@@ -89,16 +92,17 @@ call plug#end()
 set synmaxcol=250
 
 " Show relative line numbers
-set number
-set relativenumber
+set number relativenumber
+augroup NumberToggle
+  autocmd!
+  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+  autocmd BufLeave,FocusLost,InsertEnter,WinLeave * set norelativenumber
+augroup END
 
 " Linebreaking options
 set linebreak
 set textwidth=100
 set backspace=indent,eol,start
-
-" Highlight matching bracket when closing
-set showmatch
 
 " Flash screen instead of audible error bell
 set visualbell
@@ -236,7 +240,7 @@ cnoremap jk <C-U><BS>
 " Magic regex
 function! MagicRegex(prefix, char) abort
   return a:prefix . a:char . ('sgG' =~# a:char ? '-MR-' : '')
-endfun
+endfunction
 cnoremap -MR-/ /\V
 cnoremap -MR-v/ /\v
 cnoremap -MR-// //
@@ -253,8 +257,15 @@ nnoremap <Leader>rT :!phpunit %<Cr>
 nnoremap <Leader>rc :Silent !open -a "Google Chrome" "file://%:p"<Cr>
 nnoremap <Leader>rf :call CodeFixer()<Cr>
 
-" Quickly format json
-nnoremap <Leader>== V:!jq '.'<Cr>
+" Quickly format things
+nnoremap <Leader>=j V:!jq '.'<Cr>
+nnoremap <Leader>=m :%s/\v\\| +(.*) \\|\n/\1,/<Cr>$x0
+
+" Quickly fix lint issues
+nnoremap <Leader>ly :s/\v\((.*) ([!\=]\=\=) (.*)\)/(\3 \2 \1)/<Cr>
+nnoremap <Leader>l[ %kA,<Esc>
+nnoremap <Leader>ln :s/\vis_null\(([^)]+)\)/null === \1/ \| s/\v!null \=\=\=/null !==/<Cr>
+nnoremap <Leader>l( :s/\vnew ([a-zA-Z\\]*)/new \1()/<Cr>
 
 
 " ----- Custom Commands -----
@@ -270,13 +281,18 @@ command! SourceVimrc source $MYVIMRC
 " Command to re-run grunt commands
 function! GruntStop() abort
   Silent !screen -S cs-front-grunt -p 0 -X stuff ""
-endfun
+endfunction
 function! Grunt() abort
   call GruntStop()
+  Silent !screen -S cs-front-grunt -p 0 -X stuff "grunt cs:dev:fast$(printf \\r)"
+endfunction
+function! GruntOld() abort
+  call GruntStop()
   Silent !screen -S cs-front-grunt -p 0 -X stuff "grunt fastdev:watch$(printf \\r)"
-endfun
+endfunction
 command! Grunt call Grunt()
 command! GruntStop call GruntStop()
+command! GruntOld call GruntOld()
 
 " Code style fixers
 function! CodeFixer() abort
@@ -287,7 +303,7 @@ function! CodeFixer() abort
     edit
   endif
   update
-endfun
+endfunction
 
 
 " ----- Plugins -----
@@ -324,12 +340,12 @@ nmap <Leader>I <Plug>(place-insert-multiple)
 function! SmartNEnable() abort
   map n <Plug>SneakNext
   map N <Plug>SneakPrevious
-endfun
+endfunction
 " Make nN behave normally
 function! SmartNDisable() abort
   silent! unmap n
   silent! unmap N
-endfun
+endfunction
 " Make sneaking enable smart nN
 nmap f :call SmartNEnable()<Cr><Plug>Sneak_f
 nmap F :call SmartNEnable()<Cr><Plug>Sneak_F
@@ -349,6 +365,9 @@ let g:undotree_SetFocusWhenToggle = 1
 let g:undotree_WindowLayout = 3
 let g:undotree_SplitWidth = 50
 
+" -- Unimpaired --
+nmap co =o
+
 " --- Completion & Analysis ---
 
 " -- UltiSnips --
@@ -358,16 +377,23 @@ let g:UltiSnipsExpandTrigger = '`'
 let g:UltiSnipsJumpForwardTrigger = '`'
 let g:UltiSnipsJumpBackwardTrigger = '~'
 
+" -- VimCompletesMe --
+let g:vcm_direction = 'p'
+set completeopt+=longest
+
 " -- Gutentags --
 let g:gutentags_ctags_exclude = ['*.min.js', '*.min.css', 'build', 'vendor', '.git', 'node_modules']
 
 " -- ALE --
 let g:ale_linters = {
-\   'javascript': ['eslint'],
-\   'php': ['php', 'phpcs', 'phpstan'],
-\   'scss': ['scsslint'],
-\   'html': ['alex', 'htmlhint', 'proselint', 'write-good'],
-\}
+  \ 'javascript': ['eslint'],
+  \ 'php': ['php', 'phpcs', 'phpstan'],
+  \ 'scss': ['scsslint'],
+  \ 'html': ['alex', 'htmlhint', 'proselint', 'write-good'],
+\ }
+let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_delay = 0
+let g:ale_lint_on_insert_leave = 1
 let g:ale_php_phpcs_standard = '~/.phpcs.xml'
 let g:ale_php_phpcs_executable = 'phpcs -s'
 let g:ale_php_phpstan_configuration = 'phpstan.neon'
@@ -402,8 +428,20 @@ nmap <Leader>fns :sp<Cr>-
 nmap <Leader>fnv :vsp<Cr>-
 
 " -- Tagbar --
+let g:tagbar_left = 1
 let g:tagbar_sort = 0
 let g:tagbar_compact = 1
+let g:tagbar_show_linenumbers = 2
+let g:tagbar_type_php  = {
+  \ 'ctagstype' : 'php',
+  \ 'kinds'     : [
+    \ 'i:interfaces',
+    \ 'c:classes',
+    \ 'd:constant definitions',
+    \ 'f:functions',
+    \ 'j:javascript functions:1'
+  \ ]
+\ }
 nnoremap <Leader>t :TagbarOpenAutoClose<Cr>
 
 " --- Git ---
@@ -421,11 +459,15 @@ nnoremap <Leader>gB :Promiscuous -<Cr>
 " -- Fugitive --
 nnoremap <Leader>gA :Silent Git add -A<Cr>
 nnoremap <Leader>gs :Gstatus<Cr>
-nnoremap <Leader>gS :Silent !stree<Cr>
+nnoremap <Leader>gS :GV<Cr>
 nnoremap <Leader>gc :Gcommit<Cr>
 nnoremap <Leader>gC :Gcommit -a<Cr>
-nnoremap <Leader>gd :Gdiff<Cr>
+nnoremap <Leader>gdd :Gvdiff<Cr>
+nnoremap <Leader>gdh :diffget //2<Cr>:diffupdate<Cr>
+nnoremap <Leader>gdl :diffget //3<Cr>:diffupdate<Cr>
+noremap <Leader>gD :Gbrowse<Cr>
 nnoremap <Leader>gr :Gread<Cr>
+nnoremap <Leader>gR :Git reset<Space>
 nnoremap <Leader>gb :Git branch<Space>
 nnoremap <Leader>go :Git checkout<Space>
 nnoremap <Leader>gm :Gmerge<Space>
@@ -444,7 +486,11 @@ function! GitFreshenRepo() abort
   normal ,gpl
   normal ,gnl
   normal ,gnr
-endfun
+endfunction
+augroup FugitiveClose
+  autocmd!
+  autocmd BufReadPost fugitive://* set bufhidden=delete
+augroup END
 
 " --- PHP ---
 
@@ -457,7 +503,7 @@ nnoremap <Leader>peu :call PhpExtractUse()<Cr>
 xnoremap <Leader>pec :call PhpExtractConst()<Cr>
 nnoremap <Leader>pep :call PhpExtractClassProperty()<Cr>
 xnoremap <Leader>pem :call PhpExtractMethod()<Cr>
-nnoremap <Leader>pnp :call PhpCreateProperty()<Cr>
+nnoremap <Leader>pap :call PhpCreateProperty()<Cr>
 nnoremap <Leader>pdu :call PhpDetectUnusedUseStatements()<Cr>
 
 " -- Vdebug --
@@ -482,12 +528,12 @@ nmap <Leader>pp :call phpactor#ContextMenu()<Cr>
 nmap <Leader>pg] :call phpactor#GotoDefinition()<Cr>
 nmap <Leader>pmf :call phpactor#MoveFile()<Cr>
 nmap <Leader>pcf :call phpactor#CopyFile()<Cr>
-nmap <Leader>pnc :call phpactor#ClassNew()<Cr>
+nmap <Leader>pac :call phpactor#ClassNew()<Cr>
 nmap <Leader>pfr :call phpactor#FindReferences()<Cr>
 
 " -- PDV --
 let g:pdv_template_dir = $HOME . '/.vim/plugged/pdv/templates_snip/'
-nnoremap <Leader>pd :call pdv#DocumentWithSnip()<Cr>
+nnoremap <Leader>pad :call pdv#DocumentWithSnip()<Cr>
 
 " --- HTML ---
 
@@ -499,23 +545,14 @@ let g:use_emmet_complete_tag = 1
 " -- Solarized --
 colorscheme solarized
 
-" -- Rainbow Levels --
-let g:rainbow_levels = [
-  \{'ctermfg': 2, 'guifg': '#859900'},
-  \{'ctermfg': 6, 'guifg': '#2aa198'},
-  \{'ctermfg': 4, 'guifg': '#268bd2'},
-  \{'ctermfg': 5, 'guifg': '#6c71c4'},
-  \{'ctermfg': 1, 'guifg': '#dc322f'},
-  \{'ctermfg': 3, 'guifg': '#b58900'},
-  \{'ctermfg': 8, 'guifg': '#839496'},
-  \{'ctermfg': 2, 'guifg': '#859900'},
-  \{'ctermfg': 6, 'guifg': '#2aa198'},
-  \{'ctermfg': 4, 'guifg': '#268bd2'},
-  \{'ctermfg': 5, 'guifg': '#6c71c4'},
-  \{'ctermfg': 1, 'guifg': '#dc322f'},
-  \{'ctermfg': 3, 'guifg': '#b58900'},
-  \{'ctermfg': 8, 'guifg': '#839496'}]
-nnoremap cot :RainbowLevelsToggle<cr>
+" -- Vim Indent Guides --
+nmap <silent> cot <Plug>IndentGuidesToggle
+let g:indent_guides_default_mapping = 0
+let g:indent_guides_start_level = 2
+let g:indent_guides_guide_size = 1
+let g:indent_guides_auto_colors = 0
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd ctermbg=grey
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=darkgrey
 
 " -- Airline --
 let g:airline_powerline_fonts = 1
@@ -524,6 +561,43 @@ let g:airline_section_b = '%{fugitive#head()}'
 let g:airline_section_y = "%{gutentags#statusline('Indexing...')}"
 
 " --- Miscellaneous ---
+
+" -- Codi --
+function! CodiSplit(paste) abort
+  let ft = &filetype
+  vnew
+  set buftype=nofile
+  execute "Codi " . ft
+  sleep 1
+  if ft ==# "php"
+    normal! i<?php
+  endif
+  let b:ale_enabled = 0
+  execute "set ft=" . ft
+  nnoremap <buffer> q :q!<Cr>
+  if a:paste
+    normal V]p
+  else
+    startinsert
+  endif
+endfunction
+nnoremap <Leader>c :call CodiSplit(0)<Cr>
+vnoremap <Leader>c y:call CodiSplit(1)<Cr>
+let g:codi#use_buffer_dir = 0
+let g:codi#width = 70
+let g:codi#interpreters = {
+    \ 'php': {
+      \ 'bin': ['php', 'artisan', 'tinker'],
+      \ 'prompt': '^\(>>>\|\.\.\.\) ',
+    \ },
+    \ 'typescript': {
+      \ 'bin': ['ts-node'],
+      \ 'prompt': '^\(>\|\.\.\.\+\) ',
+    \ },
+  \ }
+" let g:codi#aliases = {
+"     \ 'typescript': 'javascript',
+"   \ }
 
 " -- Dash --
 nmap <Leader>d <Plug>DashSearch
