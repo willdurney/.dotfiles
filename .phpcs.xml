@@ -52,6 +52,7 @@
     <exclude name="Squiz.Commenting.FunctionComment.ScalarTypeHintMissing"/>
     <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType"/>
     <exclude name="Squiz.Commenting.FunctionComment.TypeHintMissing"/>
+    <exclude name="Squiz.Commenting.FunctionCommentThrowTag.WrongNumber"/>
     <exclude name="Squiz.Commenting.InlineComment.DocBlock"/>
     <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
     <exclude name="Squiz.Commenting.LongConditionClosingComment.Missing"/>
