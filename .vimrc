@@ -1,3 +1,7 @@
+if has('python3')
+  silent! python3 1
+endif
+
 " ----- Initialize Plugins -----
 
 call plug#begin('~/.vim/plugged')
@@ -256,6 +260,11 @@ nnoremap <Leader>rt :execute "!phpunit --filter" cfi#get_func_name() "%"<Cr>
 nnoremap <Leader>rT :!phpunit %<Cr>
 nnoremap <Leader>rc :Silent !open -a "Google Chrome" "file://%:p"<Cr>
 nnoremap <Leader>rf :call CodeFixer()<Cr>
+nnoremap <Leader>rgg :call Grunt()<Cr>
+nnoremap <Leader>rga :call GruntAll()<Cr>
+nnoremap <Leader>rgo :call GruntOld()<Cr>
+nnoremap <Leader>rgs :call GruntStop()<Cr>
+nnoremap <Leader>rs :Silent !stree<Cr>
 
 " Quickly format things
 nnoremap <Leader>=j V:!jq '.'<Cr>
@@ -285,6 +294,10 @@ endfunction
 function! Grunt() abort
   call GruntStop()
   Silent !screen -S cs-front-grunt -p 0 -X stuff "grunt cs:dev:fast$(printf \\r)"
+endfunction
+function! GruntAll() abort
+  call GruntStop()
+  Silent !screen -S cs-front-grunt -p 0 -X stuff "grunt cs:dev$(printf \\r)"
 endfunction
 function! GruntOld() abort
   call GruntStop()
@@ -364,9 +377,6 @@ nnoremap <Leader>u :UndotreeToggle<Cr>
 let g:undotree_SetFocusWhenToggle = 1
 let g:undotree_WindowLayout = 3
 let g:undotree_SplitWidth = 50
-
-" -- Unimpaired --
-nmap co =o
 
 " --- Completion & Analysis ---
 

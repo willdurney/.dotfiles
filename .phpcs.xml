@@ -21,6 +21,7 @@
     <exclude name="Symfony.Functions.ScopeOrder.Invalid"/>
     <exclude name="Symfony.NamingConventions.ValidClassName.InvalidInterfaceName"/>
     <exclude name="Zend.NamingConventions.ValidVariableName.NotCamelCaps"/>
+    <exclude name="Zend.NamingConventions.ValidVariableName.StringVarContainsNumbers"/>
   </rule>
  
   <rule ref="Squiz">
