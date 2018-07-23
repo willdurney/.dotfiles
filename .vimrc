@@ -71,6 +71,7 @@ Plug 'tyru/current-func-info.vim'
 
 " JavaScript
 Plug 'Quramy/tsuquyomi'
+" Plug 'bigfish/vim-js-context-coloring', { 'do': 'npm install' }
 " Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
 
 " HTML
@@ -265,6 +266,7 @@ nnoremap <Leader>rga :call GruntAll()<Cr>
 nnoremap <Leader>rgo :call GruntOld()<Cr>
 nnoremap <Leader>rgs :call GruntStop()<Cr>
 nnoremap <Leader>rs :Silent !stree<Cr>
+nnoremap <Leader>rb :execute "!./build.sh && ./migrate.sh"<Cr>
 
 " Quickly format things
 nnoremap <Leader>=j V:!jq '.'<Cr>

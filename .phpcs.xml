@@ -28,11 +28,13 @@
     <exclude name="Generic.Commenting.DocComment.ContentAfterOpen"/>
     <exclude name="Generic.Commenting.DocComment.ContentBeforeClose"/>
     <exclude name="Generic.Commenting.DocComment.MissingShort"/>
+    <exclude name="Generic.Commenting.DocComment.SpacingBeforeTags"/>
     <exclude name="Generic.Commenting.Todo.TaskFound"/>
     <exclude name="Generic.Files.LineLength.TooLong"/>
     <exclude name="Generic.Formatting.MultipleStatementAlignment.NotSame"/>
     <exclude name="Generic.Strings.UnnecessaryStringConcat.Found"/>
     <exclude name="Squiz.Arrays.ArrayDeclaration.CloseBraceNotAligned"/>
+    <exclude name="Squiz.Arrays.ArrayDeclaration.DoubleArrowNotAligned"/>
     <exclude name="Squiz.Arrays.ArrayDeclaration.KeyNotAligned"/>
     <exclude name="Squiz.Arrays.ArrayDeclaration.MultiLineNotAllowed"/>
     <exclude name="Squiz.Arrays.ArrayDeclaration.SingleLineNotAllowed"/>
@@ -85,7 +87,9 @@
     <exclude name="Squiz.Strings.DoubleQuoteUsage.ContainsVar"/>
     <exclude name="Squiz.WhiteSpace.FunctionClosingBraceSpace.SpacingBeforeClose"/>
     <exclude name="Squiz.WhiteSpace.FunctionSpacing.After"/>
+    <exclude name="Squiz.WhiteSpace.FunctionSpacing.AfterLast"/>
     <exclude name="Squiz.WhiteSpace.FunctionSpacing.Before"/>
+    <exclude name="Squiz.WhiteSpace.FunctionSpacing.BeforeFirst"/>
     <exclude name="Squiz.WhiteSpace.MemberVarSpacing.FirstIncorrect"/>
     <exclude name="Squiz.WhiteSpace.MemberVarSpacing.Incorrect"/>
     <exclude name="Squiz.WhiteSpace.ObjectOperatorSpacing.Before"/>
