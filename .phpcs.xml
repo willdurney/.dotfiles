@@ -22,6 +22,7 @@
     <exclude name="Symfony.NamingConventions.ValidClassName.InvalidInterfaceName"/>
     <exclude name="Zend.NamingConventions.ValidVariableName.NotCamelCaps"/>
     <exclude name="Zend.NamingConventions.ValidVariableName.StringVarContainsNumbers"/>
+    <exclude name="Zend.NamingConventions.ValidVariableName.MemberVarContainsNumbers"/>
   </rule>
  
   <rule ref="Squiz">
