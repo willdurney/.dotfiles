@@ -24,6 +24,7 @@ Plug 'tpope/vim-markdown'
 Plug 'wizicer/vim-jison'
 
 " Editing
+Plug 'AaronLasseigne/yank-code'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'Raimondi/delimitMate'
 Plug 'christoomey/vim-sort-motion'
@@ -35,6 +36,7 @@ Plug 'tpope/vim-commentary'
 " Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-sleuth'
+Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'wellle/targets.vim'
@@ -70,9 +72,9 @@ Plug 'tobyS/vmustache'
 Plug 'tyru/current-func-info.vim'
 
 " JavaScript
-Plug 'Quramy/tsuquyomi'
 " Plug 'bigfish/vim-js-context-coloring', { 'do': 'npm install' }
 " Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
+Plug 'Quramy/tsuquyomi'
 
 " HTML
 Plug 'mattn/emmet-vim'
@@ -84,9 +86,11 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
 " Miscellaneous
-Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+" Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 Plug 'metakirby5/codi.vim'
 Plug 'rizzatti/dash.vim'
+Plug 'tpope/vim-dadbod'
+Plug 'zenbro/mirror.vim'
 
 call plug#end()
 
@@ -198,6 +202,13 @@ augroup END
 " Better matching tag nagivation
 runtime macros/matchit.vim
 
+" Proper commentstring
+augroup CommentString
+  autocmd!
+  autocmd FileType php setlocal commentstring=/*\ %s\ */
+  autocmd FileType javascript setlocal commentstring=//\ %s
+augroup END
+
 
 " ----- Custom mappings -----
 
@@ -261,12 +272,14 @@ nnoremap <Leader>rt :execute "!phpunit --filter" cfi#get_func_name() "%"<Cr>
 nnoremap <Leader>rT :!phpunit %<Cr>
 nnoremap <Leader>rc :Silent !open -a "Google Chrome" "file://%:p"<Cr>
 nnoremap <Leader>rf :call CodeFixer()<Cr>
+nnoremap <Leader>rgr :Silent !screen -r cs-front-grunt<Cr>
 nnoremap <Leader>rgg :call Grunt()<Cr>
+nnoremap <Leader>rgG :call Grunt()<Cr>:Silent !screen -r cs-front-grunt<Cr>
 nnoremap <Leader>rga :call GruntAll()<Cr>
-nnoremap <Leader>rgo :call GruntOld()<Cr>
 nnoremap <Leader>rgs :call GruntStop()<Cr>
 nnoremap <Leader>rs :Silent !stree<Cr>
 nnoremap <Leader>rb :execute "!./build.sh && ./migrate.sh"<Cr>
+nnoremap <Leader>ro :Silent !open %<Cr>
 
 " Quickly format things
 nnoremap <Leader>=j V:!jq '.'<Cr>
@@ -295,19 +308,14 @@ function! GruntStop() abort
 endfunction
 function! Grunt() abort
   call GruntStop()
-  Silent !screen -S cs-front-grunt -p 0 -X stuff "grunt cs:dev:fast$(printf \\r)"
+  Silent !screen -S cs-front-grunt -p 0 -X stuff "./grunt.sh cs:dev:fast$(printf \\r)"
 endfunction
 function! GruntAll() abort
   call GruntStop()
-  Silent !screen -S cs-front-grunt -p 0 -X stuff "grunt cs:dev$(printf \\r)"
-endfunction
-function! GruntOld() abort
-  call GruntStop()
-  Silent !screen -S cs-front-grunt -p 0 -X stuff "grunt fastdev:watch$(printf \\r)"
+  Silent !screen -S cs-front-grunt -p 0 -X stuff "./grunt.sh cs:dev$(printf \\r)"
 endfunction
 command! Grunt call Grunt()
 command! GruntStop call GruntStop()
-command! GruntOld call GruntOld()
 
 " Code style fixers
 function! CodeFixer() abort
@@ -339,6 +347,9 @@ augroup END
 let g:used_javascript_libs = 'jquery,angularjs,angularui,angularuirouter,requirejs,underscore'
 
 " --- Editing ---
+
+" -- YankCode --
+map <leader>y <Plug>YankCode
 
 " -- DelimitMate --
 let delimitMate_expand_cr = 1
@@ -391,7 +402,7 @@ let g:UltiSnipsJumpBackwardTrigger = '~'
 
 " -- VimCompletesMe --
 let g:vcm_direction = 'p'
-set completeopt+=longest
+set completeopt=menu,menuone,longest,preview,noselect
 
 " -- Gutentags --
 let g:gutentags_ctags_exclude = ['*.min.js', '*.min.css', 'build', 'vendor', '.git', 'node_modules']
@@ -403,13 +414,14 @@ let g:ale_linters = {
   \ 'scss': ['scsslint'],
   \ 'html': ['alex', 'htmlhint', 'proselint', 'write-good'],
 \ }
-let g:ale_lint_on_text_changed = 'normal'
-let g:ale_lint_delay = 0
-let g:ale_lint_on_insert_leave = 1
+" let g:ale_lint_on_text_changed = 'normal'
+let g:ale_lint_delay = 1000
+" let g:ale_lint_on_insert_leave = 1
 let g:ale_php_phpcs_standard = '~/.phpcs.xml'
 let g:ale_php_phpcs_executable = 'phpcs -s'
 let g:ale_php_phpstan_configuration = 'phpstan.neon'
 let g:ale_php_phpstan_level = 7
+" let g:ale_completion_enabled = 1
 nnoremap <Leader>al :ALELint<Cr>
 nnoremap <Leader>ai :ALEInfo<Cr>
 nnoremap <Leader>an :ALENext<Cr>
@@ -418,13 +430,15 @@ nnoremap <Leader>ap :ALEPrevious<Cr>
 " --- Project navigation ---
 
 " -- FZF --
+nnoremap <Leader>/ :BLines<Cr>
 nnoremap <Leader>ff :Files<Cr>
 nnoremap <Leader>fb :Buffers<Cr>
 nnoremap <Leader>ft :Tags<Cr>
 nnoremap <Leader>f/ :Ag<Space>
-nnoremap <Leader>fl :Lines<Cr>
+nnoremap <Leader>f? :Ag <C-r><C-w><Cr>
 nnoremap <Leader>fs :Snippets<Cr>
 nnoremap <Leader>fc :Commits<Cr>
+nnoremap <Leader>fh :Helptags<Cr>
 
 " -- Dirvish --
 augroup DirvishEvents
@@ -478,6 +492,7 @@ nnoremap <Leader>gdd :Gvdiff<Cr>
 nnoremap <Leader>gdh :diffget //2<Cr>:diffupdate<Cr>
 nnoremap <Leader>gdl :diffget //3<Cr>:diffupdate<Cr>
 noremap <Leader>gD :Gbrowse<Cr>
+nnoremap <Leader>gl :Gblame<Cr>
 nnoremap <Leader>gr :Gread<Cr>
 nnoremap <Leader>gR :Git reset<Space>
 nnoremap <Leader>gb :Git branch<Space>
@@ -489,9 +504,9 @@ nnoremap <Leader>gpl :Gpull<Cr>
 nnoremap <Leader>gps :Gpush<Cr>
 nnoremap <Leader>gpu :execute "Silent Gpush -u origin" fugitive#head()<Cr>
 " Delete local fully-merged branches
-nnoremap <Leader>gnl :execute "Silent !git branch --merged \| tr -d '*' \| grep -v '^\\s*master' \| xargs -n1 git branch -d"<Cr>
+nnoremap <Leader>gnl :execute "Silent !git branch --merged \| tr -d '*' \| grep -v '^\\s*\\(master\\\|spec\\)' \| xargs -n1 git branch -d"<Cr>
 " Delete remote fully-merged branches
-nnoremap <Leader>gnr :execute "Silent !git branch -r --merged \| sed -e 's/origin\\///' \| grep -v '^\\s*\\(master\\\|HEAD\\)' \| xargs -n1 git push origin --delete"<Cr>
+nnoremap <Leader>gnr :execute "Silent !git branch -r --merged \| sed -e 's/origin\\///' \| grep -v '^\\s*\\(master\\\|HEAD\\\|spec\\)' \| xargs -n1 git push origin --delete"<Cr>
 nnoremap <Leader>gnn :call GitFreshenRepo()<Cr>
 function! GitFreshenRepo() abort
   Silent Git checkout master
@@ -546,6 +561,11 @@ nmap <Leader>pfr :call phpactor#FindReferences()<Cr>
 " -- PDV --
 let g:pdv_template_dir = $HOME . '/.vim/plugged/pdv/templates_snip/'
 nnoremap <Leader>pad :call pdv#DocumentWithSnip()<Cr>
+
+" --- JavaScript ---
+
+" -- Tsuquyomi --
+let g:tsuquyomi_disable_quickfix = 1
 
 " --- HTML ---
 
@@ -612,5 +632,19 @@ let g:codi#interpreters = {
 "   \ }
 
 " -- Dash --
-nmap <Leader>d <Plug>DashSearch
-nnoremap <Leader>D :Dash<Space>
+nnoremap <Leader>rd :Dash<Space>
+nmap <Leader>rD <Plug>DashSearch
+
+" -- Dadbod --
+let g:dbmysql = 'mysql://vagrant:uhTd%40T5pBk!5@local.cskout.com/local_crowdskout'
+let g:dbmongo = 'mongodb://root:root12@local.cskout.com/Queue'
+noremap <Leader>ds :DB g:dbmysql<Cr>
+noremap <Leader>dS :DB g:dbmysql<Space>
+noremap <Leader>dm :DB g:dbmongo<Cr>
+noremap <Leader>dM :DB g:dbmongo<Space>
+
+" -- Mirror --
+nnoremap <Leader>me :MirrorEdit<Space>
+nnoremap <Leader>md :MirrorDiff<Space>
+nnoremap <Leader>mpl :MirrorPull<Space>
+nnoremap <Leader>mps :MirrorPush<Space>
