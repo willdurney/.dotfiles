@@ -29,8 +29,10 @@ Plug 'AndrewRadev/splitjoin.vim'
 Plug 'Raimondi/delimitMate'
 Plug 'christoomey/vim-sort-motion'
 Plug 'joereynolds/place.vim'
+Plug 'junegunn/vim-peekaboo'
 Plug 'justinmk/vim-sneak'
 Plug 'mbbill/undotree'
+Plug 'michaeljsmith/vim-indent-object'
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-commentary'
 " Plug 'tpope/vim-endwise'
@@ -39,6 +41,7 @@ Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
+" Plug 'wellle/context.vim'
 Plug 'wellle/targets.vim'
 Plug 'xtal8/traces.vim'
 
@@ -89,6 +92,7 @@ Plug 'vim-airline/vim-airline-themes'
 " Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 Plug 'metakirby5/codi.vim'
 Plug 'rizzatti/dash.vim'
+Plug 'segeljakt/vim-silicon'
 Plug 'tpope/vim-dadbod'
 Plug 'zenbro/mirror.vim'
 
@@ -274,8 +278,8 @@ nnoremap <Leader>rc :Silent !open -a "Google Chrome" "file://%:p"<Cr>
 nnoremap <Leader>rf :call CodeFixer()<Cr>
 nnoremap <Leader>rgr :Silent !screen -r cs-front-grunt<Cr>
 nnoremap <Leader>rgg :call Grunt()<Cr>
-nnoremap <Leader>rgG :call Grunt()<Cr>:Silent !screen -r cs-front-grunt<Cr>
-nnoremap <Leader>rga :call GruntAll()<Cr>
+" nnoremap <Leader>rgG :call Grunt()<Cr>:Silent !screen -r cs-front-grunt<Cr>
+" nnoremap <Leader>rga :call GruntAll()<Cr>
 nnoremap <Leader>rgs :call GruntStop()<Cr>
 nnoremap <Leader>rs :Silent !stree<Cr>
 nnoremap <Leader>rb :execute "!./build.sh && ./migrate.sh"<Cr>
@@ -304,15 +308,13 @@ command! SourceVimrc source $MYVIMRC
 
 " Command to re-run grunt commands
 function! GruntStop() abort
-  Silent !screen -S cs-front-grunt -p 0 -X stuff ""
+  Silent !screen -S cs-front -p 0 -X stuff ""
+  Silent !screen -S cs-front-legacy -p 0 -X stuff ""
 endfunction
 function! Grunt() abort
   call GruntStop()
-  Silent !screen -S cs-front-grunt -p 0 -X stuff "./grunt.sh cs:dev:fast$(printf \\r)"
-endfunction
-function! GruntAll() abort
-  call GruntStop()
-  Silent !screen -S cs-front-grunt -p 0 -X stuff "./grunt.sh cs:dev$(printf \\r)"
+  Silent !screen -S cs-front -p 0 -X stuff "npm run start:dev$(printf \\r)"
+  Silent !screen -S cs-front-legacy -p 0 -X stuff "npm run start:dev:legacy$(printf \\r)"
 endfunction
 command! Grunt call Grunt()
 command! GruntStop call GruntStop()
@@ -518,6 +520,7 @@ augroup FugitiveClose
   autocmd!
   autocmd BufReadPost fugitive://* set bufhidden=delete
 augroup END
+nnoremap <Leader>gpr :execute "Silent !open https://bitbucket.org/elite50/" . substitute(getcwd(), '^.*/', '', '') . "/pull-requests/new"<Cr>
 
 " --- PHP ---
 
@@ -597,16 +600,17 @@ let g:airline_section_y = "%{gutentags#statusline('Indexing...')}"
 " -- Codi --
 function! CodiSplit(paste) abort
   let ft = &filetype
-  vnew
-  set buftype=nofile
+  tabe
+  setlocal buftype=nofile
+  let g:codi#width = winwidth(winnr()) / 2
   execute "Codi " . ft
-  sleep 1
+  sleep 2
   if ft ==# "php"
     normal! i<?php
   endif
   let b:ale_enabled = 0
   execute "set ft=" . ft
-  nnoremap <buffer> q :q!<Cr>
+  nnoremap <buffer> gq :q!<Cr>
   if a:paste
     normal V]p
   else
@@ -616,7 +620,7 @@ endfunction
 nnoremap <Leader>c :call CodiSplit(0)<Cr>
 vnoremap <Leader>c y:call CodiSplit(1)<Cr>
 let g:codi#use_buffer_dir = 0
-let g:codi#width = 70
+let g:codi#rightalign = 0
 let g:codi#interpreters = {
     \ 'php': {
       \ 'bin': ['php', 'artisan', 'tinker'],
@@ -634,6 +638,53 @@ let g:codi#interpreters = {
 " -- Dash --
 nnoremap <Leader>rd :Dash<Space>
 nmap <Leader>rD <Plug>DashSearch
+
+" -- Silicon --
+function! TakeScreenshot(snippet, highlight) abort
+  if a:snippet
+    let g:silicon = {
+        \ 'theme': 'Dracula',
+        \ 'font': 'Fira Code',
+        \ 'background': '#00aeef',
+        \ 'shadow-color': '#555555',
+        \ 'line-pad': 2,
+        \ 'pad-horiz': 80,
+        \ 'pad-vert': 100,
+        \ 'shadow-blur-radius': 0,
+        \ 'shadow-offset-x': 0,
+        \ 'shadow-offset-y': 0,
+        \ 'line-number': v:false,
+        \ 'round-corner': v:true,
+        \ 'window-controls': v:true,
+      \ }
+    '<,'>Silicon /tmp/silicon.png
+  else
+    let g:silicon = {
+        \ 'theme': 'Dracula',
+        \ 'font': 'Fira Code',
+        \ 'background': '#00aeef',
+        \ 'shadow-color': '#555555',
+        \ 'line-pad': 2,
+        \ 'pad-horiz': 80,
+        \ 'pad-vert': 100,
+        \ 'shadow-blur-radius': 0,
+        \ 'shadow-offset-x': 0,
+        \ 'shadow-offset-y': 0,
+        \ 'line-number': v:true,
+        \ 'round-corner': v:true,
+        \ 'window-controls': v:true,
+      \ }
+    if a:highlight
+      '<,'>SiliconHighlight /tmp/silicon.png
+    else
+      Silicon /tmp/silicon.png
+    endif
+  endif
+  Silent !~/Web/scripts/file-to-clipboard /tmp/silicon.png
+endfunction
+nnoremap <Leader>Y :call TakeScreenshot(0, 0)<Cr>
+vnoremap <Leader>Y :call TakeScreenshot(1, 0)<Cr>
+vnoremap <Leader>H :call TakeScreenshot(0, 1)<Cr>
 
 " -- Dadbod --
 let g:dbmysql = 'mysql://vagrant:uhTd%40T5pBk!5@local.cskout.com/local_crowdskout'
