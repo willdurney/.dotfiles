@@ -4,7 +4,7 @@ echo Installing willdurney/.dotfiles
 
 (cd ~/.dotfiles && git submodule update --init --recursive)
 
-brew install autojump cheat
+# brew install autojump cheat
 
 # Set up dotfile symlinks
 if [ "$(readlink ~/.gitconfig)" != "$HOME/.dotfiles/.gitconfig" ]; then
@@ -34,4 +34,10 @@ if [ -f ~/.zshrc ]; then
   grep -qxF 'source ~/.dotfiles/.bashrc' ~/.zshrc || echo 'source ~/.dotfiles/.bashrc' >> ~/.zshrc
 fi
 
-echo Successfully installed
+# Set up vim
+grep -qxF "call plug#begin('~/.vim/plugged')" ~/.vimrc && (
+  curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  vim +PlugInstall +PlugUpdate +qall!
+)
+
+echo Successfully installed!
