@@ -1,14 +1,23 @@
-# Will Durney's Dotfiles
+# Will Durney's dotfiles
 
-This repo contains some of my personal customizations for developing in OSX. In addition to my main
-vim configuration, there's a "slimmed-down" vim config file for use on systems where you don't
-intend to do long-term development, such as a production server.
+This repo contains some of my personal customizations for developing in OSX.
 
-## Installation:
+## What's included?
+
+- Homebrew packages
+  - [autojump](https://github.com/wting/autojump)
+  - [cheat](https://github.com/cheat/cheat)
+- Cheatsheets (just community ones for now)
+- PHP & SCSS style config
+- Vimrc + a "slimmed-down" vimrc for servers or newbies
+- Git config (don't just blindly use this)
+- Other silly stuff
+
+## Installation
 
 To install, clone the repo and run the included build script. The build script is nondestructive;
 you'll be prompted to replace existing dotfiles with symlinks.
 
 ```
-git clone git@github.com:willdurney/.dotfiles.git ~/.dotfiles && ~/.dotfiles/install.sh
+git clone git@github.com:willdurney/.dotfiles.git ~/.dotfiles && ~/.dotfiles/build.sh
 ```
