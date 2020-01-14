@@ -10,6 +10,6 @@ To install, clone the repo then run the included install script to create the ap
 Be sure to back up any of your existing dotfiles that would be overridden.
 
 ```
-git clone git@github.com:futurityverb/dotfiles.git ~/.dotfiles
+git clone git@github.com:willdurney/.dotfiles.git ~/.dotfiles
 ~/.dotfiles/install.sh
 ```
