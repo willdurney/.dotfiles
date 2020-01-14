@@ -8,8 +8,8 @@
   phpcs -\-standard=/path/to/.phpcs.xml /path/to/file.php
 -->
 
-<ruleset name="Crowdskout">
-  <description>Crowdskout coding standard.</description>
+<ruleset name="WillDurney">
+  <description>Will Durney's PHP coding standard</description>
 
   <rule ref="Symfony">
     <exclude name="Squiz.Strings.ConcatenationSpacing.PaddingFound"/>

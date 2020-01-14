@@ -41,7 +41,6 @@ Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
-" Plug 'wellle/context.vim'
 Plug 'wellle/targets.vim'
 Plug 'xtal8/traces.vim'
 
@@ -542,10 +541,9 @@ if !exists('g:vdebug_options')
 endif
 let g:vdebug_options['ide_key'] = 'xdebug'
 let g:vdebug_options['path_maps'] = {
-  \'/var/www/local-api.cskout.com/': '/Users/willdurney/Web/Crowdskout/crowdskout-back/',
-  \'/var/www/local-cerebro.cskout.com/': '/Users/willdurney/Web/Crowdskout/cerebro-api/',
-  \'/var/www/local-a.cskout.com/': '/Users/willdurney/Web/Crowdskout/crowdskout-analytics/',
-  \'/var/workers-local/': '/Users/willdurney/Web/Crowdskout/crowdskout-workers/'
+  \'/var/crowdskout/api/': '/Users/willdurney/Web/Crowdskout/crowdskout-back/',
+  \'/var/crowdskout/cerebro': '/Users/willdurney/Web/Crowdskout/cerebro-api/',
+  \'/var/crowdskout/analytics': '/Users/willdurney/Web/Crowdskout/crowdskout-analytics/'
   \}
 
 " -- Phpactor
@@ -648,8 +646,8 @@ function! TakeScreenshot(snippet, highlight) abort
         \ 'background': '#00aeef',
         \ 'shadow-color': '#555555',
         \ 'line-pad': 2,
-        \ 'pad-horiz': 80,
-        \ 'pad-vert': 100,
+        \ 'pad-horiz': 40,
+        \ 'pad-vert': 40,
         \ 'shadow-blur-radius': 0,
         \ 'shadow-offset-x': 0,
         \ 'shadow-offset-y': 0,
@@ -665,8 +663,8 @@ function! TakeScreenshot(snippet, highlight) abort
         \ 'background': '#00aeef',
         \ 'shadow-color': '#555555',
         \ 'line-pad': 2,
-        \ 'pad-horiz': 80,
-        \ 'pad-vert': 100,
+        \ 'pad-horiz': 40,
+        \ 'pad-vert': 40,
         \ 'shadow-blur-radius': 0,
         \ 'shadow-offset-x': 0,
         \ 'shadow-offset-y': 0,

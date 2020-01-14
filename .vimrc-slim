@@ -39,7 +39,9 @@ Plug 'wizicer/vim-jison'
 " Editing
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'Raimondi/delimitMate'
+Plug 'joereynolds/place.vim'
 Plug 'justinmk/vim-sneak'
+Plug 'michaeljsmith/vim-indent-object'
 Plug 'tpope/vim-abolish'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-repeat'
@@ -186,10 +188,10 @@ let g:ale_linters = {
 " --- Project navigation ---
 
 " -- FZF --
+nnoremap <Leader>/ :BLines<Cr>
 nnoremap <Leader>ff :Files<Cr>
 nnoremap <Leader>fb :Buffers<Cr>
 nnoremap <Leader>f/ :Ag<Space>
-nnoremap <Leader>fl :Lines<Cr>
 
 " -- Dirvish --
 augroup DirvishEvents
