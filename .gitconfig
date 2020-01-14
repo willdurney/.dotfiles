@@ -1,0 +1,18 @@
+[user]
+  email = willdurney@gmail.com
+  name = Will Durney
+[core]
+  editor = vim
+  excludesfile = /Users/willdurney/.gitignore_global
+[push]
+  default = simple
+  followTags = true
+[diff]
+  tool = vimdiff
+[fetch]
+  prune = true
+  tags = true
+[pull]
+  rebase = true
+[url "git@github.com:"]
+  insteadOf = https://github.com/

@@ -6,10 +6,9 @@ intend to do long-term development, such as a production server.
 
 ## Installation:
 
-To install, clone the repo then run the included install script to create the appropriate symlinks.
-Be sure to back up any of your existing dotfiles that would be overridden.
+To install, clone the repo and run the included build script. The build script is nondestructive;
+you'll be prompted to replace existing dotfiles with symlinks.
 
 ```
-git clone git@github.com:willdurney/.dotfiles.git ~/.dotfiles
-~/.dotfiles/install.sh
+git clone git@github.com:willdurney/.dotfiles.git ~/.dotfiles && ~/.dotfiles/install.sh
 ```
