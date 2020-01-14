@@ -678,7 +678,7 @@ function! TakeScreenshot(snippet, highlight) abort
       Silicon /tmp/silicon.png
     endif
   endif
-  Silent !~/Web/scripts/file-to-clipboard /tmp/silicon.png
+  Silent !~/.dotfiles/scripts/file-to-clipboard /tmp/silicon.png
 endfunction
 nnoremap <Leader>Y :call TakeScreenshot(0, 0)<Cr>
 vnoremap <Leader>Y :call TakeScreenshot(1, 0)<Cr>
