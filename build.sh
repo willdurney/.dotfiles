@@ -4,7 +4,7 @@ echo Installing willdurney/.dotfiles
 
 (cd ~/.dotfiles && git submodule update --init --recursive)
 
-# brew install autojump cheat
+brew install autojump cheat
 
 # Set up dotfile symlinks
 if [ "$(readlink ~/.gitconfig)" != "$HOME/.dotfiles/.gitconfig" ]; then
