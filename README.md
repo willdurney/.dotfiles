@@ -7,7 +7,7 @@ This repo contains some of my personal customizations for developing in OSX.
 - Homebrew packages
   - [autojump](https://github.com/wting/autojump)
   - [cheat](https://github.com/cheat/cheat)
-- Cheatsheets (just community ones for now)
+- Cheatsheets (community + crowdskout-specific)
 - PHP & SCSS style config
 - Vimrc + a "slimmed-down" vimrc for servers or newbies
 - Git config (don't just blindly use this)
