@@ -8,19 +8,30 @@ brew install autojump cheat
 
 # Set up dotfile symlinks
 if [ "$(readlink ~/.gitconfig)" != "$HOME/.dotfiles/.gitconfig" ]; then
-  ln -si ~/.dotfiles/.gitconfig ~/.gitconfig
+  if [[ -a ~/.gitconfig || $(bash -c "read -p \"create $HOME/.gitconfig? \" c; echo \$c") =~ ^[Yy]$ ]]; then
+    ln -si ~/.dotfiles/.gitconfig ~/.gitconfig
+  fi
 fi
+
 if [ "$(readlink ~/.gitignore_global)" != "$HOME/.dotfiles/.gitignore_global" ]; then
-  ln -si ~/.dotfiles/.gitignore_global ~/.gitignore_global
+  if [[ -a ~/.gitignore_global || $(bash -c "read -p \"create $HOME/.gitignore_global? \" c; echo \$c") =~ ^[Yy]$ ]]; then
+    ln -si ~/.dotfiles/.gitignore_global ~/.gitignore_global
+  fi
 fi
 if [ "$(readlink ~/.phpcs.xml)" != "$HOME/.dotfiles/.phpcs.xml" ]; then
-  ln -si ~/.dotfiles/.phpcs.xml ~/.phpcs.xml
+  if [[ -a ~/.phpcs.xml || $(bash -c "read -p \"create $HOME/.phpcs.xml? \" c; echo \$c") =~ ^[Yy]$ ]]; then
+    ln -si ~/.dotfiles/.phpcs.xml ~/.phpcs.xml
+  fi
 fi
 if [ "$(readlink ~/.scss-lint.yml)" != "$HOME/.dotfiles/.scss-lint.yml" ]; then
-  ln -si ~/.dotfiles/.scss-lint.yml ~/.scss-lint.yml
+  if [[ -a ~/.scss-lint.yml || $(bash -c "read -p \"create $HOME/.scss-lint.yml? \" c; echo \$c") =~ ^[Yy]$ ]]; then
+    ln -si ~/.dotfiles/.scss-lint.yml ~/.scss-lint.yml
+  fi
 fi
 if [ "$(readlink ~/.vimrc)" != "$HOME/.dotfiles/.vimrc" ]; then
-  ln -si ~/.dotfiles/.vimrc ~/.vimrc
+  if [[ -a ~/.vimrc || $(bash -c "read -p \"create $HOME/.vimrc? \" c; echo \$c") =~ ^[Yy]$ ]]; then
+    ln -si ~/.dotfiles/.vimrc ~/.vimrc
+  fi
 fi
 
 # Source bash aliases
