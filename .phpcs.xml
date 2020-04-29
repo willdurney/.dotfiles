@@ -40,6 +40,8 @@
     <exclude name="Squiz.Arrays.ArrayDeclaration.MultiLineNotAllowed"/>
     <exclude name="Squiz.Arrays.ArrayDeclaration.SingleLineNotAllowed"/>
     <exclude name="Squiz.Arrays.ArrayDeclaration.ValueNotAligned"/>
+    <exclude name="Squiz.Commenting.BlockComment.FirstLineIndent"/>
+    <exclude name="Squiz.Commenting.BlockComment.LineIndent"/>
     <exclude name="Squiz.Commenting.BlockComment.NoNewLine"/>
     <exclude name="Squiz.Commenting.BlockComment.SingleLine"/>
     <exclude name="Squiz.Commenting.BlockComment.WrongStart"/>

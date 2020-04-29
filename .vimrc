@@ -195,12 +195,12 @@ augroup TrailingSpaces
   autocmd BufWritePre *.js,*.ts,*.php,*.html,*.css,*.scss,*.jison,*.yml,*.sh :%s/\s\+$//e
 augroup END
 
-" Agda folds
-augroup AgdaFolds
-  autocmd!
-  autocmd FileType agda setlocal commentstring={-%s-}
-  autocmd FileType agda setlocal foldtext=v:folddashes
-augroup END
+" " Agda folds
+" augroup AgdaFolds
+"   autocmd!
+"   autocmd FileType agda setlocal commentstring={-%s-}
+"   autocmd FileType agda setlocal foldtext=v:folddashes
+" augroup END
 
 " Better matching tag nagivation
 runtime macros/matchit.vim
@@ -444,8 +444,6 @@ nnoremap <Leader>fh :Helptags<Cr>
 " -- Dirvish --
 augroup DirvishEvents
   autocmd!
-  " Enable :Gstatus and friends.
-  autocmd FileType dirvish call fugitive#detect(@%)
   " Sort folders at the top
   autocmd FileType dirvish
     \ sort r /[^\/]*$/
