@@ -1,0 +1,121 @@
+snippet grd "Data structures group"
+# Data Structures
+
+$0
+endsnippet
+
+snippet gro "Group"
+# Group $1
+
+$0
+endsnippet
+
+snippet sec "Section"
+## $1 [/${1/( )|(\w+)/(?1:-:)(?2:\l$0:)/g}]
+
+$0
+endsnippet
+
+snippet end "Endpoint"
+### $1 [${2:GET} /$3]
+
+$0
+endsnippet
+
+snippet req "Request"
+:[](_req.apib REQTYPE:"$1")
+
+$0
+endsnippet
+
+snippet res "Response"
+:[](_req.apib${1: DATATYPE:"$1"})
+
+$0
+endsnippet
+
+snippet par "Parameters"
+- Parameters
+	- id: 1 (number, required) - $1 ID
+
+$0
+endsnippet
+
+snippet dat "Data structure"
+## $1
+${2:- $3}
+
+## $1 Request ($1)
+$2$4
+
+## $1 Create Request ($1 Request)
+$2$5
+
+## $1 Response ($1, fixed-type)
+$2$6
+
+$0
+endsnippet
+
+snippet all "Standard get all request"
+### Get $1s [GET /${1/ /-/g}{?filter,sort,reverse,offset,limit,search,folder,flat}]
+
+- Parameters
+	- filter: all (optional)
+	- sort: id (optional)
+	- reverse: true (boolean, optional)
+	- offset: 0 (number, optional)
+	- limit: 20 (number, optional)
+	- search (optional)
+	- folder (number, optional)
+	- flat: true (boolean, optional)
+
+:[](_res.apib DATA:_list.apib LISTCOUNT:"1" LISTTYPE:"${1/\w+/\u$0/g} Response")
+
+$0
+endsnippet
+
+snippet cre "Standard create request"
+### Create $1 [POST /${1/ /-/g}]
+
+:[](_req.apib REQTYPE:"${1/\w+/\u$0/g} Create Request")
+
+:[](_res.apib DATATYPE:"${1/\w+/\u$0/g} Response")
+
+$0
+endsnippet
+
+snippet get "Standard get request"
+### Get $1 [GET /${1/ /-/g}/{id}]
+
+- Parameters
+	- id: 1 (number, required) - ${1/\w+/\u$0/g} ID
+
+:[](_res.apib DATATYPE:"${1/\w+/\u$0/g} Response")
+
+$0
+endsnippet
+
+snippet upd "Standard update request"
+### Update $1 [POST /${1/ /-/g}/{id}]
+
+- Parameters
+	- id: 1 (number, required) - ${1/\w+/\u$0/g} ID
+
+:[](_req.apib REQTYPE:"${1/\w+/\u$0/g} Request")
+
+:[](_res.apib DATATYPE:"${1/\w+/\u$0/g} Response")
+
+$0
+endsnippet
+
+snippet del "Standard delete request"
+### Delete $1 [DELETE /${1/ /-/g}/{id}]
+
+- Parameters
+	- id: 1 (number, required) - ${1/\w+/\u$0/g} ID
+
+:[](_res.apib)
+
+$0
+endsnippet

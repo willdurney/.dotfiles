@@ -10,6 +10,7 @@ This repo contains some of my personal customizations for developing in OSX.
 - Cheatsheets (community + crowdskout-specific)
 - PHP & SCSS style config
 - Vimrc + a "slimmed-down" vimrc for servers or newbies
+  - Custom [UltiSnips](https://github.com/SirVer/ultisnips) code snippets
 - Git config (don't just blindly use this)
 - Other silly stuff
 

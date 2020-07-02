@@ -1,0 +1,8 @@
+snippet mod "Model"
+"$1": {
+	"dataStructure": ${2:["${1/(\w+)(-)?/\u$1(?2: )/g} Request", "${1/(\w+)(-)?/\u$1(?2: )/g} Response"]},
+	"interface": "I${3:${1/(\w+)-?/\u$1/g}}",
+	"property": "${4:${1/-(\w)/\u$1/g}}",
+	"path": "${5:module/$1}"
+}
+endsnippet

@@ -1,0 +1,40 @@
+snippet log "Console Log"
+console.log($0);
+endsnippet
+
+snippet fun "JS Function"
+function $1($2) {
+	$0
+}
+endsnippet
+
+snippet sfn "Angular Scope Function"
+$scope.$1 = function($3) {
+	$0
+};
+endsnippet
+
+snippet doc "JSDoc"
+/**
+ * $0
+ */
+endsnippet
+
+snippet for "For loop"
+for ($1; $2; $3) {
+	$0
+}
+endsnippet
+
+snippet foe "Lodash forEach loop"
+_.forEach($1, function($2) {
+	$0
+});
+endsnippet
+
+snippet imp "Import preset column"
+'$1': {
+	field: '$2',${3:
+	item: ${4:0},}
+},
+endsnippet

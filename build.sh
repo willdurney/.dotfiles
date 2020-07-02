@@ -33,6 +33,16 @@ if [ "$(readlink ~/.vimrc)" != "$HOME/.dotfiles/.vimrc" ]; then
     ln -si ~/.dotfiles/.vimrc ~/.vimrc
   fi
 fi
+if [ "$(readlink ~/.vim/UltiSnips)" != "$HOME/.dotfiles/snippets" ]; then
+  if [[ -d ~/.vim/UltiSnips ]]; then
+    if [[ $(bash -c "read -p \"replace $HOME/.vim/UltiSnips? \" c; echo \$c") =~ ^[Yy]$ ]]; then
+      rm -rf ~/.vim/UltiSnips
+      ln -s ~/.dotfiles/snippets ~/.vim/Ultisnips
+    fi
+  elif [[ $(bash -c "read -p \"create $HOME/.vim/UltiSnips? \" c; echo \$c") =~ ^[Yy]$ ]]; then
+    ln -si ~/.dotfiles/snippets ~/.vim/UltiSnips
+  fi
+fi
 
 # Source bash aliases
 if [ -f ~/.bash_profile ]; then
