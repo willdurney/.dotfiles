@@ -285,7 +285,7 @@ nnoremap <Leader>rb :execute "!./build.sh && ./migrate.sh"<Cr>
 nnoremap <Leader>ro :Silent !open %<Cr>
 
 " Quickly format things
-nnoremap <Leader>=j V:!jq '.'<Cr>
+nnoremap <Leader>=j ggVG:!jq '.'<Cr>
 nnoremap <Leader>=m :%s/\v\\| +(.*) \\|\n/\1,/<Cr>$x0
 
 " Quickly fix lint issues
@@ -307,12 +307,12 @@ command! SourceVimrc source $MYVIMRC
 
 " Command to re-run grunt commands
 function! GruntStop() abort
-  Silent !screen -S cs-front -p 0 -X stuff ""
+  Silent !screen -S cs-front-main -p 0 -X stuff ""
   Silent !screen -S cs-front-legacy -p 0 -X stuff ""
 endfunction
 function! Grunt() abort
   call GruntStop()
-  Silent !screen -S cs-front -p 0 -X stuff "npm run start:dev$(printf \\r)"
+  Silent !screen -S cs-front-main -p 0 -X stuff "npm run start:dev$(printf \\r)"
   Silent !screen -S cs-front-legacy -p 0 -X stuff "npm run start:dev:legacy$(printf \\r)"
 endfunction
 command! Grunt call Grunt()
@@ -487,7 +487,7 @@ nnoremap <Leader>gs :Gstatus<Cr>
 nnoremap <Leader>gS :GV<Cr>
 nnoremap <Leader>gc :Gcommit<Cr>
 nnoremap <Leader>gC :Gcommit -a<Cr>
-nnoremap <Leader>gdd :Gvdiff<Cr>
+nnoremap <Leader>gdd :Gvdiff!<Cr>
 nnoremap <Leader>gdh :diffget //2<Cr>:diffupdate<Cr>
 nnoremap <Leader>gdl :diffget //3<Cr>:diffupdate<Cr>
 noremap <Leader>gD :Gbrowse<Cr>
