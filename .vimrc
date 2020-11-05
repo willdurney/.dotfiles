@@ -19,6 +19,7 @@ Plug 'leshill/vim-json'
 Plug 'othree/html5.vim'
 Plug 'othree/javascript-libraries-syntax.vim'
 Plug 'pearofducks/ansible-vim'
+Plug 'posva/vim-vue'
 Plug 'tpope/vim-git'
 Plug 'tpope/vim-markdown'
 Plug 'wizicer/vim-jison'
@@ -545,6 +546,7 @@ let g:vdebug_options['path_maps'] = {
   \}
 
 " -- Phpactor
+let g:phpactorPhpBin = "/usr/local/Cellar/php@7.3/7.3.23/bin/php"
 augroup PhpactorComplete
   autocmd!
   autocmd FileType php setlocal omnifunc=phpactor#Complete
