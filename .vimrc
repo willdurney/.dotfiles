@@ -22,6 +22,7 @@ Plug 'pearofducks/ansible-vim'
 Plug 'posva/vim-vue'
 Plug 'tpope/vim-git'
 Plug 'tpope/vim-markdown'
+Plug 'vim-python/python-syntax'
 Plug 'wizicer/vim-jison'
 
 " Editing
@@ -348,6 +349,9 @@ augroup END
 " -- Javascript Libraries Syntax --
 let g:used_javascript_libs = 'jquery,angularjs,angularui,angularuirouter,requirejs,underscore'
 
+" -- Python Syntax --
+let g:python_highlight_all = 1
+
 " --- Editing ---
 
 " -- YankCode --
@@ -415,6 +419,7 @@ let g:ale_linters = {
   \ 'php': ['php', 'phpcs', 'phpstan'],
   \ 'scss': ['scsslint'],
   \ 'html': ['alex', 'htmlhint', 'proselint', 'write-good'],
+  \ 'python': ['pylint', 'black'],
 \ }
 " let g:ale_lint_on_text_changed = 'normal'
 let g:ale_lint_delay = 1000

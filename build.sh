@@ -4,7 +4,8 @@ echo Installing willdurney/.dotfiles
 
 (cd ~/.dotfiles && git submodule update --init --recursive)
 
-brew install vim autojump cheat
+brew install vim autojump cheat the_silver_searcher jq
+pip3 install -r scripts/requirements.txt
 
 # Set up dotfile symlinks
 if [ "$(readlink ~/.gitconfig)" != "$HOME/.dotfiles/.gitconfig" ]; then

@@ -5,8 +5,11 @@ This repo contains some of my personal customizations for developing in OSX.
 ## What's included?
 
 - Homebrew packages
+  - vim
   - [autojump](https://github.com/wting/autojump)
   - [cheat](https://github.com/cheat/cheat)
+  - [ag](https://github.com/ggreer/the_silver_searcher)
+  - [jq](https://github.com/stedolan/jq)
 - Cheatsheets (community + crowdskout-specific)
 - PHP & SCSS style config
 - Vimrc + a "slimmed-down" vimrc for servers or newbies

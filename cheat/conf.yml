@@ -37,7 +37,7 @@ cheatpaths:
     tags: [ community ]
     readonly: true
 
-  - name: crowdskout
-    path: ~/.dotfiles/cheat/crowdskout
-    tags: [ crowdskout ]
-    readonly: false
+#   - name: crowdskout
+#     path: ~/.dotfiles/cheat/crowdskout
+#     tags: [ crowdskout ]
+#     readonly: false
