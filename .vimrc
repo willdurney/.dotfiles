@@ -6,6 +6,9 @@ endif
 
 call plug#begin('~/.vim/plugged')
 
+" Vim config
+Plug 'embear/vim-localvimrc'
+
 " Syntax
 Plug '2072/PHP-Indenting-for-VIm'
 Plug 'StanAngeloff/php.vim'
@@ -48,8 +51,8 @@ Plug 'xtal8/traces.vim'
 
 " Completion & analysis
 Plug 'SirVer/ultisnips'
-Plug 'ajh17/VimCompletesMe'
 Plug 'ludovicchabant/vim-gutentags'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'w0rp/ale'
 
 " Project navigation
@@ -64,7 +67,6 @@ Plug 'tpope/vim-eunuch'
 Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/gv.vim'
 Plug 'shuber/vim-promiscuous'
-Plug 'tommcdo/vim-fubitive'
 Plug 'tpope/vim-fugitive'
 
 " PHP
@@ -91,10 +93,12 @@ Plug 'vim-airline/vim-airline-themes'
 
 " Miscellaneous
 " Plug 'Shougo/vimproc.vim', { 'do': 'make' }
+Plug 'kristijanhusak/vim-dadbod-ui'
 Plug 'metakirby5/codi.vim'
 Plug 'rizzatti/dash.vim'
 Plug 'segeljakt/vim-silicon'
 Plug 'tpope/vim-dadbod'
+Plug 'vim-test/vim-test'
 Plug 'zenbro/mirror.vim'
 
 call plug#end()
@@ -273,15 +277,7 @@ cmap G-MR-v/ g!-MR-v/
 cmap G-MR-// g!-MR-//
 
 " Run command mappings
-nnoremap <Leader>rt :execute "!phpunit --filter" cfi#get_func_name() "%"<Cr>
-nnoremap <Leader>rT :!phpunit %<Cr>
 nnoremap <Leader>rc :Silent !open -a "Google Chrome" "file://%:p"<Cr>
-nnoremap <Leader>rf :call CodeFixer()<Cr>
-nnoremap <Leader>rgr :Silent !screen -r cs-front-grunt<Cr>
-nnoremap <Leader>rgg :call Grunt()<Cr>
-" nnoremap <Leader>rgG :call Grunt()<Cr>:Silent !screen -r cs-front-grunt<Cr>
-" nnoremap <Leader>rga :call GruntAll()<Cr>
-nnoremap <Leader>rgs :call GruntStop()<Cr>
 nnoremap <Leader>rs :Silent !stree<Cr>
 nnoremap <Leader>rb :execute "!./build.sh && ./migrate.sh"<Cr>
 nnoremap <Leader>ro :Silent !open %<Cr>
@@ -307,32 +303,13 @@ command! -nargs=1 Silent
 " Quickly source vimrc
 command! SourceVimrc source $MYVIMRC
 
-" Command to re-run grunt commands
-function! GruntStop() abort
-  Silent !screen -S cs-front-main -p 0 -X stuff ""
-  Silent !screen -S cs-front-legacy -p 0 -X stuff ""
-endfunction
-function! Grunt() abort
-  call GruntStop()
-  Silent !screen -S cs-front-main -p 0 -X stuff "npm run start:dev$(printf \\r)"
-  Silent !screen -S cs-front-legacy -p 0 -X stuff "npm run start:dev:legacy$(printf \\r)"
-endfunction
-command! Grunt call Grunt()
-command! GruntStop call GruntStop()
-
-" Code style fixers
-function! CodeFixer() abort
-  if (&ft=='php')
-    Silent %!phpcbf --standard=~/.phpcs.xml
-  elseif (&ft=='javascript')
-    Silent !eslint --fix %:p
-    edit
-  endif
-  update
-endfunction
-
 
 " ----- Plugins -----
+
+" --- Vim config ---
+
+" -- Local vimrc --
+let g:localvimrc_ask = 0
 
 " --- Syntax ---
 
@@ -406,12 +383,20 @@ let g:UltiSnipsExpandTrigger = '`'
 let g:UltiSnipsJumpForwardTrigger = '`'
 let g:UltiSnipsJumpBackwardTrigger = '~'
 
-" -- VimCompletesMe --
-let g:vcm_direction = 'p'
-set completeopt=menu,menuone,longest,preview,noselect
-
 " -- Gutentags --
 let g:gutentags_ctags_exclude = ['*.min.js', '*.min.css', 'build', 'vendor', '.git', 'node_modules']
+
+" -- Coc --
+" Use tab for trigger completion with characters ahead and navigate.
+inoremap <silent><expr> <TAB>
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>check_back_space() ? "\<TAB>" :
+  \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
 
 " -- ALE --
 let g:ale_linters = {
@@ -419,20 +404,26 @@ let g:ale_linters = {
   \ 'php': ['php', 'phpcs', 'phpstan'],
   \ 'scss': ['scsslint'],
   \ 'html': ['alex', 'htmlhint', 'proselint', 'write-good'],
-  \ 'python': ['pylint', 'black'],
+  \ 'python': ['pylint'],
+\ }
+let g:ale_fixers = {
+  \ 'python': ['black'],
 \ }
 " let g:ale_lint_on_text_changed = 'normal'
 let g:ale_lint_delay = 1000
 " let g:ale_lint_on_insert_leave = 1
+let g:ale_fix_on_save = 1
 let g:ale_php_phpcs_standard = '~/.phpcs.xml'
 let g:ale_php_phpcs_executable = 'phpcs -s'
 let g:ale_php_phpstan_configuration = 'phpstan.neon'
 let g:ale_php_phpstan_level = 7
-" let g:ale_completion_enabled = 1
 nnoremap <Leader>al :ALELint<Cr>
 nnoremap <Leader>ai :ALEInfo<Cr>
 nnoremap <Leader>an :ALENext<Cr>
 nnoremap <Leader>ap :ALEPrevious<Cr>
+nnoremap <Leader>at :ALEToggle<Cr>
+nnoremap <Leader>af :ALEFix<Cr>
+
 
 " --- Project navigation ---
 
@@ -544,11 +535,9 @@ if !exists('g:vdebug_options')
     let g:vdebug_options = {}
 endif
 let g:vdebug_options['ide_key'] = 'xdebug'
-let g:vdebug_options['path_maps'] = {
-  \'/var/crowdskout/api/': '/Users/willdurney/Web/Crowdskout/crowdskout-back/',
-  \'/var/crowdskout/cerebro': '/Users/willdurney/Web/Crowdskout/cerebro-api/',
-  \'/var/crowdskout/analytics': '/Users/willdurney/Web/Crowdskout/crowdskout-analytics/'
-  \}
+" let g:vdebug_options['path_maps'] = {
+"   \'/internal': '/external',
+" \}
 
 " -- Phpactor
 let g:phpactorPhpBin = "/usr/local/Cellar/php@7.3/7.3.23/bin/php"
@@ -599,6 +588,14 @@ let g:airline_section_b = '%{fugitive#head()}'
 let g:airline_section_y = "%{gutentags#statusline('Indexing...')}"
 
 " --- Miscellaneous ---
+
+" -- Dadbod UI --
+let g:db_ui_show_help = 0
+let g:db_ui_win_position = 'right'
+nnoremap <Leader>db :DBUIToggle<Cr>
+" let g:dbs = {
+"   \ 'dbname': 'connstring',
+" \ }
 
 " -- Codi --
 function! CodiSplit(paste) abort
@@ -689,13 +686,10 @@ nnoremap <Leader>Y :call TakeScreenshot(0, 0)<Cr>
 vnoremap <Leader>Y :call TakeScreenshot(1, 0)<Cr>
 vnoremap <Leader>H :call TakeScreenshot(0, 1)<Cr>
 
-" -- Dadbod --
-let g:dbmysql = 'mysql://vagrant:uhTd%40T5pBk!5@local.cskout.com/local_crowdskout'
-let g:dbmongo = 'mongodb://root:root12@local.cskout.com/Queue'
-noremap <Leader>ds :DB g:dbmysql<Cr>
-noremap <Leader>dS :DB g:dbmysql<Space>
-noremap <Leader>dm :DB g:dbmongo<Cr>
-noremap <Leader>dM :DB g:dbmongo<Space>
+" -- Test --
+let test#strategy = "vimterminal"
+nnoremap <Leader>rt :TestNearest<Cr>
+nnoremap <Leader>rT :TestFile<Cr>
 
 " -- Mirror --
 nnoremap <Leader>me :MirrorEdit<Space>

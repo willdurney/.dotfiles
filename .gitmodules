@@ -1,6 +1,3 @@
 [submodule "cheat/community"]
 	path = cheat/community
 	url = git@github.com:cheat/cheatsheets.git
-; [submodule "cheat/crowdskout"]
-; 	path = cheat/crowdskout
-; 	url = git@bitbucket.org:elite50/cheatsheets.git
