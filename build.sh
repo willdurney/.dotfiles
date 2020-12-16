@@ -4,16 +4,25 @@ echo Installing willdurney/.dotfiles
 
 (cd ~/.dotfiles && git submodule update --init --recursive)
 
-brew install vim autojump cheat the_silver_searcher jq
+brew install direnv vim autojump cheat the_silver_searcher jq thefuck
 pip3 install -r scripts/requirements.txt
 
+# Install oh-my-zsh
+if [[ ! -d ~/.oh-my-zsh && $(bash -c "read -p \"install oh-my-zsh? \" c; echo \$c") =~ ^[Yy]$ ]]; then
+    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+fi
+
 # Set up dotfile symlinks
+if [ "$(readlink ~/.zshrc)" != "$HOME/.dotfiles/.zshrc" ]; then
+  if [[ -a ~/.zshrc || $(bash -c "read -p \"create $HOME/.zshrc? \" c; echo \$c") =~ ^[Yy]$ ]]; then
+    ln -si ~/.dotfiles/.zshrc ~/.zshrc
+  fi
+fi
 if [ "$(readlink ~/.gitconfig)" != "$HOME/.dotfiles/.gitconfig" ]; then
   if [[ -a ~/.gitconfig || $(bash -c "read -p \"create $HOME/.gitconfig? \" c; echo \$c") =~ ^[Yy]$ ]]; then
     ln -si ~/.dotfiles/.gitconfig ~/.gitconfig
   fi
 fi
-
 if [ "$(readlink ~/.gitignore_global)" != "$HOME/.dotfiles/.gitignore_global" ]; then
   if [[ -a ~/.gitignore_global || $(bash -c "read -p \"create $HOME/.gitignore_global? \" c; echo \$c") =~ ^[Yy]$ ]]; then
     ln -si ~/.dotfiles/.gitignore_global ~/.gitignore_global
@@ -45,22 +54,12 @@ if [ "$(readlink ~/.vim/UltiSnips)" != "$HOME/.dotfiles/snippets" ]; then
   fi
 fi
 
-# Source bash aliases
-if [ -f ~/.bash_profile ]; then
-  grep -qxF 'source ~/.dotfiles/.bashrc' ~/.bash_profile || echo 'source ~/.dotfiles/.bashrc' >> ~/.bash_profile
-fi
-if [ -f ~/.bashrc ]; then
-  grep -qxF 'source ~/.dotfiles/.bashrc' ~/.bashrc || echo 'source ~/.dotfiles/.bashrc' >> ~/.bashrc
-fi
-if [ -f ~/.zshrc ]; then
-  grep -qxF 'source ~/.dotfiles/.bashrc' ~/.zshrc || echo 'source ~/.dotfiles/.bashrc' >> ~/.zshrc
-fi
-
 # Set up vim
 grep -qxF "call plug#begin('~/.vim/plugged')" ~/.vimrc && (
   curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   mkdir -p ~/.vim/undodir
   vim +PlugInstall +PlugUpdate +qall!
+  vim +"CocInstall coc-db coc-jedi" +qall!
 )
 
 echo Successfully installed!

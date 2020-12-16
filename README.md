@@ -4,13 +4,16 @@ This repo contains some of my personal customizations for developing in OSX.
 
 ## What's included?
 
+- [Oh My Zsh](https://ohmyz.sh/) and Zsh config
 - Homebrew packages
+  - [direnv](https://direnv.net/)
   - vim
   - [autojump](https://github.com/wting/autojump)
   - [cheat](https://github.com/cheat/cheat)
   - [ag](https://github.com/ggreer/the_silver_searcher)
   - [jq](https://github.com/stedolan/jq)
-- Cheatsheets (community + crowdskout-specific)
+  - [thefuck](https://github.com/nvbn/thefuck)
+- Cheatsheets (community only for now, supports more)
 - PHP & SCSS style config
 - Vimrc + a "slimmed-down" vimrc for servers or newbies
   - Custom [UltiSnips](https://github.com/SirVer/ultisnips) code snippets

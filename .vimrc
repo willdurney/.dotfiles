@@ -57,7 +57,7 @@ Plug 'w0rp/ale'
 
 " Project navigation
 Plug 'Olical/vim-enmasse'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
 Plug 'junegunn/fzf.vim'
 Plug 'justinmk/vim-dirvish'
 Plug 'majutsushi/tagbar'
@@ -147,6 +147,9 @@ set ruler
 
 " Don't redraw in the middle of macros
 set lazyredraw
+
+" Prevent esc key delay
+set ttimeoutlen=100
 
 " Persistent undo
 if has('persistent_undo')
