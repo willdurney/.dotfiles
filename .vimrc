@@ -92,7 +92,6 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 
 " Miscellaneous
-" Plug 'Shougo/vimproc.vim', { 'do': 'make' }
 Plug 'kristijanhusak/vim-dadbod-ui'
 Plug 'metakirby5/codi.vim'
 Plug 'rizzatti/dash.vim'
@@ -516,6 +515,10 @@ endfunction
 augroup FugitiveClose
   autocmd!
   autocmd BufReadPost fugitive://* set bufhidden=delete
+augroup END
+augroup FugitiveCommit
+  autocmd!
+  autocmd BufEnter COMMIT_EDITMSG startinsert!
 augroup END
 nnoremap <Leader>gpr :execute "Silent !open https://bitbucket.org/elite50/" . substitute(getcwd(), '^.*/', '', '') . "/pull-requests/new"<Cr>
 

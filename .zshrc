@@ -7,7 +7,10 @@ ZSH_THEME="minimal"
 ZSH_DISABLE_COMPFIX="true"
 KEYTIMEOUT=8
 
-plugins=(direnv autojump vi-mode fzf zsh-interactive-cd)
+plugins=(direnv autojump vi-mode fzf zsh-interactive-cd alias-finder)
+
+# Show existing aliases if long-form command used
+ZSH_ALIAS_FINDER_AUTOMATIC=true
 
 # Custom vi-mode config
 bindkey -M viins 'jk' vi-cmd-mode
