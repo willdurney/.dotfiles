@@ -5,7 +5,7 @@ echo Installing willdurney/.dotfiles
 (cd ~/.dotfiles && git submodule update --init --recursive)
 
 brew install direnv vim autojump cheat the_silver_searcher jq thefuck
-pip3 install -r scripts/requirements.txt
+pip3 install -r $HOME/.dotfiles/scripts/requirements.txt
 
 # Install oh-my-zsh
 if [[ ! -d ~/.oh-my-zsh && $(bash -c "read -p \"install oh-my-zsh? \" c; echo \$c") =~ ^[Yy]$ ]]; then
