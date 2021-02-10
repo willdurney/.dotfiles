@@ -7,7 +7,7 @@ ZSH_THEME="minimal"
 ZSH_DISABLE_COMPFIX="true"
 KEYTIMEOUT=8
 
-plugins=(direnv autojump vi-mode fzf zsh-interactive-cd alias-finder)
+plugins=(direnv autojump vi-mode fzf zsh-interactive-cd alias-finder pyenv)
 
 # Show existing aliases if long-form command used
 ZSH_ALIAS_FINDER_AUTOMATIC=true
@@ -27,6 +27,9 @@ alias db="vim +DBUI"
 # Sanity preservers
 alias :q="exit"
 alias q="exit"
+
+export VIM_ENTRY_POINT="."
+v () { vim ${VIM_ENTRY_POINT} }
 
 # Shortlinks
 alias wlldrnet="python3 ~/.dotfiles/scripts/wlldrnet.py"

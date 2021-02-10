@@ -389,6 +389,7 @@ let g:UltiSnipsJumpBackwardTrigger = '~'
 let g:gutentags_ctags_exclude = ['*.min.js', '*.min.css', 'build', 'vendor', '.git', 'node_modules']
 
 " -- Coc --
+let g:coc_global_extensions = ['coc-json', 'coc-db', 'coc-jedi']
 " Use tab for trigger completion with characters ahead and navigate.
 inoremap <silent><expr> <TAB>
   \ pumvisible() ? "\<C-n>" :
@@ -504,13 +505,13 @@ nnoremap <Leader>gpu :execute "Silent Gpush -u origin" fugitive#head()<Cr>
 " Delete local fully-merged branches
 nnoremap <Leader>gnl :execute "Silent !git branch --merged \| tr -d '*' \| grep -v '^\\s*\\(master\\\|spec\\)' \| xargs -n1 git branch -d"<Cr>
 " Delete remote fully-merged branches
-nnoremap <Leader>gnr :execute "Silent !git branch -r --merged \| sed -e 's/origin\\///' \| grep -v '^\\s*\\(master\\\|HEAD\\\|spec\\)' \| xargs -n1 git push origin --delete"<Cr>
+" nnoremap <Leader>gnr :execute "Silent !git branch -r --merged \| sed -e 's/origin\\///' \| grep -v '^\\s*\\(master\\\|HEAD\\\|spec\\)' \| xargs -n1 git push origin --delete"<Cr>
 nnoremap <Leader>gnn :call GitFreshenRepo()<Cr>
 function! GitFreshenRepo() abort
   Silent Git checkout master
   normal ,gpl
   normal ,gnl
-  normal ,gnr
+  " normal ,gnr
 endfunction
 augroup FugitiveClose
   autocmd!

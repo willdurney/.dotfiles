@@ -8,5 +8,7 @@ tags.temp
 .phpcomplete_extended
 .rest
 .env
+.envrc
+.envbin
 .lvim
 .lvimrc

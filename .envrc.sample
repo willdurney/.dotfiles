@@ -1,3 +1,4 @@
 PATH_add .envbin
 
 export WLLDRNET_API_KEY=
+export VIM_ENTRY_POINT=

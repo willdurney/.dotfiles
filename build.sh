@@ -43,6 +43,11 @@ if [ "$(readlink ~/.vimrc)" != "$HOME/.dotfiles/.vimrc" ]; then
     ln -si ~/.dotfiles/.vimrc ~/.vimrc
   fi
 fi
+if [ "$(readlink ~/.vim/coc-settings.json)" != "$HOME/.dotfiles/coc-settings.json" ]; then
+  if [[ -a ~/.vim/coc-settings.json || $(bash -c "read -p \"create $HOME/.vim/coc-settings.json? \" c; echo \$c") =~ ^[Yy]$ ]]; then
+    ln -si ~/.dotfiles/coc-settings.json ~/.vim/coc-settings.json
+  fi
+fi
 if [ "$(readlink ~/.vim/UltiSnips)" != "$HOME/.dotfiles/snippets" ]; then
   if [[ -d ~/.vim/UltiSnips ]]; then
     if [[ $(bash -c "read -p \"replace $HOME/.vim/UltiSnips? \" c; echo \$c") =~ ^[Yy]$ ]]; then
@@ -59,7 +64,6 @@ grep -qxF "call plug#begin('~/.vim/plugged')" ~/.vimrc && (
   curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   mkdir -p ~/.vim/undodir
   vim +PlugInstall +PlugUpdate +qall!
-  vim +"CocInstall coc-db coc-jedi" +qall!
 )
 
 echo Successfully installed!
