@@ -31,5 +31,7 @@ alias q="exit"
 export VIM_ENTRY_POINT="."
 v () { vim ${VIM_ENTRY_POINT} }
 
+alias sail="vendor/bin/sail"
+
 # Shortlinks
 alias wlldrnet="python3 ~/.dotfiles/scripts/wlldrnet.py"

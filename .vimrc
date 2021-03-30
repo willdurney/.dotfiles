@@ -77,11 +77,6 @@ Plug 'tobyS/pdv'
 Plug 'tobyS/vmustache'
 Plug 'tyru/current-func-info.vim'
 
-" JavaScript
-" Plug 'bigfish/vim-js-context-coloring', { 'do': 'npm install' }
-" Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }
-Plug 'Quramy/tsuquyomi'
-
 " HTML
 Plug 'mattn/emmet-vim'
 
@@ -106,7 +101,7 @@ call plug#end()
 " ----- General Config -----
 
 " Stop vim dying with long lines
-set synmaxcol=250
+set synmaxcol=1000
 
 " Show relative line numbers
 set number relativenumber
@@ -203,22 +198,8 @@ augroup TrailingSpaces
   autocmd BufWritePre *.js,*.ts,*.php,*.html,*.css,*.scss,*.jison,*.yml,*.sh :%s/\s\+$//e
 augroup END
 
-" " Agda folds
-" augroup AgdaFolds
-"   autocmd!
-"   autocmd FileType agda setlocal commentstring={-%s-}
-"   autocmd FileType agda setlocal foldtext=v:folddashes
-" augroup END
-
 " Better matching tag nagivation
 runtime macros/matchit.vim
-
-" Proper commentstring
-augroup CommentString
-  autocmd!
-  autocmd FileType php setlocal commentstring=/*\ %s\ */
-  autocmd FileType javascript setlocal commentstring=//\ %s
-augroup END
 
 
 " ----- Custom mappings -----
@@ -281,7 +262,6 @@ cmap G-MR-// g!-MR-//
 " Run command mappings
 nnoremap <Leader>rc :Silent !open -a "Google Chrome" "file://%:p"<Cr>
 nnoremap <Leader>rs :Silent !stree<Cr>
-nnoremap <Leader>rb :execute "!./build.sh && ./migrate.sh"<Cr>
 nnoremap <Leader>ro :Silent !open %<Cr>
 
 " Quickly format things
@@ -324,9 +304,6 @@ augroup PhpSyntax
   autocmd!
   autocmd FileType php call PhpSyntaxOverride()
 augroup END
-
-" -- Javascript Libraries Syntax --
-let g:used_javascript_libs = 'jquery,angularjs,angularui,angularuirouter,requirejs,underscore'
 
 " -- Python Syntax --
 let g:python_highlight_all = 1
@@ -485,23 +462,23 @@ nnoremap <Leader>gB :Promiscuous -<Cr>
 nnoremap <Leader>gA :Silent Git add -A<Cr>
 nnoremap <Leader>gs :Gstatus<Cr>
 nnoremap <Leader>gS :GV<Cr>
-nnoremap <Leader>gc :Gcommit<Cr>
-nnoremap <Leader>gC :Gcommit -a<Cr>
+nnoremap <Leader>gc :Git commit<Cr>
+nnoremap <Leader>gC :Git commit -a<Cr>
 nnoremap <Leader>gdd :Gvdiff!<Cr>
 nnoremap <Leader>gdh :diffget //2<Cr>:diffupdate<Cr>
 nnoremap <Leader>gdl :diffget //3<Cr>:diffupdate<Cr>
 noremap <Leader>gD :Gbrowse<Cr>
-nnoremap <Leader>gl :Gblame<Cr>
+nnoremap <Leader>gl :Git blame<Cr>
 nnoremap <Leader>gr :Gread<Cr>
 nnoremap <Leader>gR :Git reset<Space>
 nnoremap <Leader>gb :Git branch<Space>
 nnoremap <Leader>go :Git checkout<Space>
-nnoremap <Leader>gm :Gmerge<Space>
-nnoremap <Leader>gf :Gfetch<Cr>
+nnoremap <Leader>gm :Git merge<Space>
+nnoremap <Leader>gf :Git fetch<Cr>
 nnoremap <Leader>gt :Git tag<Space>
-nnoremap <Leader>gpl :Gpull<Cr>
-nnoremap <Leader>gps :Gpush<Cr>
-nnoremap <Leader>gpu :execute "Silent Gpush -u origin" fugitive#head()<Cr>
+nnoremap <Leader>gpl :Git pull<Cr>
+nnoremap <Leader>gps :Git push<Cr>
+nnoremap <Leader>gpu :execute "Silent Git push -u origin" fugitive#head()<Cr>
 " Delete local fully-merged branches
 nnoremap <Leader>gnl :execute "Silent !git branch --merged \| tr -d '*' \| grep -v '^\\s*\\(master\\\|spec\\)' \| xargs -n1 git branch -d"<Cr>
 " Delete remote fully-merged branches
@@ -547,7 +524,7 @@ let g:vdebug_options['ide_key'] = 'xdebug'
 " \}
 
 " -- Phpactor
-let g:phpactorPhpBin = "/usr/local/Cellar/php@7.3/7.3.23/bin/php"
+" let g:phpactorPhpBin = "/usr/local/Cellar/php@7.3/7.3.23/bin/php"
 augroup PhpactorComplete
   autocmd!
   autocmd FileType php setlocal omnifunc=phpactor#Complete
@@ -563,11 +540,6 @@ nmap <Leader>pfr :call phpactor#FindReferences()<Cr>
 " -- PDV --
 let g:pdv_template_dir = $HOME . '/.vim/plugged/pdv/templates_snip/'
 nnoremap <Leader>pad :call pdv#DocumentWithSnip()<Cr>
-
-" --- JavaScript ---
-
-" -- Tsuquyomi --
-let g:tsuquyomi_disable_quickfix = 1
 
 " --- HTML ---
 
