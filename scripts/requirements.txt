@@ -4,4 +4,4 @@ idna==2.10
 pyperclip==1.8.1
 python-dotenv==0.15.0
 requests==2.25.0
-urllib3==1.26.4
+urllib3==1.26.5
