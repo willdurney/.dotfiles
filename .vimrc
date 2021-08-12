@@ -71,7 +71,6 @@ Plug 'tpope/vim-fugitive'
 
 " PHP
 Plug 'adoy/vim-php-refactoring-toolbox'
-Plug 'joonty/vdebug'
 Plug 'phpactor/phpactor', { 'do': 'composer install' }
 Plug 'tobyS/pdv'
 Plug 'tobyS/vmustache'
@@ -85,6 +84,7 @@ Plug 'altercation/vim-colors-solarized'
 Plug 'nathanaelkane/vim-indent-guides'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'chrisbra/Colorizer'
 
 " Miscellaneous
 Plug 'kristijanhusak/vim-dadbod-ui'
@@ -93,6 +93,7 @@ Plug 'rizzatti/dash.vim'
 Plug 'segeljakt/vim-silicon'
 Plug 'tpope/vim-dadbod'
 Plug 'vim-test/vim-test'
+Plug 'vim-vdebug/vdebug'
 Plug 'zenbro/mirror.vim'
 
 call plug#end()
@@ -113,7 +114,7 @@ augroup END
 
 " Linebreaking options
 set linebreak
-set textwidth=100
+set textwidth=0
 set backspace=indent,eol,start
 
 " Flash screen instead of audible error bell
@@ -366,7 +367,7 @@ let g:UltiSnipsJumpBackwardTrigger = '~'
 let g:gutentags_ctags_exclude = ['*.min.js', '*.min.css', 'build', 'vendor', '.git', 'node_modules']
 
 " -- Coc --
-let g:coc_global_extensions = ['coc-json', 'coc-db', 'coc-jedi']
+let g:coc_global_extensions = ['coc-json', 'coc-db', 'coc-jedi', 'coc-tsserver']
 " Use tab for trigger completion with characters ahead and navigate.
 inoremap <silent><expr> <TAB>
   \ pumvisible() ? "\<C-n>" :
@@ -387,7 +388,13 @@ let g:ale_linters = {
   \ 'python': ['pylint'],
 \ }
 let g:ale_fixers = {
+  \ 'javascript': ['prettier'],
+  \ 'json': ['prettier'],
   \ 'python': ['black'],
+  \ 'scss': ['prettier'],
+  \ 'css': ['prettier'],
+  \ 'vue': ['prettier'],
+  \ 'php': ['prettier'],
 \ }
 " let g:ale_lint_on_text_changed = 'normal'
 let g:ale_lint_delay = 1000
@@ -476,8 +483,8 @@ nnoremap <Leader>go :Git checkout<Space>
 nnoremap <Leader>gm :Git merge<Space>
 nnoremap <Leader>gf :Git fetch<Cr>
 nnoremap <Leader>gt :Git tag<Space>
-nnoremap <Leader>gpl :Git pull<Cr>
-nnoremap <Leader>gps :Git push<Cr>
+nnoremap <Leader>gpl :Silent Git pull<Cr>
+nnoremap <Leader>gps :Silent Git push<Cr>
 nnoremap <Leader>gpu :execute "Silent Git push -u origin" fugitive#head()<Cr>
 " Delete local fully-merged branches
 nnoremap <Leader>gnl :execute "Silent !git branch --merged \| tr -d '*' \| grep -v '^\\s*\\(master\\\|spec\\)' \| xargs -n1 git branch -d"<Cr>
@@ -513,15 +520,6 @@ nnoremap <Leader>pep :call PhpExtractClassProperty()<Cr>
 xnoremap <Leader>pem :call PhpExtractMethod()<Cr>
 nnoremap <Leader>pap :call PhpCreateProperty()<Cr>
 nnoremap <Leader>pdu :call PhpDetectUnusedUseStatements()<Cr>
-
-" -- Vdebug --
-if !exists('g:vdebug_options')
-    let g:vdebug_options = {}
-endif
-let g:vdebug_options['ide_key'] = 'xdebug'
-" let g:vdebug_options['path_maps'] = {
-"   \'/internal': '/external',
-" \}
 
 " -- Phpactor
 " let g:phpactorPhpBin = "/usr/local/Cellar/php@7.3/7.3.23/bin/php"

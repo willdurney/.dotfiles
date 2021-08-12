@@ -9,7 +9,9 @@ pip3 install -r $HOME/.dotfiles/scripts/requirements.txt
 
 # Install oh-my-zsh
 if [[ ! -d ~/.oh-my-zsh && $(bash -c "read -p \"install oh-my-zsh? \" c; echo \$c") =~ ^[Yy]$ ]]; then
-    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+elif [[ -d ~/.oh-my-zsh ]]; then
+  zsh -c 'source .zshrc && omz update'
 fi
 
 # Set up dotfile symlinks
