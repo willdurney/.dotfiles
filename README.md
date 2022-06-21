@@ -6,6 +6,7 @@ This repo contains some of my personal customizations for developing in OSX.
 
 - [Oh My Zsh](https://ohmyz.sh/) and Zsh config
 - Homebrew packages
+  - [node](https://nodejs.org/en/)
   - [direnv](https://direnv.net/)
   - vim
   - [autojump](https://github.com/wting/autojump)
@@ -13,6 +14,7 @@ This repo contains some of my personal customizations for developing in OSX.
   - [ag](https://github.com/ggreer/the_silver_searcher)
   - [jq](https://github.com/stedolan/jq)
   - [thefuck](https://github.com/nvbn/thefuck)
+  - [ctags](http://ctags.sourceforge.net/)
 - Cheatsheets (community only for now, supports more)
 - PHP & SCSS style config
 - Vimrc + a "slimmed-down" vimrc for servers or newbies

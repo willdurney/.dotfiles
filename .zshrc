@@ -1,3 +1,5 @@
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
 export EDITOR="vim"
 export DIRENV_LOG_FORMAT=
 

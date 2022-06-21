@@ -4,7 +4,7 @@ echo Installing willdurney/.dotfiles
 
 (cd ~/.dotfiles && git submodule update --init --recursive)
 
-brew install direnv vim autojump cheat the_silver_searcher jq thefuck
+brew install node direnv vim autojump cheat the_silver_searcher jq thefuck ctags
 pip3 install -r $HOME/.dotfiles/scripts/requirements.txt
 
 # Install oh-my-zsh

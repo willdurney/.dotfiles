@@ -467,7 +467,7 @@ nnoremap <Leader>gB :Promiscuous -<Cr>
 
 " -- Fugitive --
 nnoremap <Leader>gA :Silent Git add -A<Cr>
-nnoremap <Leader>gs :Gstatus<Cr>
+nnoremap <Leader>gs :Git<Cr>
 nnoremap <Leader>gS :GV<Cr>
 nnoremap <Leader>gc :Git commit<Cr>
 nnoremap <Leader>gC :Git commit -a<Cr>
@@ -485,7 +485,7 @@ nnoremap <Leader>gf :Git fetch<Cr>
 nnoremap <Leader>gt :Git tag<Space>
 nnoremap <Leader>gpl :Silent Git pull<Cr>
 nnoremap <Leader>gps :Silent Git push<Cr>
-nnoremap <Leader>gpu :execute "Silent Git push -u origin" fugitive#head()<Cr>
+nnoremap <Leader>gpu :execute "Silent Git push -u origin" fugitive#Head()<Cr>
 " Delete local fully-merged branches
 nnoremap <Leader>gnl :execute "Silent !git branch --merged \| tr -d '*' \| grep -v '^\\s*\\(master\\\|spec\\)' \| xargs -n1 git branch -d"<Cr>
 " Delete remote fully-merged branches
@@ -561,7 +561,7 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=darkgrey
 " -- Airline --
 let g:airline_powerline_fonts = 1
 let g:airline_skip_empty_sections = 1
-let g:airline_section_b = '%{fugitive#head()}'
+let g:airline_section_b = '%{fugitive#Head()}'
 let g:airline_section_y = "%{gutentags#statusline('Indexing...')}"
 
 " --- Miscellaneous ---
