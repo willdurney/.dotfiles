@@ -68,11 +68,11 @@ call plug#end()
 " ----- General Config -----
 
 " Stop vim dying with long lines
-set synmaxcol=250
+set synmaxcol=1000
 
 " Linebreaking options
 set linebreak
-set textwidth=100
+set textwidth=0
 set backspace=indent,eol,start
 
 " Flash screen instead of audible error bell
@@ -167,9 +167,6 @@ augroup PhpSyntax
   autocmd!
   autocmd FileType php call PhpSyntaxOverride()
 augroup END
-
-" -- Javascript Libraries Syntax --
-let g:used_javascript_libs = 'jquery,angularjs,angularui,angularuirouter,requirejs,underscore'
 
 " --- Editing ---
 
