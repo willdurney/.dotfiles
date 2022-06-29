@@ -9,12 +9,12 @@ ZSH_THEME="minimal"
 ZSH_DISABLE_COMPFIX="true"
 KEYTIMEOUT=8
 
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
+
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init --path)"
-
-export VOLTA_HOME="$HOME/.volta"
-export PATH="$VOLTA_HOME/bin:$PATH"
 
 plugins=(direnv autojump vi-mode fzf zsh-interactive-cd alias-finder pyenv)
 
