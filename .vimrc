@@ -451,7 +451,7 @@ let g:tagbar_type_php  = {
     \ 'j:javascript functions:1'
   \ ]
 \ }
-nnoremap <Leader>t :TagbarOpenAutoClose<Cr>
+nnoremap yot :TagbarOpenAutoClose<Cr>
 
 " --- Git ---
 
@@ -665,8 +665,10 @@ vnoremap <Leader>H :call TakeScreenshot(0, 1)<Cr>
 
 " -- Test --
 let test#strategy = "vimterminal"
-nnoremap <Leader>rt :TestNearest<Cr>
-nnoremap <Leader>rT :TestFile<Cr>
+nnoremap <Leader>tt :TestNearest<Cr>
+nnoremap <Leader>tf :TestFile<Cr>
+nnoremap <Leader>ts :TestSuite<Cr>
+nnoremap <Leader>T :TestLast<Cr>
 
 " -- Mirror --
 nnoremap <Leader>me :MirrorEdit<Space>
