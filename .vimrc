@@ -87,13 +87,13 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'chrisbra/Colorizer'
 
 " Miscellaneous
+Plug 'puremourning/vimspector'
 Plug 'kristijanhusak/vim-dadbod-ui'
 Plug 'metakirby5/codi.vim'
 Plug 'rizzatti/dash.vim'
 Plug 'segeljakt/vim-silicon'
 Plug 'tpope/vim-dadbod'
 Plug 'vim-test/vim-test'
-Plug 'vim-vdebug/vdebug'
 Plug 'zenbro/mirror.vim'
 
 call plug#end()
@@ -108,7 +108,7 @@ set synmaxcol=1000
 set number relativenumber
 augroup NumberToggle
   autocmd!
-  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+  autocmd BufEnter,FocusGained,InsertLeave * if &ft != "dbui" && &ft != "VimspectorPrompt" | set relativenumber
   autocmd BufLeave,FocusLost,InsertEnter,WinLeave * set norelativenumber
 augroup END
 
@@ -196,7 +196,7 @@ augroup END
 " Remove trailing spaces automatically on save
 augroup TrailingSpaces
   autocmd!
-  autocmd BufWritePre *.js,*.ts,*.php,*.html,*.css,*.scss,*.jison,*.yml,*.sh :%s/\s\+$//e
+  autocmd BufWritePre *.py,*.js,*.ts,*.php,*.html,*.css,*.scss,*.jison,*.yml,*.sh :%s/\s\+$//e
 augroup END
 
 " Better matching tag nagivation
@@ -292,6 +292,7 @@ command! SourceVimrc source $MYVIMRC
 " --- Vim config ---
 
 " -- Local vimrc --
+let g:localvimrc_sandbox = 0
 let g:localvimrc_ask = 0
 
 " --- Syntax ---
@@ -566,13 +567,20 @@ let g:airline_section_y = "%{gutentags#statusline('Indexing...')}"
 
 " --- Miscellaneous ---
 
+" -- Vimspector --
+let g:vimspector_enable_mappings = 'HUMAN'
+
 " -- Dadbod UI --
 let g:db_ui_show_help = 0
 let g:db_ui_win_position = 'right'
+let g:db_ui_winwidth = 65
+let g:db_ui_show_database_icon = 1
+let g:db_ui_use_nerd_fonts = 1
 nnoremap <Leader>db :DBUIToggle<Cr>
 " let g:dbs = {
 "   \ 'dbname': 'connstring',
 " \ }
+autocmd FileType dbout setlocal nofoldenable
 
 " -- Codi --
 function! CodiSplit(paste) abort
@@ -664,7 +672,12 @@ vnoremap <Leader>Y :call TakeScreenshot(1, 0)<Cr>
 vnoremap <Leader>H :call TakeScreenshot(0, 1)<Cr>
 
 " -- Test --
-let test#strategy = "vimterminal"
+function! VimspectorRemoteStrategy(cmd)
+  let testName = matchlist(a:cmd, '\v(\S*)$')[0]
+  call vimspector#LaunchWithSettings( #{ configuration: 'remote-test', TestName: testName } )
+endfunction
+let g:test#custom_strategies = {'vimspector-remote': function('VimspectorRemoteStrategy')}
+let g:test#strategy = "vimterminal"
 nnoremap <Leader>tt :TestNearest<Cr>
 nnoremap <Leader>tf :TestFile<Cr>
 nnoremap <Leader>ts :TestSuite<Cr>

@@ -1,0 +1,52 @@
+{
+  "$schema": "https://puremourning.github.io/vimspector/schema/vimspector.schema.json",
+  "adapters": {
+    "remote": {
+      "variables": {
+        "port": "8765"
+      },
+      "port": "${port}",
+      "launch": {
+        "remote": {
+          "container": "<CONTAINER_NAME>",
+          "runCommand": [
+            "python3",
+            "-m",
+            "debugpy",
+            "--listen",
+            "0.0.0.0:${port}",
+            "--wait-for-client",
+            "%CMD%"
+          ]
+        },
+        "delay": "5000m"
+      }
+    }
+  },
+  "configurations": {
+    "remote-test": {
+      "adapter": "remote",
+      "remote-request": "launch",
+      "remote-cmdLine": [
+        "<TEST_COMMAND>",
+        "${TestName}"
+      ],
+      "configuration": {
+        "request": "attach",
+        "pathMappings": [
+          {
+            "localRoot": "${workspaceRoot}",
+            "remoteRoot": "<REMOTE_ROOT>"
+          }
+        ]
+      },
+      "breakpoints": {
+        "exception": {
+          "raised": "N",
+          "uncaught": "",
+          "userUnhandled": ""
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+let g:dbs = {
+\ 'local': 'scheme://user:pw@host:port/db',
+\ }
+
+function! VimspectorRemoteStrategy(cmd)
+  let testName = matchlist(a:cmd, '\v(\S*)$')[0]
+  call vimspector#LaunchWithSettings( #{ configuration: 'remote-test', TestName: testName } )
+endfunction
+
+let g:test#custom_strategies = {'vimspector-remote': function('VimspectorRemoteStrategy')}
+let g:test#strategy = "vimspector-remote"
+
+let g:test#lang#runner = 'runner'
+let g:test#lang#runner#executable = 'echo'
