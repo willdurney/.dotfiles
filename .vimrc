@@ -146,6 +146,8 @@ set lazyredraw
 " Prevent esc key delay
 set ttimeoutlen=100
 
+set updatetime=300
+
 " Persistent undo
 if has('persistent_undo')
   set undofile
@@ -369,13 +371,12 @@ let g:gutentags_ctags_exclude = ['*.min.js', '*.min.css', 'build', 'vendor', '.g
 
 " -- Coc --
 let g:coc_global_extensions = ['coc-json', 'coc-db', 'coc-jedi', 'coc-tsserver']
-" Use tab for trigger completion with characters ahead and navigate.
 inoremap <silent><expr> <TAB>
-  \ pumvisible() ? "\<C-n>" :
-  \ <SID>check_back_space() ? "\<TAB>" :
-  \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-function! s:check_back_space() abort
+      \ coc#pum#visible() ? coc#pum#next(1) :
+      \ CheckBackspace() ? "\<Tab>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"
+function! CheckBackspace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
@@ -395,7 +396,7 @@ let g:ale_fixers = {
   \ 'scss': ['prettier'],
   \ 'css': ['prettier'],
   \ 'vue': ['prettier'],
-  \ 'php': ['prettier'],
+  \ 'php': ['pint'],
 \ }
 " let g:ale_lint_on_text_changed = 'normal'
 let g:ale_lint_delay = 1000
@@ -587,6 +588,7 @@ function! CodiSplit(paste) abort
   let ft = &filetype
   tabe
   setlocal buftype=nofile
+  CocDisable
   let g:codi#width = winwidth(winnr()) / 2
   execute "Codi " . ft
   sleep 2
