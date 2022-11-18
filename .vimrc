@@ -95,6 +95,7 @@ Plug 'segeljakt/vim-silicon'
 Plug 'tpope/vim-dadbod'
 Plug 'vim-test/vim-test'
 Plug 'zenbro/mirror.vim'
+Plug 'habamax/vim-godot'
 
 call plug#end()
 
