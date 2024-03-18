@@ -33,6 +33,7 @@ Plug 'AaronLasseigne/yank-code'
 Plug 'AndrewRadev/splitjoin.vim'
 Plug 'Raimondi/delimitMate'
 Plug 'christoomey/vim-sort-motion'
+Plug 'inkarkat/vim-AdvancedSorters'
 Plug 'joereynolds/place.vim'
 Plug 'junegunn/vim-peekaboo'
 Plug 'justinmk/vim-sneak'
@@ -51,7 +52,7 @@ Plug 'xtal8/traces.vim'
 
 " Completion & analysis
 Plug 'SirVer/ultisnips'
-Plug 'ludovicchabant/vim-gutentags'
+" Plug 'ludovicchabant/vim-gutentags'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'w0rp/ale'
 
@@ -68,6 +69,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'junegunn/gv.vim'
 Plug 'shuber/vim-promiscuous'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-rhubarb'
 
 " PHP
 Plug 'adoy/vim-php-refactoring-toolbox'
@@ -267,6 +269,7 @@ cmap G-MR-// g!-MR-//
 nnoremap <Leader>rc :Silent !open -a "Google Chrome" "file://%:p"<Cr>
 nnoremap <Leader>rs :Silent !stree<Cr>
 nnoremap <Leader>ro :Silent !open %<Cr>
+nnoremap <Leader>rp :!pre-commit<Cr>
 
 " Quickly format things
 nnoremap <Leader>=j ggVG:!jq '.'<Cr>
@@ -381,6 +384,12 @@ function! CheckBackspace() abort
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
+augroup cocmenusel_augroup
+  autocmd!
+  autocmd ColorScheme * highlight! default CocMenuSel ctermbg=237 guibg=#13354A
+  autocmd ColorScheme * highlight! default DiagnosticSignHint ctermfg=Blue guifg=#15aabf guibg=NONE
+  doautocmd ColorScheme
+augroup END
 
 " -- ALE --
 let g:ale_linters = {
@@ -477,17 +486,19 @@ nnoremap <Leader>gC :Git commit -a<Cr>
 nnoremap <Leader>gdd :Gvdiff!<Cr>
 nnoremap <Leader>gdh :diffget //2<Cr>:diffupdate<Cr>
 nnoremap <Leader>gdl :diffget //3<Cr>:diffupdate<Cr>
-noremap <Leader>gD :Gbrowse<Cr>
+noremap <Leader>gD :GBrowse<Cr>
 nnoremap <Leader>gl :Git blame<Cr>
 nnoremap <Leader>gr :Gread<Cr>
 nnoremap <Leader>gR :Git reset<Space>
 nnoremap <Leader>gb :Git branch<Space>
 nnoremap <Leader>go :Git checkout<Space>
 nnoremap <Leader>gm :Git merge<Space>
+nnoremap <Leader>gM :Git rebase<Space>
 nnoremap <Leader>gf :Git fetch<Cr>
 nnoremap <Leader>gt :Git tag<Space>
 nnoremap <Leader>gpl :Silent Git pull<Cr>
 nnoremap <Leader>gps :Silent Git push<Cr>
+nnoremap <Leader>gpf :Silent Git push --force
 nnoremap <Leader>gpu :execute "Silent Git push -u origin" fugitive#Head()<Cr>
 " Delete local fully-merged branches
 nnoremap <Leader>gnl :execute "Silent !git branch --merged \| tr -d '*' \| grep -v '^\\s*\\(master\\\|spec\\)' \| xargs -n1 git branch -d"<Cr>
@@ -565,7 +576,7 @@ autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=darkgrey
 let g:airline_powerline_fonts = 1
 let g:airline_skip_empty_sections = 1
 let g:airline_section_b = '%{fugitive#Head()}'
-let g:airline_section_y = "%{gutentags#statusline('Indexing...')}"
+" let g:airline_section_y = "%{gutentags#statusline('Indexing...')}"
 
 " --- Miscellaneous ---
 
@@ -682,6 +693,7 @@ endfunction
 let g:test#custom_strategies = {'vimspector-remote': function('VimspectorRemoteStrategy')}
 let g:test#strategy = "vimterminal"
 nnoremap <Leader>tt :TestNearest<Cr>
+nnoremap <Leader>tc :TestClass<Cr>
 nnoremap <Leader>tf :TestFile<Cr>
 nnoremap <Leader>ts :TestSuite<Cr>
 nnoremap <Leader>T :TestLast<Cr>

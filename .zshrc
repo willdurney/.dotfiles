@@ -16,6 +16,8 @@ export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 eval "$(pyenv init --path)"
 
+eval "$(thefuck --alias)"
+
 plugins=(direnv autojump vi-mode fzf zsh-interactive-cd alias-finder pyenv aws)
 
 # Show existing aliases if long-form command used
@@ -47,3 +49,7 @@ alias sail="vendor/bin/sail"
 alias wlldrnet="python3 ~/.dotfiles/scripts/wlldrnet.py"
 
 alias update="(cd ~/.dotfiles && ./build.sh)"
+
+export PATH=$PATH:/opt/homebrew/opt/mysql-client/bin
+export LDFLAGS="-L/opt/homebrew/opt/mysql-client/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/mysql-client/include"
