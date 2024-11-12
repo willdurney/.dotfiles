@@ -3,6 +3,8 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 export EDITOR="vim"
 export DIRENV_LOG_FORMAT=
 
+zstyle ':omz:alpha:lib:git' async-prompt no
+
 export ZSH="$HOME/.oh-my-zsh"
 
 ZSH_THEME="minimal"
@@ -46,9 +48,25 @@ v () { vim ${VIM_ENTRY_POINT} }
 alias sail="vendor/bin/sail"
 
 # Shortlinks
-alias wlldrnet="python3 ~/.dotfiles/scripts/wlldrnet.py"
+alias wlldrnet="source ~/python3 ~/.dotfiles/scripts/wlldrnet.py"
+
+function wll() {
+    # Change to the script directory
+    cd $HOME/.dotfiles/scripts
+
+    # Activate the virtual environment
+    eval "$(pyenv init -)"
+    pyenv activate "wd-3.12.3"
+
+    # Run the Python script with the argument
+    python "wlldrnet.py" "$@"
+
+    # Deactivate the virtual environment
+    pyenv deactivate
+}
 
 alias update="(cd ~/.dotfiles && ./build.sh)"
+export PATH=$PATH:$HOME/.dotfiles/scripts
 
 export PATH=$PATH:/opt/homebrew/opt/mysql-client/bin
 export LDFLAGS="-L/opt/homebrew/opt/mysql-client/lib"

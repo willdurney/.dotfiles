@@ -1,11 +1,15 @@
-snippet sel "Select Query"
+snippet s "Select Query"
 select ${1:*} from \`${2:order}\`$0;
 endsnippet
 
-snippet des "Describe Table"
+snippet S "Select Query"
+select ${1:*} from \`${2:order}\`$0\G
+endsnippet
+
+snippet d "Describe Table"
 describe \`${0:order}\`;
 endsnippet
 
-snippet ind "Show Indexes"
+snippet i "Show Indexes"
 show index from \`${0:order}\`;
 endsnippet

@@ -54,6 +54,7 @@ Plug 'xtal8/traces.vim'
 Plug 'SirVer/ultisnips'
 " Plug 'ludovicchabant/vim-gutentags'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'antoinemadec/coc-fzf'
 Plug 'w0rp/ale'
 
 " Project navigation
@@ -181,6 +182,8 @@ set noswapfile
 
 " Don't show mode
 set noshowmode
+
+set shell=zsh
 
 " Reset cursor position on files if it's remembered
 augroup ResetCursor
@@ -371,7 +374,7 @@ let g:UltiSnipsJumpForwardTrigger = '`'
 let g:UltiSnipsJumpBackwardTrigger = '~'
 
 " -- Gutentags --
-let g:gutentags_ctags_exclude = ['*.min.js', '*.min.css', 'build', 'vendor', '.git', 'node_modules']
+" let g:gutentags_ctags_exclude = ['*.min.js', '*.min.css', 'build', 'vendor', '.git', 'node_modules']
 
 " -- Coc --
 let g:coc_global_extensions = ['coc-json', 'coc-db', 'coc-jedi', 'coc-tsserver']
@@ -390,6 +393,8 @@ augroup cocmenusel_augroup
   autocmd ColorScheme * highlight! default DiagnosticSignHint ctermfg=Blue guifg=#15aabf guibg=NONE
   doautocmd ColorScheme
 augroup END
+nmap <C-]> <Plug>(coc-definition)
+nmap <C-\> <Plug>(coc-references)
 
 " -- ALE --
 let g:ale_linters = {
@@ -397,7 +402,7 @@ let g:ale_linters = {
   \ 'php': ['php', 'phpcs', 'phpstan'],
   \ 'scss': ['scsslint'],
   \ 'html': ['alex', 'htmlhint', 'proselint', 'write-good'],
-  \ 'python': ['pylint'],
+  \ 'python': ['pylint', 'flake8', 'mypy'],
 \ }
 let g:ale_fixers = {
   \ 'javascript': ['prettier'],
@@ -639,58 +644,43 @@ nnoremap <Leader>rd :Dash<Space>
 nmap <Leader>rD <Plug>DashSearch
 
 " -- Silicon --
+let g:silicon = {
+  \ 'theme': 'Solarized (dark)',
+  \ 'font': 'FiraCode Nerd Font',
+  \ 'background': '#FBECE9',
+  \ 'shadow-color': '#555555',
+  \ 'line-pad': 2,
+  \ 'pad-horiz': 80,
+  \ 'pad-vert': 80,
+  \ 'shadow-blur-radius': 0,
+  \ 'shadow-offset-x': 0,
+  \ 'shadow-offset-y': 0,
+  \ 'line-number': v:false,
+  \ 'round-corner': v:true,
+  \ 'window-controls': v:true,
+  \ 'output': '/tmp/silicon.png',
+\ }
 function! TakeScreenshot(snippet, highlight) abort
   if a:snippet
-    let g:silicon = {
-        \ 'theme': 'Dracula',
-        \ 'font': 'Fira Code',
-        \ 'background': '#00aeef',
-        \ 'shadow-color': '#555555',
-        \ 'line-pad': 2,
-        \ 'pad-horiz': 40,
-        \ 'pad-vert': 40,
-        \ 'shadow-blur-radius': 0,
-        \ 'shadow-offset-x': 0,
-        \ 'shadow-offset-y': 0,
-        \ 'line-number': v:false,
-        \ 'round-corner': v:true,
-        \ 'window-controls': v:true,
-      \ }
-    '<,'>Silicon /tmp/silicon.png
+    '<,'>Silicon
   else
-    let g:silicon = {
-        \ 'theme': 'Dracula',
-        \ 'font': 'Fira Code',
-        \ 'background': '#00aeef',
-        \ 'shadow-color': '#555555',
-        \ 'line-pad': 2,
-        \ 'pad-horiz': 40,
-        \ 'pad-vert': 40,
-        \ 'shadow-blur-radius': 0,
-        \ 'shadow-offset-x': 0,
-        \ 'shadow-offset-y': 0,
-        \ 'line-number': v:true,
-        \ 'round-corner': v:true,
-        \ 'window-controls': v:true,
-      \ }
     if a:highlight
-      '<,'>SiliconHighlight /tmp/silicon.png
+      '<,'>Silicon!
     else
-      Silicon /tmp/silicon.png
+      Silicon
     endif
   endif
-  Silent !~/.dotfiles/scripts/file-to-clipboard /tmp/silicon.png
 endfunction
 nnoremap <Leader>Y :call TakeScreenshot(0, 0)<Cr>
 vnoremap <Leader>Y :call TakeScreenshot(1, 0)<Cr>
 vnoremap <Leader>H :call TakeScreenshot(0, 1)<Cr>
 
 " -- Test --
-function! VimspectorRemoteStrategy(cmd)
-  let testName = matchlist(a:cmd, '\v(\S*)$')[0]
-  call vimspector#LaunchWithSettings( #{ configuration: 'remote-test', TestName: testName } )
-endfunction
-let g:test#custom_strategies = {'vimspector-remote': function('VimspectorRemoteStrategy')}
+" function! VimspectorRemoteStrategy(cmd)
+"   let testName = matchlist(a:cmd, '\v(\S*)$')[0]
+"   call vimspector#LaunchWithSettings( #{ configuration: 'remote-test', TestName: testName } )
+" endfunction
+" let g:test#custom_strategies = {'vimspector-remote': function('VimspectorRemoteStrategy')}
 let g:test#strategy = "vimterminal"
 nnoremap <Leader>tt :TestNearest<Cr>
 nnoremap <Leader>tc :TestClass<Cr>
