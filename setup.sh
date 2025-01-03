@@ -40,9 +40,8 @@ install_homebrew() {
 install_brew_packages() {
   echo "Installing Homebrew packages..."
   local packages=(
-    autojump awscli cheat ctags composer direnv jq
-    mysql-client node pyenv pyenv-virtualenv python3
-    the_silver_searcher thefuck vim
+    autojump awscli cheat ctags composer direnv jq just mysql-client node pyenv
+    pyenv-virtualenv python3 the_silver_searcher thefuck vim
   )
   brew install "${packages[@]}"
   brew install --cask docker

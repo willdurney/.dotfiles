@@ -65,7 +65,7 @@ function wll() {
     pyenv deactivate
 }
 
-alias update="(cd ~/.dotfiles && ./build.sh)"
+alias update="(cd ~/.dotfiles && ./setup.sh)"
 export PATH=$PATH:$HOME/.dotfiles/scripts
 
 export PATH=$PATH:/opt/homebrew/opt/mysql-client/bin
