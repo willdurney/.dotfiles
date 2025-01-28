@@ -56,8 +56,8 @@ setup_python_env() {
   (
     cd ~/.dotfiles/scripts
     pyenv install --skip-existing "$python_version"
-    pyenv virtualenv "$python_version" "wd-$python_version" || true
-    source ~/.pyenv/versions/wd-$python_version/bin/activate
+    pyenv virtualenv "$python_version" willdurney || true
+    source ~/.pyenv/versions/willdurney/bin/activate
     pip install --upgrade pip
     pip install -r requirements.txt
   )
@@ -74,7 +74,7 @@ install_oh_my_zsh() {
     fi
   else
     echo "Oh-My-Zsh already installed. Updating..."
-    zsh -c 'source ~/.zshrc && omz update --unattended'
+    zsh -c 'source ~/.zshrc && "$ZSH/tools/upgrade.sh"'
   fi
 }
 
@@ -92,11 +92,9 @@ setup_symlinks() {
 # Set up Vim with Plug
 setup_vim() {
   echo "Configuring Vim..."
-  if ! grep -qxF "call plug#begin('~/.vim/plugged')" ~/.vimrc; then
-    curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    mkdir -p ~/.vim/undodir
-    vim +PlugInstall +PlugUpdate +qall!
-  fi
+  curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  mkdir -p ~/.vim/undodir
+  vim +PlugInstall +PlugUpdate +qall!
 }
 
 # Main script execution

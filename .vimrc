@@ -406,12 +406,15 @@ let g:ale_linters = {
 \ }
 let g:ale_fixers = {
   \ 'javascript': ['prettier'],
+  \ 'typescript': ['prettier'],
+  \ 'typescriptreact': ['prettier'],
   \ 'json': ['prettier'],
-  \ 'python': ['black'],
+  \ 'python': ['isort', 'black'],
   \ 'scss': ['prettier'],
   \ 'css': ['prettier'],
   \ 'vue': ['prettier'],
   \ 'php': ['pint'],
+  \ 'yaml': ['yq'],
 \ }
 " let g:ale_lint_on_text_changed = 'normal'
 let g:ale_lint_delay = 1000
@@ -586,7 +589,18 @@ let g:airline_section_b = '%{fugitive#Head()}'
 " --- Miscellaneous ---
 
 " -- Vimspector --
-let g:vimspector_enable_mappings = 'HUMAN'
+nmap <Leader>vv <Plug>VimspectorToggleBreakpoint
+nmap <Leader>vV <Plug>VimspectorToggleConditionalBreakpoint
+nmap <Leader>vb <Plug>VimspectorBreakpoints
+nmap <Leader>vq :VimspectorReset<Cr>
+nmap <Leader>vH <Plug>VimspectorStop
+nmap <Leader>vh <Plug>VimspectorRestart
+nmap <Leader>vj <Plug>VimspectorStepInto
+nmap <Leader>vk <Plug>VimspectorStepOut
+nmap <Leader>vl <Plug>VimspectorContinue
+nmap <Leader>vL <Plug>VimspectorStepOver
+nmap <Leader>ve <Plug>VimspectorBalloonEval
+xmap <Leader>ve <Plug>VimspectorBalloonEval
 
 " -- Dadbod UI --
 let g:db_ui_show_help = 0
