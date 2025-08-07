@@ -1,9 +1,10 @@
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
 export EDITOR="vim"
-export DIRENV_LOG_FORMAT=
 
 zstyle ':omz:alpha:lib:git' async-prompt no
+zstyle ':omz:plugins:nvm' autoload yes
+zstyle ':omz:plugins:nvm' silent-autoload yes
 
 export ZSH="$HOME/.oh-my-zsh"
 
@@ -66,6 +67,29 @@ function wll() {
 alias update="(cd ~/.dotfiles && ./setup.sh)"
 export PATH=$PATH:$HOME/.dotfiles/scripts
 
-export PATH=$PATH:/opt/homebrew/opt/mysql-client/bin
-export LDFLAGS="-L/opt/homebrew/opt/mysql-client/lib"
-export CPPFLAGS="-I/opt/homebrew/opt/mysql-client/include"
+# export PATH=$PATH:/opt/homebrew/opt/mysql-client/bin
+# export LDFLAGS="-L/opt/homebrew/opt/mysql-client/lib"
+# export CPPFLAGS="-I/opt/homebrew/opt/mysql-client/include"
+
+export FZF_DEFAULT_COMMAND="ag -l -U --hidden -g \"\" --ignore .git --ignore venv --ignore .mypy_cache --ignore .next --ignore node_modules"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
+export CPPFLAGS="-I/opt/homebrew/opt/postgresql@15/include/postgresql@15"
+export LDFLAGS="-L/opt/homebrew/opt/postgresql@15/lib/postgresql@15"
+export PG_CONFIG="/opt/homebrew/opt/postgresql@15/bin/pg_config"
+export DYLD_LIBRARY_PATH="/opt/homebrew/opt/postgresql@15/lib/postgresql@15:$DYLD_LIBRARY_PATH"
+
+export PHPENV_ROOT="/Users/willdurney/.phpenv"
+if [ -d "${PHPENV_ROOT}" ]; then
+  export PATH="${PHPENV_ROOT}/bin:${PATH}"
+  eval "$(phpenv init -)"
+fi
+export PATH="/opt/homebrew/opt/bzip2/bin:$PATH"
+
+export CPPFLAGS="-I/opt/homebrew/opt/bzip2/include"
+export LDFLAGS="-L/opt/homebrew/opt/bzip2/lib"
+export PKG_CONFIG_PATH="/opt/homebrew/opt/bzip2/lib/pkgconfig"

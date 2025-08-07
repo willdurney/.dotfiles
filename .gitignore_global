@@ -1,5 +1,6 @@
 *.swp
 *~
+*.eval.md
 .DS_Store
 .env
 .envbin
@@ -15,3 +16,4 @@ Dockerfile*.dev
 tags
 tags.lock
 tags.temp
+wll

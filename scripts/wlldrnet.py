@@ -13,7 +13,7 @@ params = {
 if len(sys.argv) > 2:
     params['custom_ending'] = sys.argv[2]
 
-r = requests.get('http://wlldr.net/api/v2/action/shorten', params=params)
+r = requests.get('https://wlldr.net/api/v2/action/shorten', params=params)
 
 link = r.text[7:]
 

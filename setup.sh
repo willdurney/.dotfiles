@@ -47,6 +47,7 @@ install_brew_packages() {
   brew install --cask docker
   brew install --cask iterm2
   brew install --cask karabiner-elements
+  brew cleanup
 }
 
 # Set up Python environment
@@ -85,8 +86,11 @@ setup_symlinks() {
   create_symlink "$HOME/.dotfiles/.gitconfig" "$HOME/.gitconfig"
   create_symlink "$HOME/.dotfiles/.gitignore_global" "$HOME/.gitignore_global"
   create_symlink "$HOME/.dotfiles/.vimrc" "$HOME/.vimrc"
+  mkdir -p ~/.vim
   create_symlink "$HOME/.dotfiles/coc-settings.json" "$HOME/.vim/coc-settings.json"
   create_symlink "$HOME/.dotfiles/snippets" "$HOME/.vim/UltiSnips"
+  mkdir -p ~/.config/direnv
+  create_symlink "$HOME/.dotfiles/direnv.toml" "$HOME/.config/direnv/direnv.toml"
 }
 
 # Set up Vim with Plug

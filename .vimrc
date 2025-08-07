@@ -26,6 +26,7 @@ Plug 'posva/vim-vue'
 Plug 'tpope/vim-git'
 Plug 'tpope/vim-markdown'
 Plug 'vim-python/python-syntax'
+Plug 'vito-c/jq.vim'
 Plug 'wizicer/vim-jison'
 
 " Editing
@@ -99,6 +100,7 @@ Plug 'tpope/vim-dadbod'
 Plug 'vim-test/vim-test'
 Plug 'zenbro/mirror.vim'
 Plug 'habamax/vim-godot'
+Plug 'gpanders/vim-medieval'
 
 call plug#end()
 
@@ -110,10 +112,16 @@ set synmaxcol=1000
 
 " Show relative line numbers
 set number relativenumber
+
 augroup NumberToggle
   autocmd!
-  autocmd BufEnter,FocusGained,InsertLeave * if &ft != "dbui" && &ft != "VimspectorPrompt" | set relativenumber
+  autocmd BufEnter,FocusGained,InsertLeave,WinEnter * if &ft != "dbui" && bufname('%') !~# "^vimspector\..*" | set relativenumber
   autocmd BufLeave,FocusLost,InsertEnter,WinLeave * set norelativenumber
+augroup END
+
+augroup VimspectorSettings
+  autocmd!
+  autocmd BufFilePost,BufNew,WinNewPre * if bufname('%') =~# '^vimspector\..*' | setlocal wrap nonumber norelativenumber | endif
 augroup END
 
 " Linebreaking options
@@ -167,6 +175,7 @@ set laststatus=2
 set clipboard^=unnamed
 
 " Rebalance windows on vim resize
+set noequalalways
 augroup AutoResize
   autocmd!
   autocmd VimResized * :wincmd =
@@ -198,6 +207,10 @@ augroup RelativeFilenames
   autocmd InsertLeave * set noautochdir | execute 'cd' fnameescape(save_cwd)
 augroup END
 
+" Shortcuts to open/close tabs
+cabbrev tn tabnew
+cabbrev tc tabclose
+
 
 " ----- Filetype-Specific Config -----
 
@@ -209,6 +222,9 @@ augroup END
 
 " Better matching tag nagivation
 runtime macros/matchit.vim
+
+" JSX comments
+autocmd FileType typescriptreact setlocal commentstring={/*\ %s\ */}
 
 
 " ----- Custom mappings -----
@@ -224,6 +240,7 @@ let mapleader = ","
 map ; :
 nmap :: :%
 nmap :; :%
+nnoremap :k :<C-u><C-r>=histget("cmd", -1)<CR>
 
 " Window navigation
 nnoremap <C-h> <C-w>h
@@ -276,7 +293,9 @@ nnoremap <Leader>rp :!pre-commit<Cr>
 
 " Quickly format things
 nnoremap <Leader>=j ggVG:!jq '.'<Cr>
+vnoremap <Leader>=j :!jq '.'<Cr>
 nnoremap <Leader>=m :%s/\v\\| +(.*) \\|\n/\1,/<Cr>$x0
+nnoremap <Leader>=s :CocCommand sql.Format<Cr>
 
 " Quickly fix lint issues
 nnoremap <Leader>ly :s/\v\((.*) ([!\=]\=\=) (.*)\)/(\3 \2 \1)/<Cr>
@@ -318,6 +337,9 @@ augroup END
 
 " -- Python Syntax --
 let g:python_highlight_all = 1
+
+" -- Markdown --
+let g:markdown_fenced_languages = ['python', 'sh', 'bash']
 
 " --- Editing ---
 
@@ -377,7 +399,7 @@ let g:UltiSnipsJumpBackwardTrigger = '~'
 " let g:gutentags_ctags_exclude = ['*.min.js', '*.min.css', 'build', 'vendor', '.git', 'node_modules']
 
 " -- Coc --
-let g:coc_global_extensions = ['coc-json', 'coc-db', 'coc-jedi', 'coc-tsserver']
+let g:coc_global_extensions = ['coc-json', 'coc-db', 'coc-jedi', 'coc-tsserver', 'coc-sql']
 inoremap <silent><expr> <TAB>
       \ coc#pum#visible() ? coc#pum#next(1) :
       \ CheckBackspace() ? "\<Tab>" :
@@ -393,12 +415,22 @@ augroup cocmenusel_augroup
   autocmd ColorScheme * highlight! default DiagnosticSignHint ctermfg=Blue guifg=#15aabf guibg=NONE
   doautocmd ColorScheme
 augroup END
-nmap <C-]> <Plug>(coc-definition)
+function! JumpToDefinition()
+  if CocAction('hasProvider', 'definition')
+    call CocActionAsync('jumpDefinition')
+  else
+    execute "normal! \<C-]>"
+  endif
+endfunction
+nnoremap <C-]> :call JumpToDefinition()<CR>
+" nmap <C-]> <Plug>(coc-definition)
 nmap <C-\> <Plug>(coc-references)
 
 " -- ALE --
 let g:ale_linters = {
   \ 'javascript': ['eslint'],
+  \ 'typescript': ['eslint'],
+  \ 'typescriptreact': ['eslint'],
   \ 'php': ['php', 'phpcs', 'phpstan'],
   \ 'scss': ['scsslint'],
   \ 'html': ['alex', 'htmlhint', 'proselint', 'write-good'],
@@ -406,10 +438,10 @@ let g:ale_linters = {
 \ }
 let g:ale_fixers = {
   \ 'javascript': ['prettier'],
-  \ 'typescript': ['prettier'],
-  \ 'typescriptreact': ['prettier'],
+  \ 'typescript': ['prettier', 'eslint'],
+  \ 'typescriptreact': ['prettier', 'eslint'],
   \ 'json': ['prettier'],
-  \ 'python': ['isort', 'black'],
+  \ 'python': ['isort', 'black', 'autoflake'],
   \ 'scss': ['prettier'],
   \ 'css': ['prettier'],
   \ 'vue': ['prettier'],
@@ -424,6 +456,7 @@ let g:ale_php_phpcs_standard = '~/.phpcs.xml'
 let g:ale_php_phpcs_executable = 'phpcs -s'
 let g:ale_php_phpstan_configuration = 'phpstan.neon'
 let g:ale_php_phpstan_level = 7
+let g:ale_python_autoflake_options = '--remove-all-unused-imports --ignore-pass-after-docstring'
 nnoremap <Leader>al :ALELint<Cr>
 nnoremap <Leader>ai :ALEInfo<Cr>
 nnoremap <Leader>an :ALENext<Cr>
@@ -569,6 +602,7 @@ let g:use_emmet_complete_tag = 1
 " --- UI ---
 
 " -- Solarized --
+set notermguicolors
 colorscheme solarized
 
 " -- Vim Indent Guides --
@@ -601,6 +635,29 @@ nmap <Leader>vl <Plug>VimspectorContinue
 nmap <Leader>vL <Plug>VimspectorStepOver
 nmap <Leader>ve <Plug>VimspectorBalloonEval
 xmap <Leader>ve <Plug>VimspectorBalloonEval
+function! PyunitDiff() abort
+  silent! normal! gv"ry
+  tabnew
+  silent! normal! V"rp
+  %s/\v\n//
+  %s/\v\s*(Expected|Actual):\s*/\r# \1:\r/
+  silent! normal! /Actual"ddG
+  vnew
+  silent! normal! "dp
+  windo set ft=python | diffthis | ALEFix
+endfunction
+vnoremap <Leader>vd :<C-u>call PyunitDiff()<Cr>
+function! SQLFormat() abort
+  silent! normal! gv"ry
+  tabnew
+  silent! normal! V"rp
+  %s/\v\n//
+  %s/\v\s*%(PG\=|BQ\=)'([^']*)'/\r\1/
+  silent! normal! ggdd
+  set ft=sql
+  CocCommand sql.Format
+endfunction
+vnoremap <Leader>vs :<C-u>call SQLFormat()<Cr>
 
 " -- Dadbod UI --
 let g:db_ui_show_help = 0
@@ -707,3 +764,7 @@ nnoremap <Leader>me :MirrorEdit<Space>
 nnoremap <Leader>md :MirrorDiff<Space>
 nnoremap <Leader>mpl :MirrorPull<Space>
 nnoremap <Leader>mps :MirrorPush<Space>
+
+" -- Medieval --
+let g:medieval_langs = ['python', 'sh']
+nnoremap <Leader>e :EvalBlock<Cr>

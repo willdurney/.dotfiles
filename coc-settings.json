@@ -7,5 +7,10 @@
       "port": 6008
     }
   },
-  "jedi.markupKindPreferred":"plaintext"
+  "jedi.markupKindPreferred": "plaintext",
+  "sql.database": "postgresql",
+  "sql.formatOptions": {
+    "language": "postgresql",
+    "dialect": "postgresql"
+  }
 }
