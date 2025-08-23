@@ -5,4 +5,4 @@ iterm2==2.7
 pyperclip==1.8.1
 python-dotenv==0.15.0
 requests==2.32.2
-urllib3==1.26.19
+urllib3==2.5.0
