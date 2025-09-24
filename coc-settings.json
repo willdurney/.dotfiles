@@ -12,5 +12,6 @@
   "sql.formatOptions": {
     "language": "postgresql",
     "dialect": "postgresql"
-  }
+  },
+  "typescript.suggestionActions.enabled": false
 }

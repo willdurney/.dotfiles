@@ -93,3 +93,5 @@ export PATH="/opt/homebrew/opt/bzip2/bin:$PATH"
 export CPPFLAGS="-I/opt/homebrew/opt/bzip2/include"
 export LDFLAGS="-L/opt/homebrew/opt/bzip2/lib"
 export PKG_CONFIG_PATH="/opt/homebrew/opt/bzip2/lib/pkgconfig"
+
+alias c="claude"

@@ -1,7 +1,8 @@
+*.eval.md
 *.swp
 *~
-*.eval.md
 .DS_Store
+.claude
 .env
 .envbin
 .envrc

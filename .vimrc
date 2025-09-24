@@ -520,38 +520,46 @@ nnoremap <Leader>gB :Promiscuous -<Cr>
 
 " -- Fugitive --
 nnoremap <Leader>gA :Silent Git add -A<Cr>
-nnoremap <Leader>gs :Git<Cr>
+nnoremap <Leader>gs :Git!<Cr>
 nnoremap <Leader>gS :GV<Cr>
 nnoremap <Leader>gc :Git commit<Cr>
 nnoremap <Leader>gC :Git commit -a<Cr>
-nnoremap <Leader>gdd :Gvdiff!<Cr>
-nnoremap <Leader>gdh :diffget //2<Cr>:diffupdate<Cr>
-nnoremap <Leader>gdl :diffget //3<Cr>:diffupdate<Cr>
-noremap <Leader>gD :GBrowse<Cr>
+nnoremap <Leader>gd :pclose<Cr>:Git difftool --name-status<Cr>:GitGutterEnable<Cr>
+function! ToggleGitDiff()
+  " Check if there's already a diff split open
+  if &diff
+    " If in diff mode, close the diff split and enable gitgutter
+    GitGutterEnable
+    wincmd h
+    q
+  else
+    " If no diff, disable gitgutter and open vertical diff split
+    GitGutterDisable
+    Gvdiffsplit
+    wincmd l
+  endif
+endfunction
+nnoremap <Leader>gD :call ToggleGitDiff()<Cr>
+nnoremap ]d :GitGutterNextHunk<Cr>
+nnoremap [d :GitGutterPrevHunk<Cr>
+nnoremap <Leader>gq :cexpr []<Cr>:GitGutterDisable<Cr>:only<Cr>
+" nnoremap <Leader>gdd :Gvdiff!<Cr>
+" nnoremap <Leader>gdh :diffget //2<Cr>:diffupdate<Cr>
+" nnoremap <Leader>gdl :diffget //3<Cr>:diffupdate<Cr>
+" nnoremap <Leader>gD :GBrowse<Cr>
 nnoremap <Leader>gl :Git blame<Cr>
 nnoremap <Leader>gr :Gread<Cr>
 nnoremap <Leader>gR :Git reset<Space>
 nnoremap <Leader>gb :Git branch<Space>
 nnoremap <Leader>go :Git checkout<Space>
-nnoremap <Leader>gm :Git merge<Space>
-nnoremap <Leader>gM :Git rebase<Space>
+nnoremap <Leader>gm :Git rebase<Space>
+nnoremap <Leader>gM :Git merge<Space>
 nnoremap <Leader>gf :Git fetch<Cr>
 nnoremap <Leader>gt :Git tag<Space>
 nnoremap <Leader>gpl :Silent Git pull<Cr>
 nnoremap <Leader>gps :Silent Git push<Cr>
 nnoremap <Leader>gpf :Silent Git push --force
 nnoremap <Leader>gpu :execute "Silent Git push -u origin" fugitive#Head()<Cr>
-" Delete local fully-merged branches
-nnoremap <Leader>gnl :execute "Silent !git branch --merged \| tr -d '*' \| grep -v '^\\s*\\(master\\\|spec\\)' \| xargs -n1 git branch -d"<Cr>
-" Delete remote fully-merged branches
-" nnoremap <Leader>gnr :execute "Silent !git branch -r --merged \| sed -e 's/origin\\///' \| grep -v '^\\s*\\(master\\\|HEAD\\\|spec\\)' \| xargs -n1 git push origin --delete"<Cr>
-nnoremap <Leader>gnn :call GitFreshenRepo()<Cr>
-function! GitFreshenRepo() abort
-  Silent Git checkout master
-  normal ,gpl
-  normal ,gnl
-  " normal ,gnr
-endfunction
 augroup FugitiveClose
   autocmd!
   autocmd BufReadPost fugitive://* set bufhidden=delete
@@ -560,7 +568,7 @@ augroup FugitiveCommit
   autocmd!
   autocmd BufEnter COMMIT_EDITMSG startinsert!
 augroup END
-nnoremap <Leader>gpr :execute "Silent !open https://bitbucket.org/elite50/" . substitute(getcwd(), '^.*/', '', '') . "/pull-requests/new"<Cr>
+nnoremap <Leader>gpr :execute "Silent !open https://github.com/" . join(split(getcwd(), '/')[-2:], '/') . "/compare/main..." . FugitiveHead()<Cr>
 
 " --- PHP ---
 
